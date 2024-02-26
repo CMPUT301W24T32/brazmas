@@ -13,4 +13,4 @@
 .externalNativeBuild
 .cxx
 local.properties
-app/src/main/java/com/CMPUT301W24T32/brazmascheckin/database/google-services.json
+app/google-services.json
