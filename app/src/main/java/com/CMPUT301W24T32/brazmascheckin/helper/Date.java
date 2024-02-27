@@ -1,11 +1,12 @@
 package com.CMPUT301W24T32.brazmascheckin.helper;
 
 /**
- * Representation of Date in format usable for our project
+ * This class ia a representation of the date in a usable format to be displayed
  */
 public class Date {
 
     //TODO: may need to change to support multiple languages
+    //TODO: need to add time
     private static final String[] MONTH_CONVERSION = {"January", "February", "March", "April",
     "May", "June", "July", "August", "September", "October", "November", "December"};
     private int day;
