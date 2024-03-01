@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "468266597773",
+    "project_id": "brazmaseventcheckin",
+    "storage_bucket": "brazmaseventcheckin.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:468266597773:android:b8d05e4d4d67ce024bd1c4",
+        "android_client_info": {
+          "package_name": "com.CMPUT301W24T32.brazmascheckin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTTSaVhpQ_TjfbGMxUg0dAVgpF4ksi9CQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
