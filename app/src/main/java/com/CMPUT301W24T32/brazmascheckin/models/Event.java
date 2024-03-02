@@ -30,7 +30,7 @@ public class Event {
 
     /**
      * Constructs a new instance of the Event class with the full information for an event.
-     * @param ID identification assigned by FirestoreDB
+     * @param ID Identification assigned by FirestoreDB
      * @param name Name of the event
      * @param date Date of the event
      * @param description Description of the event

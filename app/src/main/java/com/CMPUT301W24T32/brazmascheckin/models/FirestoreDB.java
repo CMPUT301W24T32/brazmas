@@ -13,6 +13,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
  */
 public class FirestoreDB {
 
+
     /**
      * This method provides an instance of the Firestore database.
      * @return the FirebaseFirestore database instance
@@ -26,7 +27,7 @@ public class FirestoreDB {
      * @return a CollectionReference for the "events" collection
      */
     public static CollectionReference getEventsRef() {
-        return FirebaseFirestore.getInstance().collection("events");
+        return getDatabaseInstance().collection("events");
     }
 
     /**
@@ -34,7 +35,7 @@ public class FirestoreDB {
      * @return a CollectionReference for the "users" collection
      */
     public static CollectionReference getUsersRef() {
-        return FirebaseFirestore.getInstance().collection("users");
+        return getDatabaseInstance().collection("users");
     }
 
 
