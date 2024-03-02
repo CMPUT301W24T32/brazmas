@@ -4,13 +4,13 @@ import com.CMPUT301W24T32.brazmascheckin.helper.Date;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 
 /**
  * This class is a representation of the Event entity.
  */
 public class Event {
+    private String ID;
 
     private String name;
 
@@ -18,26 +18,83 @@ public class Event {
     private Date date;
     private String description;
 
-    private HashMap<Attendee, Integer> checkIns;
-    private ArrayList<Attendee> signUps;
+    private HashMap<String, Integer> checkIns;
+    private ArrayList<String> signUps;
 
     private int attendeeLimit;
-    //TODO: add Image poster
-    //TODO: add Image QRCode
-    //TODO: add Image shareQRCode
-    //TODO: add HashMap<Attendee, Integer>
+    private String poster;
+    private String QRCode;
+    private String shareQRCode;
+
     //TODO: add geolocation/event map
 
     /**
-     * Constructs a new instance of the Event class with the mandatory information for an event.
+     * Constructs a new instance of the Event class with the full information for an event.
+     * @param ID Identification assigned by FirestoreDB
      * @param name Name of the event
      * @param date Date of the event
      * @param description Description of the event
+     * @param checkIns Attendees who have checked in, including number of times they have checked in
+     * @param signUps Attendees who have signed up
+     * @param attendeeLimit Maximum number of attendees who can check-in
+     * @param posterID Reference to the image
+     * @param QRCodeID Reference to the image
+     * @param shareQRCodeID Reference to the image
      */
-    public Event(String name, Date date, String description) {
+    public Event(String ID, String name, Date date, String description, HashMap<String, Integer> checkIns,
+                 ArrayList<String> signUps, int attendeeLimit, String posterID, String QRCodeID,
+                 String shareQRCodeID) {
+        this.ID = ID;
         this.name = name;
         this.date = date;
         this.description = description;
+        this.checkIns = checkIns;
+        this.signUps = signUps;
+        this.attendeeLimit = attendeeLimit;
+        this.poster = posterID;
+        this.QRCode = QRCodeID;
+        this.shareQRCode = shareQRCodeID;
+    }
+
+    /**
+     * Constructs a new instance of the Event class as required by Firestore
+     */
+    public Event() {
+
+    }
+
+    /**
+     * Constructs a new instance of the Event class with the mandatory information
+     * @param ID Identification assigned by FirestoreDB
+     * @param name Name of the event
+     * @param description Description of the event
+     * @param checkIns Attendees who have checked in, including number of times they have checked in
+     * @param signUps Attendees who have signed up
+     */
+    public Event(String ID, String name, String description, HashMap<String, Integer> checkIns,
+                 ArrayList<String> signUps) {
+        this.ID = ID;
+        this.name = name;
+        this.description = description;
+        this.checkIns = checkIns;
+        this.signUps = signUps;
+
+    }
+
+    /**
+     * Getter for the ID of the event
+     * @return the identification string assigned by FirestoreDB
+     */
+    public String getID() {
+        return ID;
+    }
+
+    /**
+     * Setter for the ID of the event
+     * @param ID the identification string assigned by FirestoreDB
+     */
+    public void setID(String ID) {
+        this.ID = ID;
     }
 
     /**
@@ -94,7 +151,7 @@ public class Event {
      * @param attendee the attendee who is checking into the event
      * @return successful check-in to the event
      */
-    public boolean checkIn(Attendee attendee) {
+    public boolean checkIn(String attendee) {
         if(attendee != null) {
             if(checkIns.containsKey(attendee)) {
                 // retrieving the previous number of check-ins by the attendee
@@ -119,9 +176,25 @@ public class Event {
      * This method provides the list of attendees checked-into the event.
      * @return list of attendees checked-into the event
      */
-    public ArrayList<Attendee> getCheckIns() {
-        Set<Attendee> keySet = checkIns.keySet();
+    public ArrayList<String> getCheckInsKeys() {
+        Set<String> keySet = checkIns.keySet();
         return new ArrayList<>(keySet);
+    }
+
+    /**
+     * Getter for the checked-in attendees map of the event.
+     * @return Map of the checked-in attendees in <user ID, number of times checked in>
+     */
+    public HashMap<String, Integer> getCheckIns() {
+        return checkIns;
+    }
+
+    /**
+     * Setter for the checked-in attendees map of the event.
+     * @param checkIns Map of the checked-in attendees in <user ID, number of times checked in>
+     */
+    public void setCheckIns(HashMap<String, Integer> checkIns) {
+        this.checkIns = checkIns;
     }
 
     /**
@@ -129,7 +202,7 @@ public class Event {
      * @return the number of attendees who have checked-into the event
      */
     public int getCheckInsCount() {
-        ArrayList<Attendee> attendees = getCheckIns();
+        ArrayList<String> attendees = getCheckInsKeys();
         return attendees.size();
     }
 
@@ -137,7 +210,7 @@ public class Event {
      * This method provides the list of users who have signed-up to attend the event.
      * @return the list of users who have signed-up to attend the event
      */
-    public ArrayList<Attendee> getSignUps() {
+    public ArrayList<String> getSignUps() {
         return signUps;
     }
 
@@ -146,7 +219,11 @@ public class Event {
      * @param attendee the user who is signing-up for the event
      * @return successful sign-up to the event
      */
-    public boolean signUp(Attendee attendee) {
+    public boolean signUp(String attendee) {
+        // control flow: attendee cannot sign-up for an event while they are still signed up
+        if(signUps.contains(attendee)) {
+            return false;
+        }
         return signUps.add(attendee);
     }
 
@@ -155,8 +232,79 @@ public class Event {
      * @param attendee the user who is un-signing-up for the event
      * @return successful un-sign-up for the event
      */
-    public boolean unSignUp(Attendee attendee) {
+    public boolean unSignUp(String attendee) {
         return signUps.remove(attendee);
     }
 
+    /**
+     * Setter for the signed-up attendees list.
+     * @param signUps List of attendees who have signed-up for the event
+     */
+    public void setSignUps(ArrayList<String> signUps) {
+        this.signUps = signUps;
+    }
+
+    /**
+     * Getter for the attendee limit
+     * @return The maximum number of attendees allowed to check-in for the event
+     */
+    public int getAttendeeLimit() {
+        return attendeeLimit;
+    }
+
+    /**
+     * Setter for the attendee limit
+     * @param attendeeLimit The maximum number of attendees allowed to check-in for the event
+     */
+    public void setAttendeeLimit(int attendeeLimit) {
+        this.attendeeLimit = attendeeLimit;
+    }
+
+    /**
+     * Getter for the event's poster
+     * @return reference ID for the image containing the poster
+     */
+    public String getPoster() {
+        return poster;
+    }
+
+    /**
+     * Setter for the event's poster
+     * @param poster reference ID for the image containing the poster
+     */
+    public void setPoster(String poster) {
+        this.poster = poster;
+    }
+
+    /**
+     * Getter for the event's check-in QR-Code
+     * @return reference ID for the image containing the QR code
+     */
+    public String getQRCode() {
+        return QRCode;
+    }
+
+    /**
+     * Setter for the event's check-in QR-Code
+     * @param QRCode reference ID for the image containing the QR code
+     */
+    public void setQRCode(String QRCode) {
+        this.QRCode = QRCode;
+    }
+
+    /**
+     * Setter for the event's share QR-Code
+     * @return reference ID for the image containing the QR Code
+     */
+    public String getShareQRCode() {
+        return shareQRCode;
+    }
+
+    /**
+     * Setter for the event's share QR-Code
+     * @param shareQRCode reference ID for the image containing the QR code
+     */
+    public void setShareQRCode(String shareQRCode) {
+        this.shareQRCode = shareQRCode;
+    }
 }

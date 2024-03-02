@@ -1,5 +1,9 @@
 package com.CMPUT301W24T32.brazmascheckin.models;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -8,6 +12,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * through static methods.
  */
 public class FirestoreDB {
+
 
     /**
      * This method provides an instance of the Firestore database.
@@ -22,18 +27,38 @@ public class FirestoreDB {
      * @return a CollectionReference for the "events" collection
      */
     public static CollectionReference getEventsRef() {
-        return FirebaseFirestore.getInstance().collection("events");
+        return getDatabaseInstance().collection("events");
     }
 
     /**
-     * This method provides a reference to the "attendees" collection
-     * @return a CollectionReference for the "attendees" collection
+     * This method provides a reference to the "users" collection
+     * @return a CollectionReference for the "users" collection
      */
-    public static CollectionReference getAttendeesRef() {
-        return FirebaseFirestore.getInstance().collection("attendees");
+    public static CollectionReference getUsersRef() {
+        return getDatabaseInstance().collection("users");
     }
 
-    //TODO: determine data flow for check-in/sign up between Attendee and Event
+
+    public static void updateEvent(Event updatedEvent) {
+        getEventsRef().document(updatedEvent.getID()).set(updatedEvent)
+                .addOnSuccessListener(unused -> {
+
+                })
+                .addOnFailureListener(e -> {
+
+                });
+    }
+
+    public static void updateUser(Attendee user) {
+        //TODO: need to add ID to Attendee
+//        getUsersRef().document(user.getID()).set(user)
+//                .addOnSuccessListener(unused -> {
+//
+//                })
+//                .addOnFailureListener(e -> {
+//
+//                });
+    }
 
     //TODO: include static methods to create/update/destroy database entry attributes
 }
