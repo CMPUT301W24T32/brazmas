@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.provider.Settings;
 
 import com.CMPUT301W24T32.brazmascheckin.helper.Date;
 import com.CMPUT301W24T32.brazmascheckin.helper.EventArrayAdapter;
@@ -21,6 +22,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // added getting deviceID and storing it in a string
+        String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         String names = "beebeebooboo";
         String description = "Seminar where you learn to beep";
