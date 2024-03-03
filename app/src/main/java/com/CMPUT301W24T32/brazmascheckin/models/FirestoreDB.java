@@ -12,8 +12,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * through static methods.
  */
 public class FirestoreDB {
-
-
     /**
      * This method provides an instance of the Firestore database.
      * @return the FirebaseFirestore database instance
@@ -38,27 +36,7 @@ public class FirestoreDB {
         return getDatabaseInstance().collection("users");
     }
 
-
-    public static void updateEvent(Event updatedEvent) {
-        getEventsRef().document(updatedEvent.getID()).set(updatedEvent)
-                .addOnSuccessListener(unused -> {
-
-                })
-                .addOnFailureListener(e -> {
-
-                });
+    public static CollectionReference getAdminsRef() {
+        return getDatabaseInstance().collection("admins");
     }
-
-    public static void updateUser(Attendee user) {
-        //TODO: need to add ID to Attendee
-//        getUsersRef().document(user.getID()).set(user)
-//                .addOnSuccessListener(unused -> {
-//
-//                })
-//                .addOnFailureListener(e -> {
-//
-//                });
-    }
-
-    //TODO: include static methods to create/update/destroy database entry attributes
 }
