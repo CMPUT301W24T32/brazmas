@@ -35,4 +35,8 @@ public class FirestoreDB {
     public static CollectionReference getUsersRef() {
         return getDatabaseInstance().collection("users");
     }
+
+    public static CollectionReference getAdminsRef() {
+        return getDatabaseInstance().collection("admins");
+    }
 }
