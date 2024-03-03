@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/EventDateTextViewTitle"
+        android:layout_width="113dp"
+        android:layout_height="36dp"
+        android:gravity="center"
+        android:text="Event Date"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image" />
+
+    <TextView
+        android:id="@+id/AnnoucementExample1"
+        android:layout_width="264dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="12dp"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.544"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/AnnoucementExample2" />
+
+    <TextView
+        android:id="@+id/EventAnnoucementTextViewTitle"
+        android:layout_width="136dp"
+        android:layout_height="45dp"
+        android:gravity="center"
+        android:text="Event announcements"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/EventDescriptionTextView" />
+
+    <TextView
+        android:id="@+id/EventDescriptionTextViewTitle"
+        android:layout_width="140dp"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:text="Event Description"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/EventDateTextView" />
+
+    <TextView
+        android:id="@+id/EventNameTextView"
+        android:layout_width="123dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="156dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="156dp"
+        android:gravity="center"
+        android:text="Event name"
+        android:textSize="22sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/EventPosterTextViewTitle"
+        android:layout_width="103dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="32dp"
+        android:text="Event Poster"
+        android:textSize="18sp"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/EventNameTextView" />
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="279dp"
+        android:layout_height="186dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/EventPosterTextViewTitle"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/EventDescriptionTextView"
+        android:layout_width="342dp"
+        android:layout_height="115dp"
+        android:layout_marginTop="12dp"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/EventDescriptionTextViewTitle" />
+
+    <TextView
+        android:id="@+id/AnnoucementExample2"
+        android:layout_width="264dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="12dp"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/EventAnnoucementTextViewTitle" />
+
+    <TextView
+        android:id="@+id/EventDateTextView"
+        android:layout_width="177dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="12dp"
+        android:text="Date"
+        android:textSize="18sp"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/EventDateTextViewTitle" />
+</androidx.constraintlayout.widget.ConstraintLayout>
