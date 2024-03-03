@@ -2,6 +2,7 @@ package com.CMPUT301W24T32.brazmascheckin.models;
 
 import com.CMPUT301W24T32.brazmascheckin.helper.Date;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -9,7 +10,7 @@ import java.util.Set;
 /**
  * This class is a representation of the Event entity.
  */
-public class Event {
+public class Event implements Serializable{
     private String ID;
 
     private String name;
