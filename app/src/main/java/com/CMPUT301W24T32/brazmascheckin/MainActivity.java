@@ -37,5 +37,4 @@ import com.google.firebase.firestore.CollectionReference;
 
 public class MainActivity extends AppCompatActivity {
 
-
 }
