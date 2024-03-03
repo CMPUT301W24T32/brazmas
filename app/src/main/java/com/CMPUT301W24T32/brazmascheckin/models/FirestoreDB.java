@@ -12,7 +12,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * through static methods.
  */
 public class FirestoreDB {
-
     /**
      * This method provides an instance of the Firestore database.
      * @return the FirebaseFirestore database instance
