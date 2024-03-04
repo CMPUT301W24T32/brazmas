@@ -31,7 +31,7 @@ public class AttendeeViewEventFragment extends DialogFragment {
      * @param e event
      * @return fragment
      */
-    static AttendeeViewEventFragment sendEvent(Event e) {
+    public static AttendeeViewEventFragment sendEvent(Event e) {
         Bundle args = new Bundle();
         args.putSerializable("Event", e);
         AttendeeViewEventFragment fragment = new AttendeeViewEventFragment();
