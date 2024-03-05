@@ -37,7 +37,7 @@ import java.util.HashMap;
 public class AddEventFragment extends DialogFragment {
     private ImageView imageView;
     private Uri imageUri;
-    private final int IMG_REQ = 200;
+    private final int IMG_REQ = 200; // TODO: random request number for between-activity communication
     private EditText editName;
     private EditText editDesc;
     private DatePicker datePicker;
@@ -184,8 +184,9 @@ public class AddEventFragment extends DialogFragment {
     }
 
 
+    //TODO: replace with ActivityResultLauncher
     /**
-     * Depreceated method that needs to be replaced
+     * Deprecated method that needs to be replaced
      * @param requestCode The integer request code originally supplied to
      *                    startActivityForResult(), allowing you to identify who this
      *                    result came from.
