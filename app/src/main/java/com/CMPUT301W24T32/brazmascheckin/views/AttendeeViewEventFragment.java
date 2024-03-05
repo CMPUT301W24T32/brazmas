@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,7 +18,6 @@ import androidx.fragment.app.DialogFragment;
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.StorageReference;
 
 /**
@@ -61,10 +59,10 @@ public class AttendeeViewEventFragment extends DialogFragment {
 
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.attendee_view_event_fragment_layout,null);
         //getting textviews
-        eventName = view.findViewById(R.id.EventNameTextView);
-        eventDescription = view.findViewById(R.id.EventDescriptionTextView);
-        eventDate = view.findViewById(R.id.EventDateTextView);
-        eventAnnouncements = view.findViewById(R.id.AnnoucementExample1);
+        eventName = view.findViewById(R.id.view_event_name_tv);
+        eventDescription = view.findViewById(R.id.view_event_description_tv);
+        eventDate = view.findViewById(R.id.view_event_date_tv);
+        eventAnnouncements = view.findViewById(R.id.view_event_announcement_tv1);
         //retrieving from the bundle
         Bundle bundle = getArguments();
         Event e = (Event) bundle.getSerializable("Event");
@@ -75,7 +73,7 @@ public class AttendeeViewEventFragment extends DialogFragment {
         eventDescription.setText(e.getDescription());
 
         // need to add one for poster
-        eventPoster = view.findViewById(R.id.view_event_image);
+        eventPoster = view.findViewById(R.id.view_event_poster_iv);
         displayImage(e.getPoster());
         // need announcements for event class
         eventAnnouncements.setText("blahblahblah");

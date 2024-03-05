@@ -41,9 +41,9 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
     private void configureViews() {
         eventDataList = new ArrayList<>();
         eventAdapter = new EventArrayAdapter(this, eventDataList);
-        eventList = findViewById(R.id.allEventList);
+        eventList = findViewById(R.id.user_home_event_lv);
         eventList.setAdapter(eventAdapter);
-        addButton = findViewById(R.id.addButton);
+        addButton = findViewById(R.id.user_home_add_btn);
         eventsRef = FirestoreDB.getEventsRef();
     }
 

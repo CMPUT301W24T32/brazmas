@@ -8,14 +8,14 @@
     tools:context=".MainActivity">
 
     <ListView
-        android:id="@+id/allEventList"
+        android:id="@+id/user_home_event_lv"
         android:layout_width="match_parent"
         android:layout_height="640dp">
 
     </ListView>
 
     <Button
-        android:id="@+id/addButton"
+        android:id="@+id/user_home_add_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Add" />

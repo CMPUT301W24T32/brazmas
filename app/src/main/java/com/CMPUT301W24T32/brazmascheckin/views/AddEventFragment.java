@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -13,7 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -30,11 +28,7 @@ import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.helper.Date;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 
 import java.util.ArrayList;
@@ -142,10 +136,10 @@ public class AddEventFragment extends DialogFragment {
     }
 
     private void configureViews(View view) {
-        editDesc = view.findViewById(R.id.editTextDesc);
-        editName = view.findViewById(R.id.editTextName);
-        datePicker = view.findViewById(R.id.datePicker);
-        editLimit = view.findViewById(R.id.editTextLimit);
+        editDesc = view.findViewById(R.id.add_event_desc_et);
+        editName = view.findViewById(R.id.add_event_name_tv);
+        datePicker = view.findViewById(R.id.add_event_date_dp);
+        editLimit = view.findViewById(R.id.add_event_limit_et);
         chooseImage = view.findViewById(R.id.add_event_choose_image_button);
         imageView = view.findViewById(R.id.add_event_image_view);
         storageRef = FirestoreDB.getStorageReference("uploads");

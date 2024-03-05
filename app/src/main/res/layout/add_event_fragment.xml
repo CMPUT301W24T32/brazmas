@@ -11,7 +11,7 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/editTextName"
+            android:id="@+id/add_event_name_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -27,7 +27,7 @@
             android:padding="16dp">
 
             <TextView
-                android:id="@+id/textViewDateLabel"
+                android:id="@+id/add_event_date_title_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Select Date"
@@ -36,13 +36,13 @@
                 android:layout_marginBottom="8dp"/>
 
             <DatePicker
-                android:id="@+id/datePicker"
+                android:id="@+id/add_event_date_dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:calendarViewShown="false"/>
 
             <Button
-                android:id="@+id/buttonSubmit"
+                android:id="@+id/add_event_submit_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Submit"
@@ -50,7 +50,7 @@
         </LinearLayout>
 
         <EditText
-            android:id="@+id/editTextDesc"
+            android:id="@+id/add_event_desc_et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -59,7 +59,7 @@
             android:textColorHint="#9C27B0" />
 
         <EditText
-            android:id="@+id/editTextLimit"
+            android:id="@+id/add_event_limit_et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"

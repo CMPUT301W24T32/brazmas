@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,7 +17,7 @@
             android:orientation="vertical" >
 
             <TextView
-                android:id="@+id/EventDateTextViewTitle"
+                android:id="@+id/view_event_date_title_tv"
                 android:layout_width="113dp"
                 android:layout_height="36dp"
                 android:gravity="center"
@@ -26,10 +25,10 @@
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/image" />
+                app:layout_constraintTop_toBottomOf="@+id/view_event_poster_iv" />
 
             <TextView
-                android:id="@+id/AnnoucementExample1"
+                android:id="@+id/view_event_announcement_tv1"
                 android:layout_width="264dp"
                 android:layout_height="48dp"
                 android:layout_marginTop="16dp"
@@ -37,10 +36,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.503"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/AnnoucementExample2" />
+                app:layout_constraintTop_toBottomOf="@+id/view_event_announcementtv2" />
 
             <TextView
-                android:id="@+id/EventAnnoucementTextViewTitle"
+                android:id="@+id/view_event_announcement_title_tv"
                 android:layout_width="136dp"
                 android:layout_height="45dp"
                 android:gravity="center"
@@ -49,10 +48,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/EventDescriptionTextView" />
+                app:layout_constraintTop_toBottomOf="@+id/view_event_description_tv" />
 
             <TextView
-                android:id="@+id/EventDescriptionTextViewTitle"
+                android:id="@+id/view_event_description_title_tv"
                 android:layout_width="140dp"
                 android:layout_height="40dp"
                 android:gravity="center"
@@ -60,10 +59,10 @@
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/EventDateTextView" />
+                app:layout_constraintTop_toBottomOf="@+id/view_event_date_tv" />
 
             <TextView
-                android:id="@+id/EventNameTextView"
+                android:id="@+id/view_event_name_tv"
                 android:layout_width="123dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="156dp"
@@ -77,7 +76,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/EventPosterTextViewTitle"
+                android:id="@+id/view_event_poster_text_tv"
                 android:layout_width="103dp"
                 android:layout_height="38dp"
                 android:layout_marginTop="32dp"
@@ -86,21 +85,21 @@
                 android:gravity="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/EventNameTextView" />
+                app:layout_constraintTop_toBottomOf="@+id/view_event_name_tv" />
 
             <ImageView
-                android:id="@+id/image"
+                android:id="@+id/view_event_poster_iv"
                 android:layout_width="279dp"
                 android:layout_height="186dp"
                 android:layout_marginTop="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.492"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/EventPosterTextViewTitle"
+                app:layout_constraintTop_toBottomOf="@+id/view_event_poster_text_tv"
                 tools:srcCompat="@tools:sample/avatars" />
 
             <TextView
-                android:id="@+id/EventDescriptionTextView"
+                android:id="@+id/view_event_description_tv"
                 android:layout_width="282dp"
                 android:layout_height="110dp"
                 android:layout_marginTop="12dp"
@@ -108,10 +107,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.492"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/EventDescriptionTextViewTitle" />
+                app:layout_constraintTop_toBottomOf="@+id/view_event_description_title_tv" />
 
             <TextView
-                android:id="@+id/AnnoucementExample2"
+                android:id="@+id/view_event_announcementtv2"
                 android:layout_width="264dp"
                 android:layout_height="48dp"
                 android:layout_marginTop="12dp"
@@ -119,10 +118,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.503"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/EventAnnoucementTextViewTitle" />
+                app:layout_constraintTop_toBottomOf="@+id/view_event_announcement_title_tv" />
 
             <TextView
-                android:id="@+id/EventDateTextView"
+                android:id="@+id/view_event_date_tv"
                 android:layout_width="177dp"
                 android:layout_height="35dp"
                 android:layout_marginTop="6dp"
@@ -131,7 +130,7 @@
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/EventDateTextViewTitle" />
+                app:layout_constraintTop_toBottomOf="@+id/view_event_date_title_tv" />
 
 
 
