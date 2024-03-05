@@ -3,10 +3,13 @@ package com.CMPUT301W24T32.brazmascheckin;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,6 +17,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
+import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.StorageReference;
 
 /**
  * This class is the fragment for the individual event view
@@ -24,6 +30,7 @@ public class AttendeeViewEventFragment extends DialogFragment {
 
     private TextView eventDate;
     private TextView eventAnnouncements;
+    private ImageView eventPoster;
 
     /**
      * This function allows me to accept a bundle so i can access event data
@@ -68,7 +75,8 @@ public class AttendeeViewEventFragment extends DialogFragment {
         eventDescription.setText(e.getDescription());
 
         // need to add one for poster
-
+        eventPoster = view.findViewById(R.id.view_event_image);
+        displayImage(e.getPoster());
         // need announcements for event class
         eventAnnouncements.setText("blahblahblah");
 
@@ -76,5 +84,20 @@ public class AttendeeViewEventFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
                 .setView(view).create();
+    }
+
+    private void displayImage(String posterID) {
+        StorageReference storage = FirestoreDB.getStorageReference("uploads");
+        StorageReference imageRef = storage.child(posterID);
+
+        imageRef.getBytes(Long.MAX_VALUE)
+                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+                        eventPoster.setImageBitmap(bitmap);
+                    }
+                });
     }
 }

@@ -15,7 +15,7 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image" />
+        app:layout_constraintTop_toBottomOf="@+id/view_event_image" />
 
     <TextView
         android:id="@+id/AnnoucementExample1"
@@ -78,7 +78,7 @@
         app:layout_constraintTop_toBottomOf="@+id/EventNameTextView" />
 
     <ImageView
-        android:id="@+id/image"
+        android:id="@+id/view_event_image"
         android:layout_width="279dp"
         android:layout_height="186dp"
         android:layout_marginTop="12dp"

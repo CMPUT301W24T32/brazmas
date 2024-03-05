@@ -41,7 +41,10 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
 
         eventName.setText(event.getName());
         eventDescription.setText(event.getDescription());
-        eventDate.setText(event.getDate().getPrettyDate());
+        if(event.getDate() != null) {
+
+            eventDate.setText(event.getDate().getPrettyDate());
+        }
 
 
 

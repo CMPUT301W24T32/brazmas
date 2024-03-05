@@ -38,6 +38,8 @@ public class Date {
         this.day = day;
     }
 
+    public Date() {}
+
     public Date(int day, int month, int year) {
         this.day = day;
         this.month = month;

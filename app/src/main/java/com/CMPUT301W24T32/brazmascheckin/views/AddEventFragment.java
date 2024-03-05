@@ -4,20 +4,22 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,6 +28,12 @@ import androidx.fragment.app.DialogFragment;
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.helper.Date;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
+import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 
 import java.util.ArrayList;
@@ -35,6 +43,9 @@ public class AddEventFragment extends DialogFragment {
     private ImageView imageView;
     private Uri imageUri;
     private final int IMG_REQ = 200;
+
+    private StorageReference storageRef;
+    private DatabaseReference databaseRef;
 
 
     interface AddEventDialogListener {
@@ -74,6 +85,9 @@ public class AddEventFragment extends DialogFragment {
         Button chooseImage = view.findViewById(R.id.add_event_choose_image_button);
         imageView = view.findViewById(R.id.add_event_image_view);
 
+        storageRef = FirestoreDB.getStorageReference("uploads");
+        databaseRef = FirestoreDB.getDatabaseReference("uploads");
+
         chooseImage.setOnClickListener(view1 -> openFileChooser());
 
         //TODO: create method to build AlertDialog
@@ -92,9 +106,7 @@ public class AddEventFragment extends DialogFragment {
                     Date date = new Date(day, month, year);
                     HashMap<String, Integer> checkIns = new HashMap<String, Integer>();
                     ArrayList<String> signUps = new ArrayList<String>();
-                    Uri posterURI = (Uri) imageView.getTag();
-                    String posterID = "id";
-//                    Toast.makeText(requireContext(), getFileExtension(posterURI), Toast.LENGTH_SHORT).show();
+                    String posterID = uploadFile();
                     String QRCodeID = "id";
                     String shareQRCodeID = "id";
                     String id = "1";
@@ -118,8 +130,46 @@ public class AddEventFragment extends DialogFragment {
         startActivityForResult(intent, IMG_REQ);
     }
 
+    /**
+     * This method uploads an image to the Firebase Storage Database
+     * @return ID of the uploaded file
+     */
+    private String uploadFile() {
+        String fileID = System.currentTimeMillis()
+                + "." + getFileExtension(imageUri);
+
+        if(imageUri != null) {
+            Log.d("URI", "works");
+            StorageReference fileReference = storageRef.child(fileID);
+
+            fileReference.putFile(imageUri)
+                    .addOnSuccessListener(taskSnapshot ->{
+                        Log.d("URI", "success");
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.d("URI", "failure");
+                        Log.d("URI", e.toString());
+                    });
+        } else {
+            Log.d("URI", "not work");
+            fileID = null;
+        }
+
+        return fileID;
+    }
 
 
+    /**
+     * Depreceated method that needs to be replaced
+     * @param requestCode The integer request code originally supplied to
+     *                    startActivityForResult(), allowing you to identify who this
+     *                    result came from.
+     * @param resultCode The integer result code returned by the child activity
+     *                   through its setResult().
+     * @param data An Intent, which can return result data to the caller
+     *               (various data can be attached to Intent "extras").
+     *
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode == IMG_REQ && resultCode == Activity.RESULT_OK && data != null
@@ -130,9 +180,10 @@ public class AddEventFragment extends DialogFragment {
         }
     }
 
-//    private String getFileExtension(Uri uri) {
-//        ContentResolver resolver = requireContext().getContentResolver();
-//        MimeTypeMap mime = MimeTypeMap.getSingleton();
-//        return mime.getExtensionFromMimeType(resolver.getType(uri));
-//    }
+    //TODO: can remove
+    private String getFileExtension(Uri uri) {
+        ContentResolver resolver = requireContext().getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(resolver.getType(uri));
+    }
 }
