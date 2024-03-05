@@ -90,5 +90,21 @@
             android:backgroundTint="#DD98EA"
             android:text="Generate Promotional QR code"
             app:rippleColor="#9B27AF" />
+        
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/add_event_image_view"
+            />
+        <Button
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Choose Image"
+            android:id="@+id/add_event_choose_image_button"
+            android:background="#E29BEF"
+            android:backgroundTint="#DD98EA"
+            app:rippleColor="#9B27AF"
+            />
     </LinearLayout>
 </ScrollView>

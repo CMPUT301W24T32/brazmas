@@ -6,6 +6,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+//import com.google.firebase.storage.FirebaseStorage;
+//import com.google.firebase.storage.StorageReference;
 
 /**
  * This class provides access to Firebase database instances and collection references
@@ -39,4 +41,11 @@ public class FirestoreDB {
     public static CollectionReference getAdminsRef() {
         return getDatabaseInstance().collection("admins");
     }
+
+//    public static FirebaseStorage getStorageInstance() {
+//        return FirebaseStorage.getInstance();
+//    }
+//    public static StorageReference getStorageReference() {
+//        return getStorageInstance().getReference();
+//    }
 }
