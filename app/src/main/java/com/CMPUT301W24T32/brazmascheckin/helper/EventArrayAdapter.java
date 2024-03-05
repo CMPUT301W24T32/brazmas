@@ -30,7 +30,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view;
         if (convertView == null) {
-            view = LayoutInflater.from(super.getContext()).inflate(R.layout.content, parent, false);
+            view = LayoutInflater.from(super.getContext()).inflate(R.layout.event_view_card, parent, false);
         } else {
             view = convertView;
         }
@@ -41,7 +41,10 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
 
         eventName.setText(event.getName());
         eventDescription.setText(event.getDescription());
-        eventDate.setText(event.getDate().getPrettyDate());
+        if(event.getDate() != null) {
+
+            eventDate.setText(event.getDate().getPrettyDate());
+        }
 
         return view;
     }

@@ -178,8 +178,12 @@ public class Event implements Serializable {
      * @return list of attendees checked-into the event
      */
     public ArrayList<String> getCheckInsKeys() {
-        Set<String> keySet = checkIns.keySet();
-        return new ArrayList<>(keySet);
+        if(checkIns != null) {
+            Set<String> keySet = checkIns.keySet();
+            return new ArrayList<>(keySet);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -203,8 +207,12 @@ public class Event implements Serializable {
      * @return the number of attendees who have checked-into the event
      */
     public int getCheckInsCount() {
-        ArrayList<String> attendees = getCheckInsKeys();
-        return attendees.size();
+        if(checkIns != null) {
+            ArrayList<String> attendees = getCheckInsKeys();
+            return attendees.size();
+        } else {
+            return -1;
+        }
     }
 
     /**

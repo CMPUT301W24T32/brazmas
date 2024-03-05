@@ -1,51 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#0E887D"
-    android:orientation="vertical">
-
-
-    <EditText
-        android:id="@+id/text_title"
+    android:layout_height="match_parent">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="text"
-        android:maxLength="50"
-        android:hint="Title" />
+        android:layout_height="match_parent"
+        android:background="#F6FAF9"
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/text_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="text"
-        android:maxLength="30"
-        android:hint="Name" />
+        <EditText
+            android:id="@+id/add_event_name_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Event Name"
+            android:inputType="text"
+            android:textColorHint="#9C27B0" />
 
-    <EditText
-        android:id="@+id/text_genre"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="text"
-        android:hint="Genre" />
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-    <EditText
-        android:id="@+id/text_status"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="text"
-        android:hint="Status" />
+            <TextView
+                android:id="@+id/add_event_date_title_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select Date"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
 
-    <EditText
-        android:id="@+id/num_pub"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="0"
-        android:inputType="number" />
+            <DatePicker
+                android:id="@+id/add_event_date_dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:calendarViewShown="false"/>
 
-</LinearLayout>
+            <Button
+                android:id="@+id/add_event_submit_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Submit"
+                android:layout_marginTop="16dp"/>
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/add_event_desc_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Description"
+            android:inputType="text"
+            android:textColorHint="#9C27B0" />
+
+        <EditText
+            android:id="@+id/add_event_limit_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/limit_atendees"
+            android:inputType="number"
+            android:textColorHint="#9C27B0" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/select_qr_code"
+            android:hint="@string/qr_code_option"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+            <AutoCompleteTextView
+                android:id="@+id/autoCompleteTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:textColorHint="#9C27B0" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#E29BEF"
+            android:backgroundTint="#DD98EA"
+            android:text="Generate Promotional QR code"
+            app:rippleColor="#9B27AF" />
+        
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/add_event_image_view"
+            />
+        <Button
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Choose Image"
+            android:id="@+id/add_event_choose_image_button"
+            android:background="#E29BEF"
+            android:backgroundTint="#DD98EA"
+            app:rippleColor="#9B27AF"
+            />
+    </LinearLayout>
+</ScrollView>

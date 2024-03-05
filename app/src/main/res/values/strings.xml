@@ -6,4 +6,6 @@
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="submit">SUBMIT</string>
+    <string name="qr_code_option">QR code option</string>
+    <string name="limit_atendees">limit atendees</string>
 </resources>
