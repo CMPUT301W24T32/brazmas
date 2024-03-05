@@ -8,10 +8,16 @@
     tools:context=".MainActivity">
 
     <ListView
-        android:id = "@+id/allEventList"
-        android:layout_height = "match_parent"
-        android:layout_width = "match_parent">
+        android:id="@+id/allEventList"
+        android:layout_width="match_parent"
+        android:layout_height="640dp">
 
     </ListView>
+
+    <Button
+        android:id="@+id/addButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add" />
 
 </LinearLayout>

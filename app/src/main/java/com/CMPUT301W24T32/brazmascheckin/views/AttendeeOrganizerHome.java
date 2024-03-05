@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.CMPUT301W24T32.brazmascheckin.AttendeeViewEventFragment;
@@ -16,12 +17,13 @@ import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class AttendeeOrganizerHome extends AppCompatActivity {
+public class AttendeeOrganizerHome extends AppCompatActivity implements AddEventFragment.AddEventDialogListener {
 
     ListView eventList;
     ArrayList<Event> eventDataList;
     EventArrayAdapter eventAdapter;
 
+    Button addButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +52,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
         eventList = findViewById(R.id.allEventList);
         eventAdapter = new EventArrayAdapter(this,eventDataList);
         eventList.setAdapter(eventAdapter);
-
+        addButton = findViewById(R.id.addButton);
         //to access event details by clicking on indivdual item
         eventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -61,6 +63,15 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
             }
         });
 
-
+        addButton.setOnClickListener(v -> {
+            new AddEventFragment().show(getSupportFragmentManager(), "Add Event");
+        });
     }
+
+    @Override
+    public void addEvent(Event event) {
+        eventAdapter.add(event);
+        eventAdapter.notifyDataSetChanged();
+    }
+
 }
