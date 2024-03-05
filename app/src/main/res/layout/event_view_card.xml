@@ -2,37 +2,31 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/content_view"
-    android:orientation="horizontal">
+    android:layout_height="wrap_content"
+    android:id="@+id/event_view_card"
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <TextView
         android:id="@+id/nameText"
-        android:layout_width="60dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:padding="20dp"
         android:text="@string/eventname"
-        android:textSize="15sp">
-
-    </TextView>
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
 
     <TextView
         android:id="@+id/descriptionText"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="@string/description">
-
-    </TextView>
+        android:text="@string/description"
+        android:layout_marginBottom="8dp"/>
 
     <TextView
         android:id="@+id/dateText"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="@string/date" >
-    </TextView>
-
-
+        android:text="@string/date"
+        android:textStyle="italic"/>
 </LinearLayout>
