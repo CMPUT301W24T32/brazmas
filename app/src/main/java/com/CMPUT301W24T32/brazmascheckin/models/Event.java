@@ -177,14 +177,14 @@ public class Event implements Serializable {
      * This method provides the list of attendees checked-into the event.
      * @return list of attendees checked-into the event
      */
-//    public ArrayList<String> getCheckInsKeys() {
-//        if(checkIns != null) {
-//            Set<String> keySet = checkIns.keySet();
-//            return new ArrayList<>(keySet);
-//        } else {
-//            return null;
-//        }
-//    }
+    public ArrayList<String> getCheckInsKeys() {
+        if(checkIns != null) {
+            Set<String> keySet = checkIns.keySet();
+            return new ArrayList<>(keySet);
+        } else {
+            return null;
+        }
+    }
 
     /**
      * Getter for the checked-in attendees map of the event.
@@ -206,14 +206,14 @@ public class Event implements Serializable {
      * This method provides the number of attendees who have checked-into the event.
      * @return the number of attendees who have checked-into the event
      */
-//    public int getCheckInsCount() {
-//        if(checkIns != null) {
-//            ArrayList<String> attendees = getCheckInsKeys();
-//            return attendees.size();
-//        } else {
-//            return -1;
-//        }
-//    }
+    public int getCheckInsCount() {
+        if(checkIns != null) {
+            ArrayList<String> attendees = getCheckInsKeys();
+            return attendees.size();
+        } else {
+            return -1;
+        }
+    }
 
     /**
      * This method provides the list of users who have signed-up to attend the event.

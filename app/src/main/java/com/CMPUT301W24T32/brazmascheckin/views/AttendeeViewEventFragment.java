@@ -1,8 +1,7 @@
-package com.CMPUT301W24T32.brazmascheckin;
+package com.CMPUT301W24T32.brazmascheckin.views;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -16,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -51,7 +51,7 @@ public class AttendeeViewEventFragment extends DialogFragment {
      * @param savedInstanceState The last saved instance state of the Fragment,
      * or null if this is a freshly created Fragment.
      *
-     * @return
+     * @return Dialog
      */
     @NonNull
     @Override
@@ -86,18 +86,19 @@ public class AttendeeViewEventFragment extends DialogFragment {
                 .setView(view).create();
     }
 
+    /**
+     * This method retrieves the poster image from the database and displays it in the view
+     * @param posterID the ID of the image in the database
+     */
     private void displayImage(String posterID) {
         StorageReference storage = FirestoreDB.getStorageReference("uploads");
         StorageReference imageRef = storage.child(posterID);
 
         imageRef.getBytes(Long.MAX_VALUE)
-                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                    @Override
-                    public void onSuccess(byte[] bytes) {
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                .addOnSuccessListener(bytes -> {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
-                        eventPoster.setImageBitmap(bitmap);
-                    }
+                    eventPoster.setImageBitmap(bitmap);
                 });
     }
 }
