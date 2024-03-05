@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -47,11 +48,11 @@ public class AttendeeViewEventFragment extends DialogFragment {
     }
 
     /**
-     *
+     * This fucntion creates the dialog box and sets all the texts
      * @param savedInstanceState The last saved instance state of the Fragment,
      * or null if this is a freshly created Fragment.
      *
-     * @return Dialog
+     * @return the builder
      */
     @NonNull
     @Override
@@ -64,7 +65,6 @@ public class AttendeeViewEventFragment extends DialogFragment {
         eventDescription = view.findViewById(R.id.EventDescriptionTextView);
         eventDate = view.findViewById(R.id.EventDateTextView);
         eventAnnouncements = view.findViewById(R.id.AnnoucementExample1);
-
         //retrieving from the bundle
         Bundle bundle = getArguments();
         Event e = (Event) bundle.getSerializable("Event");
@@ -83,6 +83,7 @@ public class AttendeeViewEventFragment extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
+                .setNegativeButton("Back",null)
                 .setView(view).create();
     }
 
