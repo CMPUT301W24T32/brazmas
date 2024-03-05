@@ -43,8 +43,6 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
         eventDescription.setText(event.getDescription());
         eventDate.setText(event.getDate().getPrettyDate());
 
-
-
         return view;
     }
 }

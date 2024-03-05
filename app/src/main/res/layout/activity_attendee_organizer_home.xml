@@ -7,11 +7,50 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <ListView
-        android:id = "@+id/allEventList"
-        android:layout_height = "match_parent"
-        android:layout_width = "match_parent">
+    <EditText
+        android:id="@+id/search_bar_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="14"
+        android:hint="search"
+        android:layout_marginTop="8dp"/>
 
-    </ListView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
+        <Button
+            android:id="@+id/all_events_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="All"
+            android:layout_marginRight="8dp"/>
+
+        <Button
+            android:id="@+id/attending_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Attending"
+            android:layout_marginRight="8dp"/>
+
+        <Button
+            android:id="@+id/organizing_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Organizing"/>
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/all_events"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:scrollbars="vertical"
+        android:scrollbarStyle="outsideOverlay"
+        android:scrollbarThumbVertical="@android:color/darker_gray"/>
 </LinearLayout>
