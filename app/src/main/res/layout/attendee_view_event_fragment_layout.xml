@@ -6,24 +6,11 @@
     android:layout_height="match_parent">
 
 
-<<<<<<< HEAD
-    <TextView
-        android:id="@+id/EventDateTextViewTitle"
-        android:layout_width="113dp"
-        android:layout_height="36dp"
-        android:gravity="center"
-        android:text="Event Date"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view_event_image" />
-=======
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="1dp">
->>>>>>> c24b664c3818eee988f66e44de701d019d2d1c55
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -75,18 +62,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/EventDateTextView" />
 
-<<<<<<< HEAD
-    <ImageView
-        android:id="@+id/view_event_image"
-        android:layout_width="279dp"
-        android:layout_height="186dp"
-        android:layout_marginTop="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/EventPosterTextViewTitle"
-        tools:srcCompat="@tools:sample/avatars" />
-=======
             <TextView
                 android:id="@+id/EventNameTextView"
                 android:layout_width="123dp"
@@ -100,7 +75,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
->>>>>>> c24b664c3818eee988f66e44de701d019d2d1c55
 
             <TextView
                 android:id="@+id/EventPosterTextViewTitle"

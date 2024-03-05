@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -43,17 +44,32 @@ public class AddEventFragment extends DialogFragment {
     private ImageView imageView;
     private Uri imageUri;
     private final int IMG_REQ = 200;
+    private EditText editName;
+    private EditText editDesc;
+    private DatePicker datePicker;
+    private EditText editLimit;
+    private Button chooseImage;
 
     private StorageReference storageRef;
-    private DatabaseReference databaseRef;
 
 
+    /**
+     *
+     */
     interface AddEventDialogListener {
+        /**
+         *
+         * @param event
+         */
         void addEvent(Event event);
     }
 
     private AddEventDialogListener listener;
 
+    /**
+     *
+     * @param context
+     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -64,6 +80,11 @@ public class AddEventFragment extends DialogFragment {
         }
     }
 
+    /**
+     *
+     * @param event
+     * @return
+     */
     public AddEventFragment newInstance(Event event) {
         Bundle args = new Bundle();
         args.putSerializable("event", event);
@@ -72,52 +93,63 @@ public class AddEventFragment extends DialogFragment {
         return fragment;
     }
 
+    /**
+     *
+     * @param savedInstanceState The last saved instance state of the Fragment,
+     * or null if this is a freshly created Fragment.
+     *
+     * @return
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.add_event_fragment, null);
+        configureViews(view);
 
-        //TODO: create method to configure views
-        EditText editName = view.findViewById(R.id.editTextName);
-        EditText editDesc = view.findViewById(R.id.editTextDesc);
-        DatePicker datePicker = view.findViewById(R.id.datePicker);
-        EditText editLimit = view.findViewById(R.id.editTextLimit);
-        Button chooseImage = view.findViewById(R.id.add_event_choose_image_button);
-        imageView = view.findViewById(R.id.add_event_image_view);
-
-        storageRef = FirestoreDB.getStorageReference("uploads");
-        databaseRef = FirestoreDB.getDatabaseReference("uploads");
-
-        chooseImage.setOnClickListener(view1 -> openFileChooser());
-
-        //TODO: create method to build AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder
                 .setView(view)
-                .setTitle("Add a event")
+                .setTitle("Add an event")
                 .setNegativeButton("Cancel",null)
                 .setPositiveButton("Add", (dialog, which) -> {
-                    String title = editName.getText().toString();
-                    String desc = editDesc.getText().toString();
-                    int limit = Integer.parseInt(editLimit.getText().toString());
-                    int day = datePicker.getDayOfMonth();
-                    int month = datePicker.getMonth();
-                    int year = datePicker.getYear();
-                    Date date = new Date(day, month, year);
-                    HashMap<String, Integer> checkIns = new HashMap<String, Integer>();
-                    ArrayList<String> signUps = new ArrayList<String>();
-                    String posterID = uploadFile();
-                    String QRCodeID = "id";
-                    String shareQRCodeID = "id";
-                    String id = "1";
-                    listener.addEvent(new Event(id, title, date, desc, checkIns, signUps, limit, posterID, QRCodeID, shareQRCodeID));
+                    retrieveInput();
                 });
+
+        //TODO: idk how to refactor this
         String[] options = {"Generate new QR code", "Use existing QR code"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, options);
         AutoCompleteTextView autoCompleteTextView = view.findViewById(R.id.autoCompleteTextView);
         autoCompleteTextView.setAdapter(adapter);
 
         return builder.create();
+    }
+
+    private void retrieveInput() {
+        String title = editName.getText().toString();
+        String desc = editDesc.getText().toString();
+        int limit = Integer.parseInt(editLimit.getText().toString());
+        int day = datePicker.getDayOfMonth();
+        int month = datePicker.getMonth();
+        int year = datePicker.getYear();
+        Date date = new Date(day, month, year);
+        HashMap<String, Integer> checkIns = new HashMap<String, Integer>();
+        ArrayList<String> signUps = new ArrayList<String>();
+        String posterID = uploadFile();
+        String QRCodeID = "id";
+        String shareQRCodeID = "id";
+        String id = "1";
+        listener.addEvent(new Event(id, title, date, desc, checkIns, signUps, limit, posterID, QRCodeID, shareQRCodeID));
+    }
+
+    private void configureViews(View view) {
+        editDesc = view.findViewById(R.id.editTextDesc);
+        editName = view.findViewById(R.id.editTextName);
+        datePicker = view.findViewById(R.id.datePicker);
+        editLimit = view.findViewById(R.id.editTextLimit);
+        chooseImage = view.findViewById(R.id.add_event_choose_image_button);
+        imageView = view.findViewById(R.id.add_event_image_view);
+        storageRef = FirestoreDB.getStorageReference("uploads");
+        chooseImage.setOnClickListener(view1 -> openFileChooser());
     }
 
     /**
@@ -135,8 +167,7 @@ public class AddEventFragment extends DialogFragment {
      * @return ID of the uploaded file
      */
     private String uploadFile() {
-        String fileID = System.currentTimeMillis()
-                + "." + getFileExtension(imageUri);
+        String fileID = String.valueOf(System.currentTimeMillis());
 
         if(imageUri != null) {
             Log.d("URI", "works");
@@ -151,10 +182,10 @@ public class AddEventFragment extends DialogFragment {
                         Log.d("URI", e.toString());
                     });
         } else {
-            Log.d("URI", "not work");
+            Toast.makeText(requireContext(), "Unable to" +
+                    " upload event poster", Toast.LENGTH_SHORT).show();
             fileID = null;
         }
-
         return fileID;
     }
 
@@ -180,10 +211,5 @@ public class AddEventFragment extends DialogFragment {
         }
     }
 
-    //TODO: can remove
-    private String getFileExtension(Uri uri) {
-        ContentResolver resolver = requireContext().getContentResolver();
-        MimeTypeMap mime = MimeTypeMap.getSingleton();
-        return mime.getExtensionFromMimeType(resolver.getType(uri));
-    }
+
 }
