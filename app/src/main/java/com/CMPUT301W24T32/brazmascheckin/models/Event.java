@@ -177,7 +177,7 @@ public class Event implements Serializable {
      * This method provides the list of attendees checked-into the event.
      * @return list of attendees checked-into the event
      */
-    public ArrayList<String> getCheckInsKeys() {
+    public ArrayList<String> helperKeys() {
         if(checkIns != null) {
             Set<String> keySet = checkIns.keySet();
             return new ArrayList<>(keySet);
@@ -206,9 +206,9 @@ public class Event implements Serializable {
      * This method provides the number of attendees who have checked-into the event.
      * @return the number of attendees who have checked-into the event
      */
-    public int getCheckInsCount() {
+    public int helperCount() {
         if(checkIns != null) {
-            ArrayList<String> attendees = getCheckInsKeys();
+            ArrayList<String> attendees = helperKeys();
             return attendees.size();
         } else {
             return -1;

@@ -48,7 +48,7 @@ public class Date {
     }
 
     public String getPrettyDate() {
-        return MONTH_CONVERSION[getMonth() - 1] + " " + getDay() + ", " + getYear();
+        return MONTH_CONVERSION[getMonth()] + " " + getDay() + ", " + getYear();
     }
 }
 

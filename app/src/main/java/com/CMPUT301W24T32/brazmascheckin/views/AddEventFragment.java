@@ -118,12 +118,15 @@ public class AddEventFragment extends DialogFragment {
         return builder.create();
     }
 
+    /**
+     * This method retrieves the input from the view and adds the information to the database.
+     */
     private void retrieveInput() {
         String title = editName.getText().toString();
         String desc = editDesc.getText().toString();
         int limit = Integer.parseInt(editLimit.getText().toString());
         int day = datePicker.getDayOfMonth();
-        int month = datePicker.getMonth();
+        int month = datePicker.getMonth() ;
         int year = datePicker.getYear();
         Date date = new Date(day, month, year);
         HashMap<String, Integer> checkIns = new HashMap<String, Integer>();
@@ -135,6 +138,10 @@ public class AddEventFragment extends DialogFragment {
         listener.addEvent(new Event(id, title, date, desc, checkIns, signUps, limit, posterID, QRCodeID, shareQRCodeID));
     }
 
+    /**
+     * This method configures the views required by the fragment.
+     * @param view
+     */
     private void configureViews(View view) {
         editDesc = view.findViewById(R.id.add_event_desc_et);
         editName = view.findViewById(R.id.add_event_name_tv);

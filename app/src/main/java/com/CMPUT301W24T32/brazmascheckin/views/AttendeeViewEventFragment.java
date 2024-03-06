@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -19,7 +20,8 @@ import androidx.fragment.app.DialogFragment;
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
-import com.google.android.gms.tasks.OnFailureListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.storage.StorageReference;
 
 /**
@@ -32,6 +34,7 @@ public class AttendeeViewEventFragment extends DialogFragment {
     private TextView eventDate;
     private TextView eventAnnouncements;
     private ImageView eventPoster;
+    private TextView eventCheckIns;
 
     /**
      * This function allows me to accept a bundle so i can access event data
@@ -60,31 +63,59 @@ public class AttendeeViewEventFragment extends DialogFragment {
         getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.attendee_view_event_fragment_layout,null);
-        // getting TextViews
-        eventName = view.findViewById(R.id.view_event_name_tv);
-        eventDescription = view.findViewById(R.id.view_event_description_tv);
-        eventDate = view.findViewById(R.id.view_event_date_tv);
-        eventAnnouncements = view.findViewById(R.id.view_event_announcement_tv1);
+
         // retrieving from the bundle
         Bundle bundle = getArguments();
         Event e = (Event) bundle.getSerializable("Event");
-
-        // sets the text based on the event
-        eventName.setText(e.getName());
-        eventDate.setText(e.getDate().getPrettyDate());
-        eventDescription.setText(e.getDescription());
-
-        // need to add one for poster
-        eventPoster = view.findViewById(R.id.view_event_poster_iv);
-        displayImage(e.getPoster());
-        // need announcements for event class
-        eventAnnouncements.setText("blahblahblah");
-
+        configureViews(view, e);
+        configureControllers(e);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
                 .setNegativeButton("Back",null)
                 .setView(view).create();
+    }
+
+
+    /**
+     * This method configures the views required by the fragment
+     * @param view view of the fragment
+     * @param e event to be displayed
+     */
+    private void configureViews(View view, Event e) {
+        eventName = view.findViewById(R.id.view_event_name_tv);
+        eventDescription = view.findViewById(R.id.view_event_description_tv);
+        eventDate = view.findViewById(R.id.view_event_date_tv);
+        eventAnnouncements = view.findViewById(R.id.view_event_announcement_tv1);
+        eventCheckIns = view.findViewById(R.id.view_event_checkins_tv);
+        eventName.setText(e.getName());
+        eventDate.setText(e.getDate().getPrettyDate());
+        eventDescription.setText(e.getDescription());
+        eventCheckIns.setText(String.valueOf(e.helperCount()));
+        eventPoster = view.findViewById(R.id.view_event_poster_iv);
+        displayImage(e.getPoster());
+    }
+
+    /**
+     * This method configures the controllers required by the fragment
+     * @param e
+     */
+    private void configureControllers(Event e) {
+        CollectionReference eventsRef = FirestoreDB.getEventsRef();
+        DocumentReference eventDoc = eventsRef.document(e.getID());
+        eventDoc.addSnapshotListener((documentSnapshot, er) -> {
+            if(e != null) {
+                Log.d("testing", "check in added");
+                Event dbEvent = documentSnapshot.toObject(Event.class);
+                //TODO: how to check if checkIns is null
+                int checkIns = dbEvent.helperCount();
+                Log.d("testing", String.valueOf(checkIns));
+                eventCheckIns.setText(String.valueOf(checkIns));
+            } else {
+                Toast.makeText(requireContext(), "Could not " +
+                        "retrieve event", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     /**
