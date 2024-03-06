@@ -186,7 +186,7 @@ public class Event implements Serializable {
             Set<String> keySet = checkIns.keySet();
             return new ArrayList<>(keySet);
         } else {
-            return null;
+            return new ArrayList<>();
         }
     }
 

@@ -17,6 +17,8 @@ import com.CMPUT301W24T32.brazmascheckin.views.AdministratorHome;
 import com.CMPUT301W24T32.brazmascheckin.views.AttendeeOrganizerHome;
 import com.google.firebase.firestore.CollectionReference;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -89,7 +91,10 @@ public class MainActivity extends AppCompatActivity {
             String lastName = lastNameEditText.getText().toString();
             //TODO: check if attributes can be empty/null
 
-            User user = new User();
+            User user = new User(
+                     firstName, lastName, new ArrayList<String>(), null, null,
+                    new ArrayList<String>()
+            );
             user.setFirstName(firstName);
             user.setLastName(lastName);
             user.setID(deviceID);

@@ -29,6 +29,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
+import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -127,8 +128,14 @@ public class AttendeeViewEventFragment extends DialogFragment {
      * @param e
      */
     private void configureControllers(Event e) {
+        String deviceID = Settings.Secure.getString(getContext().getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+
         CollectionReference eventsRef = FirestoreDB.getEventsRef();
+        CollectionReference usersRef = FirestoreDB.getUsersRef();
         DocumentReference eventDoc = eventsRef.document(e.getID());
+        DocumentReference userDoc = usersRef.document(deviceID);
+
         eventDoc.addSnapshotListener((documentSnapshot, er) -> {
             Event dbEvent = documentSnapshot.toObject(Event.class);
             if(dbEvent != null) {
@@ -142,52 +149,76 @@ public class AttendeeViewEventFragment extends DialogFragment {
             }
         });
 
-        signedUpCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // Perform actions based on checkbox state
-                if (isChecked) {
-                    eventDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                DocumentSnapshot document = task.getResult();
-                                if (document.exists()) {
-                                    // Convert document snapshot to a User object
-                                    String deviceID = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-                                    Event e = document.toObject(Event.class);
-                                    // Now you can use the user object
-                                    ArrayList<String> signUps = e.getSignUps();
-                                    signUps.add(deviceID);
-                                    eventDoc.set(e);
-
-                                }
-                            }
+        signedUpCB.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            // Perform actions based on checkbox state
+            if (isChecked) {
+                eventDoc.get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            // Convert document snapshot to a User object
+                            Event e1 = document.toObject(Event.class);
+                            // Now you can use the user object
+//                            ArrayList<String> signUps = e1.getSignUps();
+//                            signUps.add(deviceID);
+                            e1.signUp(deviceID);
+                            eventDoc.set(e1);
                         }
-                    });
+                    } else {
+                        Toast.makeText(getContext(), "Unable to update event",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
 
-                    // Checkbox is checked
-                    // Do something
-                } else {
-                    eventDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                DocumentSnapshot document = task.getResult();
-                                if (document.exists()) {
-                                    // Convert document snapshot to a User object
-                                    String deviceID = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-                                    Event e = document.toObject(Event.class);
-                                    // Now you can use the user object
-                                    ArrayList<String> signUps = e.getSignUps();
-                                    signUps.remove(deviceID);
-                                    eventDoc.set(e);
+                userDoc.get().addOnCompleteListener(task -> {
+                   if(task.isSuccessful()) {
+                       DocumentSnapshot document = task.getResult();
+                       User user = document.toObject(User.class);
 
-                                }
-                            }
+//                       ArrayList<String> signUps = user.getSignedUpEvents();
+//                       signUps.add(e.getID());
+                       user.signUpEvent(e.getID());
+                       userDoc.set(user);
+                   } else {
+                       Toast.makeText(getContext(), "Unable to update user",
+                               Toast.LENGTH_SHORT).show();
+                   }
+                });
+
+
+            } else {
+                eventDoc.get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            String deviceID1 = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+                            Event e1 = document.toObject(Event.class);
+//                            ArrayList<String> signUps = e1.getSignUps();
+//                            signUps.remove(deviceID1);
+                            e1.unSignUp(deviceID);
+                            eventDoc.set(e1);
+
                         }
-                    });
-                }
+                    } else {
+                        Toast.makeText(getContext(), "Unable to update event",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                userDoc.get().addOnCompleteListener(task -> {
+                    if(task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        User user = document.toObject(User.class);
+
+//                        ArrayList<String> signUps = user.getSignedUpEvents();
+//                        signUps.remove(e.getID());
+                        user.unSignUpEvent(e.getID());
+                        userDoc.set(user);
+                    } else {
+                        Toast.makeText(getContext(), "Unable to update user",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
 

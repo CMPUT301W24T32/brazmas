@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
@@ -15,8 +16,11 @@ import com.CMPUT301W24T32.brazmascheckin.helper.Date;
 import com.CMPUT301W24T32.brazmascheckin.helper.EventRecyclerViewAdapter;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
+import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.CMPUT301W24T32.brazmascheckin.views.AttendeeViewEventFragment;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 
@@ -35,6 +39,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
     private Button addButton;
 
     private CollectionReference eventsRef;
+    private CollectionReference usersRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +97,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
         eventRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         addButton = findViewById(R.id.add_event_button);
         eventsRef = FirestoreDB.getEventsRef();
+        usersRef = FirestoreDB.getUsersRef();
     }
 
     /**
@@ -135,15 +141,29 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
      */
     @Override
     public void addEvent(Event event) {
-        eventsRef.add(event).addOnSuccessListener(documentReference -> {
+        String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);;
+        event.setOrganizer(deviceID);
+        eventsRef.add(event)
+                .addOnSuccessListener(documentReference -> {
            // set ID of the event after it has been added to database
            event.setID(documentReference.getId());
            // update document with entire event object
             eventsRef.document(documentReference.getId()).set(event);
-        })
-                .addOnFailureListener(e -> {
+
+            usersRef.document(deviceID).get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        User user = documentSnapshot.toObject(User.class);
+//                        ArrayList<String> organizedEvents = user.getOrganizedEvents();
+//                        organizedEvents.add(documentReference.getId());
+                        user.createEvent(documentReference.getId());
+                        usersRef.document(deviceID).set(user);
+                    });
+                }).addOnFailureListener(e -> {
                     // for failure
                     Toast.makeText(this, "Failed to add event to database", Toast.LENGTH_LONG).show();
                 });
+
+
+
     }
 }
