@@ -6,14 +6,18 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,9 +29,14 @@ import androidx.fragment.app.FragmentTransaction;
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.storage.StorageReference;
+
+import java.util.ArrayList;
 
 /**
  * This class is the fragment for the individual event view
@@ -41,6 +50,7 @@ public class AttendeeViewEventFragment extends DialogFragment {
     private ImageView eventPoster;
     private TextView eventCheckIns;
     private Button attendeeListbtn;
+    private CheckBox signedUpCB;
 
     /**
      * This function allows me to accept a bundle so i can access event data
@@ -103,6 +113,12 @@ public class AttendeeViewEventFragment extends DialogFragment {
         eventCheckIns.setText(String.valueOf(e.helperCount()));
         eventPoster = view.findViewById(R.id.view_event_poster_iv);
         attendeeListbtn = view.findViewById(R.id.view_event_see_attendees_btn);
+        signedUpCB = view.findViewById(R.id.signed_up_CB);
+        String deviceID = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        ArrayList<String> signUps = e.getSignUps();
+        if (signUps.contains(deviceID)){
+            signedUpCB.setChecked(true);
+        }
         displayImage(e.getPoster());
     }
 
@@ -122,6 +138,55 @@ public class AttendeeViewEventFragment extends DialogFragment {
                 } else {
                     Toast.makeText(requireContext(), "Error retrieving attendance information",
                             Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        signedUpCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // Perform actions based on checkbox state
+                if (isChecked) {
+                    eventDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    // Convert document snapshot to a User object
+                                    String deviceID = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+                                    Event e = document.toObject(Event.class);
+                                    // Now you can use the user object
+                                    ArrayList<String> signUps = e.getSignUps();
+                                    signUps.add(deviceID);
+                                    eventDoc.set(e);
+
+                                }
+                            }
+                        }
+                    });
+
+                    // Checkbox is checked
+                    // Do something
+                } else {
+                    eventDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    // Convert document snapshot to a User object
+                                    String deviceID = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+                                    Event e = document.toObject(Event.class);
+                                    // Now you can use the user object
+                                    ArrayList<String> signUps = e.getSignUps();
+                                    signUps.remove(deviceID);
+                                    eventDoc.set(e);
+
+                                }
+                            }
+                        }
+                    });
                 }
             }
         });

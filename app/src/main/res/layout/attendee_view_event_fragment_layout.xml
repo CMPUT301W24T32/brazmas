@@ -163,6 +163,13 @@
                 android:text="See users"
                 />
 
+            <CheckBox
+                android:id="@+id/signed_up_CB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Attend?"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
