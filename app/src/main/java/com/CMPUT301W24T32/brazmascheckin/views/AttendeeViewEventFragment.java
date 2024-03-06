@@ -104,16 +104,15 @@ public class AttendeeViewEventFragment extends DialogFragment {
         CollectionReference eventsRef = FirestoreDB.getEventsRef();
         DocumentReference eventDoc = eventsRef.document(e.getID());
         eventDoc.addSnapshotListener((documentSnapshot, er) -> {
-            if(e != null) {
-                Log.d("testing", "check in added");
-                Event dbEvent = documentSnapshot.toObject(Event.class);
-                //TODO: how to check if checkIns is null
+            Event dbEvent = documentSnapshot.toObject(Event.class);
+            if(dbEvent != null) {
                 int checkIns = dbEvent.helperCount();
-                Log.d("testing", String.valueOf(checkIns));
-                eventCheckIns.setText(String.valueOf(checkIns));
-            } else {
-                Toast.makeText(requireContext(), "Could not " +
-                        "retrieve event", Toast.LENGTH_SHORT).show();
+                if(checkIns != -1) {
+                    eventCheckIns.setText(String.valueOf(checkIns));
+                } else {
+                    Toast.makeText(requireContext(), "Error retrieving attendance information",
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
