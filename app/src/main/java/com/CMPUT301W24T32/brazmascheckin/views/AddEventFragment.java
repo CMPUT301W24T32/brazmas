@@ -135,7 +135,7 @@ public class AddEventFragment extends DialogFragment {
         String QRCodeID = "id";
         String shareQRCodeID = "id";
         String id = "1";
-        listener.addEvent(new Event(id, title, date, desc, checkIns, signUps, limit, posterID, QRCodeID, shareQRCodeID));
+        listener.addEvent(new Event(id, title, date, desc, checkIns, signUps, limit, posterID, QRCodeID, shareQRCodeID, ""));
     }
 
     /**

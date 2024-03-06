@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
-import com.CMPUT301W24T32.brazmascheckin.models.Attendee;
+import com.CMPUT301W24T32.brazmascheckin.models.User;
 
 import java.util.ArrayList;
 
@@ -19,7 +19,7 @@ import java.util.ArrayList;
  */
 public class AttendeeRecyclerViewAdapter extends RecyclerView.Adapter<AttendeeRecyclerViewAdapter.AttendeeViewHolder> {
 
-    private ArrayList<Attendee> attendees;
+    private ArrayList<User> users;
     private Context context;
     private OnItemClickListener listener;
 
@@ -35,13 +35,13 @@ public class AttendeeRecyclerViewAdapter extends RecyclerView.Adapter<AttendeeRe
     /**
      *
      * @param context
-     * @param attendees
+     * @param users
      * @param listener
      */
-    public AttendeeRecyclerViewAdapter(Context context, ArrayList<Attendee> attendees,
+    public AttendeeRecyclerViewAdapter(Context context, ArrayList<User> users,
                                        OnItemClickListener listener) {
         this.context = context;
-        this.attendees = attendees;
+        this.users = users;
         this.listener = listener;
     }
 
@@ -68,8 +68,8 @@ public class AttendeeRecyclerViewAdapter extends RecyclerView.Adapter<AttendeeRe
      */
     @Override
     public void onBindViewHolder(@NonNull AttendeeViewHolder holder, int position) {
-        Attendee attendee = attendees.get(position);
-        holder.bind(attendee);
+        User user = users.get(position);
+        holder.bind(user);
     }
 
     /**
@@ -78,7 +78,7 @@ public class AttendeeRecyclerViewAdapter extends RecyclerView.Adapter<AttendeeRe
      */
     @Override
     public int getItemCount() {
-        return attendees.size();
+        return users.size();
     }
 
     /**
@@ -113,12 +113,12 @@ public class AttendeeRecyclerViewAdapter extends RecyclerView.Adapter<AttendeeRe
 
         /**
          *
-         * @param attendee
+         * @param user
          */
-        public void bind(Attendee attendee) {
-            String combinedName = attendee.getFirstName() + " " + attendee.getLastName();
+        public void bind(User user) {
+            String combinedName = user.getFirstName() + " " + user.getLastName();
             name.setText(combinedName);
-            ID.setText(attendee.getID());
+            ID.setText(user.getID());
         }
     }
 }

@@ -26,6 +26,7 @@ public class Event implements Serializable {
     private String poster;
     private String QRCode;
     private String shareQRCode;
+    private String organizer;
 
     //TODO: add geolocation/event map
 
@@ -41,10 +42,11 @@ public class Event implements Serializable {
      * @param posterID Reference to the image
      * @param QRCodeID Reference to the image
      * @param shareQRCodeID Reference to the image
+     * @param organizer Reference to the user who created the event
      */
     public Event(String ID, String name, Date date, String description, HashMap<String, Integer> checkIns,
                  ArrayList<String> signUps, int attendeeLimit, String posterID, String QRCodeID,
-                 String shareQRCodeID) {
+                 String shareQRCodeID, String organizer) {
         this.ID = ID;
         this.name = name;
         this.date = date;
@@ -55,6 +57,7 @@ public class Event implements Serializable {
         this.poster = posterID;
         this.QRCode = QRCodeID;
         this.shareQRCode = shareQRCodeID;
+        this.organizer = organizer;
     }
 
     /**
@@ -71,15 +74,16 @@ public class Event implements Serializable {
      * @param description Description of the event
      * @param checkIns Attendees who have checked in, including number of times they have checked in
      * @param signUps Attendees who have signed up
+     * @param organizer Reference to the user who created the event
      */
     public Event(String ID, String name, String description, HashMap<String, Integer> checkIns,
-                 ArrayList<String> signUps) {
+                 ArrayList<String> signUps, String organizer) {
         this.ID = ID;
         this.name = name;
         this.description = description;
         this.checkIns = checkIns;
         this.signUps = signUps;
-
+        this.organizer = organizer;
     }
 
     /**
@@ -315,5 +319,21 @@ public class Event implements Serializable {
      */
     public void setShareQRCode(String shareQRCode) {
         this.shareQRCode = shareQRCode;
+    }
+
+    /**
+     * Getter for the reference to the user who created the event
+     * @return reference to the user who created the event
+     */
+    public String getOrganizer() {
+        return organizer;
+    }
+
+    /**
+     * Setter for the reference to the user who created the event
+     * @param organizer the user who created the event
+     */
+    public void setOrganizer(String organizer) {
+        this.organizer = organizer;
     }
 }

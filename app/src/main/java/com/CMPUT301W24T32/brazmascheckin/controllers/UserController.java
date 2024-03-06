@@ -2,9 +2,8 @@ package com.CMPUT301W24T32.brazmascheckin.controllers;
 
 import androidx.annotation.NonNull;
 
-import com.CMPUT301W24T32.brazmascheckin.models.Attendee;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
-import com.CMPUT301W24T32.brazmascheckin.models.Organizer;
+import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -18,7 +17,7 @@ public class UserController {
         usersRef = FirestoreDB.getEventsRef();
     }
 
-    public void setUser(String deviceID, Organizer user, UserListener listener) {
+    public void setUser(String deviceID, User user, UserListener listener) {
         usersRef.document(deviceID).set(user);
 //                .addOnSuccessListener(unused -> {listener.onSuccess();})
 //                .addOnFailureListener(e -> {listener.onError(e);});

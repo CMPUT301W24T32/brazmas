@@ -160,7 +160,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/view_event_announcement_tv1"
-                android:text="See attendees"
+                android:text="See users"
                 />
 
 
