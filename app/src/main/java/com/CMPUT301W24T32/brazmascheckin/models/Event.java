@@ -1,6 +1,9 @@
 package com.CMPUT301W24T32.brazmascheckin.models;
 
+import android.graphics.Bitmap;
+
 import com.CMPUT301W24T32.brazmascheckin.helper.Date;
+import com.CMPUT301W24T32.brazmascheckin.helper.SerialBitmap;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,6 +19,7 @@ public class Event implements Serializable {
     private String name;
 
     //TODO: should we make continuous events? with a start date and end date?
+    private SerialBitmap bitmap;
     private Date date;
     private String description;
 
@@ -220,6 +224,8 @@ public class Event implements Serializable {
      * @param attendee the user who is signing-up for the event
      * @return successful sign-up to the event
      */
+
+
     public boolean signUp(String attendee) {
         // control flow: attendee cannot sign-up for an event while they are still signed up
         if(signUps.contains(attendee)) {
@@ -307,5 +313,20 @@ public class Event implements Serializable {
      */
     public void setShareQRCode(String shareQRCode) {
         this.shareQRCode = shareQRCode;
+    }
+
+    /**
+     * Setter for the event's bitmap
+     * @param bitmap bit map for the image containing the QR code
+     */
+    public void setBitmap(SerialBitmap bitmap) {
+        this.bitmap = bitmap;
+    }
+
+    /**
+     * Getter for the event's bitmap
+     */
+    public SerialBitmap getBitmap() {
+        return bitmap;
     }
 }

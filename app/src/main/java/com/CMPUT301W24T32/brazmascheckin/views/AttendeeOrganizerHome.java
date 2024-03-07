@@ -2,6 +2,7 @@ package com.CMPUT301W24T32.brazmascheckin.views;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -58,8 +59,11 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Event e = eventDataList.get(position);
-                AttendeeViewEventFragment fragment = AttendeeViewEventFragment.sendEvent(e);
-                fragment.show(getSupportFragmentManager(), "Display Event");
+                //AttendeeViewEventFragment fragment = AttendeeViewEventFragment.sendEvent(e);
+                //fragment.show(getSupportFragmentManager(), "Display Event");
+                Intent intent = new Intent(AttendeeOrganizerHome.this, OrganizerEventView.class);
+                intent.putExtra("event", e);
+                startActivity(intent);
             }
         });
 

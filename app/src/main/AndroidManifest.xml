@@ -18,6 +18,9 @@
         <activity
             android:name=".views.AttendeeOrganizerHome"
             android:exported="false" />
+        <activity android:name=".views.OrganizerEventView"
+            android:exported="false"
+            android:parentActivityName=".views.AttendeeOrganizerHome" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
