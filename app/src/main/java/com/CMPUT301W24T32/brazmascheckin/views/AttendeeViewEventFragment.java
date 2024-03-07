@@ -150,7 +150,7 @@ public class AttendeeViewEventFragment extends DialogFragment {
                 int signUpsCount = signUps.size();
                 int maxSignUps = dbEvent.getAttendeeLimit();
 
-                if(signUpsCount + 1 >= maxSignUps) {
+                if(signUpsCount + 1 > maxSignUps && !signUps.contains(DeviceID.getDeviceID(requireContext()))) {
                     signedUpCB.setEnabled(false);
                 }
             }
