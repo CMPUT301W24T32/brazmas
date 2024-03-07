@@ -52,6 +52,7 @@ public class AttendeeViewEventFragment extends DialogFragment {
     private TextView eventCheckIns;
     private Button attendeeListbtn;
     private CheckBox signedUpCB;
+    private ImageView QRCode;
 
     /**
      * This function allows me to accept a bundle so i can access event data
@@ -114,12 +115,15 @@ public class AttendeeViewEventFragment extends DialogFragment {
         eventCheckIns.setText(String.valueOf(e.helperCount()));
         eventPoster = view.findViewById(R.id.view_event_poster_iv);
         attendeeListbtn = view.findViewById(R.id.view_event_see_attendees_btn);
+
         signedUpCB = view.findViewById(R.id.signed_up_CB);
         String deviceID = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         ArrayList<String> signUps = e.getSignUps();
         if (signUps.contains(deviceID)){
             signedUpCB.setChecked(true);
         }
+        QRCode = view.findViewById(R.id.view_event_QR_iv);
+        displayQRCode(e.getQRCode(), e.getID());
         displayImage(e.getPoster());
     }
 
@@ -249,6 +253,28 @@ public class AttendeeViewEventFragment extends DialogFragment {
                             "to load event poster.", Toast.LENGTH_SHORT).show());
         } else {
             Toast.makeText(requireContext(), "Unable to display event poster", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * This method retrieves the QR code from the database and displays it in the view
+     * @param code the ID of the QRC code in the database
+     * @param ID the ID of the event
+     */
+
+    private void displayQRCode(String code, String ID) {
+        if(code != null) {
+            StorageReference storage = FirestoreDB.getStorageReference("QRCodes");
+            StorageReference imageRef = storage.child(ID + "-QRCODE");
+
+            imageRef.getBytes(Long.MAX_VALUE)
+                    .addOnSuccessListener(bytes -> {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        QRCode.setImageBitmap(bitmap);
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(requireContext(), "", Toast.LENGTH_SHORT).show();
+                    });
         }
     }
 }

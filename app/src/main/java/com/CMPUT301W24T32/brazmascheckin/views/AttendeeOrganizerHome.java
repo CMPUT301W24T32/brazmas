@@ -1,9 +1,12 @@
 package com.CMPUT301W24T32.brazmascheckin.views;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -18,12 +21,22 @@ import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.CMPUT301W24T32.brazmascheckin.views.AttendeeViewEventFragment;
+
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -45,10 +58,8 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendee_organizer_home);
-
         configureViews();
         configureControllers();
-
     }
 
     /**
@@ -56,41 +67,6 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
      */
     private void configureViews() {
         eventDataList = new ArrayList<>();
-
-        /*String names = "beebeebooboo";
-        String description = "Seminar where you learn to beep";
-        Date date = new Date(11, 02, 2005);
-
-        // new added from event update
-        HashMap<String, Integer> checkins = null;
-        ArrayList<String> signups = null;
-        String ID = "42069";
-        int limit = 1;
-        String posterID = "IMG";
-        String QRCodeID = "QR";
-        String shareQRCodeID = "shQr";
-        //how to do date -> not working in array class so idk ask -DATE
-
-        //eventDataList = new ArrayList<>();
-        eventDataList.add(new Event(ID, names, date, description, checkins, signups, limit, posterID, QRCodeID, shareQRCodeID));  //NEED DATE IN MIDDLE
-
-        // for testing purposes
-        String names1 = "EVENT NAME";
-        String description1 = "EVENT DESCRIPTION";
-        Date date1 = new Date(10, 02, 2050);
-
-        // new added from event update
-        HashMap<String, Integer> checkins1 = null;
-        ArrayList<String> signups1 = null;
-        String ID1 = "11111";
-        int limit1 = 1;
-        String posterID1 = "IMG";
-        String QRCodeID1 = "QR";
-        String shareQRCodeID1 = "shQr";
-        //how to do date -> not working in array class so idk ask -DATE*/
-
-        //eventDataList.add(new Event(ID1, names1, date1, description1, checkins1, signups1, limit1, posterID1, QRCodeID1, shareQRCodeID1));  //NEED DATE IN MIDDLE
-
         eventRecyclerViewAdapter = new EventRecyclerViewAdapter(this, eventDataList);
         eventRecyclerView = findViewById(R.id.all_events_rv);
         eventRecyclerView.setAdapter(eventRecyclerViewAdapter);
@@ -120,13 +96,10 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
         });
 
         // to access event details by clicking single event
-        eventRecyclerViewAdapter.setOnItemClickListener(new EventRecyclerViewAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                Event clickedEvent = eventDataList.get(position);
-                AttendeeViewEventFragment fragment = AttendeeViewEventFragment.sendEvent(clickedEvent);
-                fragment.show(getSupportFragmentManager(), "Display Event");
-            }
+        eventRecyclerViewAdapter.setOnItemClickListener(position -> {
+            Event clickedEvent = eventDataList.get(position);
+            AttendeeViewEventFragment fragment = AttendeeViewEventFragment.sendEvent(clickedEvent);
+            fragment.show(getSupportFragmentManager(), "Display Event");
         });
 
         addButton.setOnClickListener(v -> {
@@ -135,8 +108,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
     }
 
     /**
-     * This method adds an event to the database.
-     *
+     * This method adds an event to the database along with a generated QR code.
      * @param event
      */
     @Override
@@ -147,6 +119,29 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
                 .addOnSuccessListener(documentReference -> {
            // set ID of the event after it has been added to database
            event.setID(documentReference.getId());
+           Bitmap bitmap = generateQRCode(documentReference.getId());
+
+           // uploading the QR code and linking it to the event
+
+           ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+           bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+           byte[] imageData = outputStream.toByteArray();
+
+           StorageReference storageRef = FirestoreDB.getStorageReference("QRCodes");
+           StorageReference imageRef = storageRef.child(event.getID() + "-QRCODE");
+
+           UploadTask uploadTask = imageRef.putBytes(imageData);
+           uploadTask.addOnSuccessListener(taskSnapshot ->
+                   imageRef.getDownloadUrl()
+                           .addOnSuccessListener(uri -> {
+                               String QRCodeURI = uri.toString();
+                               event.setQRCode(QRCodeURI);
+                           }));
+
+           uploadTask.addOnFailureListener(e -> Toast.makeText(AttendeeOrganizerHome.this,
+                   "Unable to " +
+                   "store QR code", Toast.LENGTH_SHORT).show());
+
            // update document with entire event object
             eventsRef.document(documentReference.getId()).set(event);
 
@@ -159,11 +154,32 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
                         usersRef.document(deviceID).set(user);
                     });
                 }).addOnFailureListener(e -> {
+
+        })
+                .addOnFailureListener(e -> {
+
                     // for failure
                     Toast.makeText(this, "Failed to add event to database", Toast.LENGTH_LONG).show();
                 });
 
 
 
+    }
+
+    /**
+     * This method generates a QR code based on a seed
+     * @param eventID the seed
+     * @return bitmap of the QR code
+     */
+    private Bitmap generateQRCode(String eventID) {
+        MultiFormatWriter writer = new MultiFormatWriter();
+        try {
+            BitMatrix bitMatrix = writer.encode(eventID, BarcodeFormat.QR_CODE, 300, 300);
+            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+            Bitmap bitmap = new BarcodeEncoder().createBitmap(bitMatrix);
+            return bitmap;
+        } catch(WriterException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
