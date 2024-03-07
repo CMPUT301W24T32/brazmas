@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 
-//import com.CMPUT301W24T32.brazmascheckin.AttendeeViewEventFragment;
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.helper.Date;
 import com.CMPUT301W24T32.brazmascheckin.helper.EventRecyclerViewAdapter;
@@ -43,4 +42,47 @@ public class AdministratorHome extends AppCompatActivity {
         configureViews();
         configureControllers();
     }
+
+    /**
+     * This method intitalizes the views, adapters, and models required for this actvity.
+     */
+    private void configureViews() {
+        eventDataList = new ArrayList<>();
+        eventRecyclerViewAdapter = new EventRecyclerViewAdapter(this, eventDataList);
+        eventRecyclerView = findViewById(R.id.all_events_rv_admin);
+        eventRecyclerView.setAdapter(eventRecyclerViewAdapter);
+        eventRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        eventsRef = FirestoreDB.getEventsRef();
+    }
+
+    /**
+     * This method defines the controllers for the views of the activity.
+     */
+    private void configureControllers() {
+        eventsRef.addSnapshotListener((value, error) -> {
+            if (error != null) {
+                Toast.makeText(this, "Unable to connect to the database", Toast.LENGTH_LONG).show();
+            }
+            if (value != null) {
+                eventDataList.clear();
+                for (QueryDocumentSnapshot doc : value) {
+                    Event event = doc.toObject(Event.class);
+                    eventDataList.add(event);
+                }
+                eventRecyclerViewAdapter.notifyDataSetChanged();
+                Log.d("Firestore", "Number of events: " + eventDataList.size());
+            }
+        });
+
+        // to access event details by clicking single event
+        eventRecyclerViewAdapter.setOnItemClickListener(position -> {
+            Event clickedEvent = eventDataList.get(position);
+            AdministratorViewEventFragment fragment = AdministratorViewEventFragment.sendEvent(clickedEvent);
+            fragment.show(getSupportFragmentManager(), "Display Event");
+        });
+    }
+
+    /**
+     * This method deletes an event.
+     */
 }

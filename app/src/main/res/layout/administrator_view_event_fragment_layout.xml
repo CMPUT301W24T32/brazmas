@@ -37,7 +37,7 @@
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/view_event_poster_iv" />
+                app:layout_constraintTop_toBottomOf="@+id/view_event_poster_iv_admin" />
 
             <TextView
                 android:id="@+id/view_event_announcement_tv1_admin"
@@ -108,7 +108,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/view_event_name_tv_admin" />
 
             <ImageView
-                android:id="@+id/view_event_poster_iv"
+                android:id="@+id/view_event_poster_iv_admin"
                 android:layout_width="279dp"
                 android:layout_height="186dp"
                 android:layout_marginTop="12dp"
