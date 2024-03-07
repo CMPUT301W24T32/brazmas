@@ -14,6 +14,9 @@ import androidx.core.view.WindowInsetsCompat;
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+/**
+ * Camera activity-> made for testing navigation
+ */
 public class CameraActivity extends AppCompatActivity {
 
     @Override
@@ -21,6 +24,7 @@ public class CameraActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_camera);
+        // Allows the app to switch between activities
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setSelectedItemId(R.id.bottom_camera);
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {

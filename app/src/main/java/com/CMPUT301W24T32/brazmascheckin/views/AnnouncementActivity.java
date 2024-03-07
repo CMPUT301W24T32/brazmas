@@ -14,6 +14,10 @@ import androidx.core.view.WindowInsetsCompat;
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+/**
+ * Announcement activity-> made for testing navigation
+ */
+
 public class AnnouncementActivity extends AppCompatActivity {
 
     @Override
@@ -21,7 +25,8 @@ public class AnnouncementActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_announcement);
-        //starting code
+
+        // Allows the app to switch between activities
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setSelectedItemId(R.id.bottom_announcement);
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {

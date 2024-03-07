@@ -49,7 +49,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
         configureViews();
         configureControllers();
 
-
+        // Allows the app to switch between activities
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setSelectedItemId(R.id.bottom_event);
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
