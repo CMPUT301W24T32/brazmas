@@ -83,6 +83,6 @@ public class AdministratorHome extends AppCompatActivity {
     }
 
     /**
-     * This method deletes an event.
+     * TODO: This method deletes an event.
      */
 }

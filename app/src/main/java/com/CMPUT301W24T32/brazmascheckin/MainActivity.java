@@ -22,14 +22,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_main);
 
         // getting device ID and storing it in a string
-        String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        //String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         // control flow of different types of users
-        verifyAdministratorStatus(deviceID);
-        verifyUserStatus(deviceID);
+        //verifyAdministratorStatus(deviceID);
+        //verifyUserStatus(deviceID);
+
+        // TESTING PURPOSES
+        Intent intent = new Intent(MainActivity.this, AdministratorHome.class);
+        startActivity(intent);
+        finish();
+
     }
 
     /**
