@@ -3,6 +3,7 @@ package com.CMPUT301W24T32.brazmascheckin.views;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.MenuItem;
 import android.widget.Button;
 
@@ -13,7 +14,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.models.Event;
+import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
@@ -78,7 +85,20 @@ public class CameraActivity extends AppCompatActivity {
 
     ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
         AlertDialog.Builder builder = new AlertDialog.Builder(CameraActivity.this);
-        builder.setTitle("Result");
+
+        CollectionReference eventsRef = FirestoreDB.getEventsRef();
+        String eventID = result.getContents();
+        DocumentReference eventDoc = eventsRef.document(eventID);
+        eventDoc.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Event e = documentSnapshot.toObject(Event.class);
+                String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+                e.checkIn(deviceID);
+                eventDoc.set(e);
+            }
+        });
+        builder.setTitle("Successfully checked in!");
         builder.setMessage(result.getContents());
         builder.setMessage(result.getContents());
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
