@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.CMPUT301W24T32.brazmascheckin.MainActivity;
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.journeyapps.barcodescanner.ScanContract;
@@ -74,10 +73,11 @@ public class CameraActivity extends AppCompatActivity {
         options.setBeepEnabled(true);
         options.setOrientationLocked(true);
         options.setCaptureActivity(CaptureAct.class);
+        barLauncher.launch(options);
     }
 
     ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(CameraActivity.this);
         builder.setTitle("Result");
         builder.setMessage(result.getContents());
         builder.setMessage(result.getContents());

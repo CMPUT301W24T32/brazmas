@@ -8,13 +8,6 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 tools:context=".views.CameraActivity">
 
-<TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Camera"
-    android:textSize="36sp"
-    android:textColor="@color/black"
-    android:layout_centerInParent="true"/>
 <com.google.android.material.bottomnavigation.BottomNavigationView
 
     android:layout_width="match_parent"
@@ -39,7 +32,8 @@ tools:context=".views.CameraActivity">
         android:id="@+id/qr_code_scan_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
         android:text="Scan" />
 
 </RelativeLayout>
