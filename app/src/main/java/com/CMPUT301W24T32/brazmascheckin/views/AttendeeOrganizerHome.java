@@ -1,5 +1,6 @@
 package com.CMPUT301W24T32.brazmascheckin.views;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -7,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -18,10 +20,15 @@ import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.CMPUT301W24T32.brazmascheckin.views.AttendeeViewEventFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 
 import java.util.ArrayList;
@@ -38,8 +45,14 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
     private RecyclerView eventRecyclerView;
     private Button addButton;
 
+    private Button allEventsButton;
+    private Button attendingEventsButton;
+    private Button organizingEventsButton;
+
     private CollectionReference eventsRef;
     private CollectionReference usersRef;
+    private DocumentReference userDoc;
+    private DocumentReference eventDoc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,53 +70,27 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
     private void configureViews() {
         eventDataList = new ArrayList<>();
 
-        /*String names = "beebeebooboo";
-        String description = "Seminar where you learn to beep";
-        Date date = new Date(11, 02, 2005);
-
-        // new added from event update
-        HashMap<String, Integer> checkins = null;
-        ArrayList<String> signups = null;
-        String ID = "42069";
-        int limit = 1;
-        String posterID = "IMG";
-        String QRCodeID = "QR";
-        String shareQRCodeID = "shQr";
-        //how to do date -> not working in array class so idk ask -DATE
-
-        //eventDataList = new ArrayList<>();
-        eventDataList.add(new Event(ID, names, date, description, checkins, signups, limit, posterID, QRCodeID, shareQRCodeID));  //NEED DATE IN MIDDLE
-
-        // for testing purposes
-        String names1 = "EVENT NAME";
-        String description1 = "EVENT DESCRIPTION";
-        Date date1 = new Date(10, 02, 2050);
-
-        // new added from event update
-        HashMap<String, Integer> checkins1 = null;
-        ArrayList<String> signups1 = null;
-        String ID1 = "11111";
-        int limit1 = 1;
-        String posterID1 = "IMG";
-        String QRCodeID1 = "QR";
-        String shareQRCodeID1 = "shQr";
-        //how to do date -> not working in array class so idk ask -DATE*/
-
-        //eventDataList.add(new Event(ID1, names1, date1, description1, checkins1, signups1, limit1, posterID1, QRCodeID1, shareQRCodeID1));  //NEED DATE IN MIDDLE
-
         eventRecyclerViewAdapter = new EventRecyclerViewAdapter(this, eventDataList);
         eventRecyclerView = findViewById(R.id.all_events_rv);
         eventRecyclerView.setAdapter(eventRecyclerViewAdapter);
         eventRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        allEventsButton = findViewById(R.id.all_events_button);
+        attendingEventsButton = findViewById(R.id.attending_button);
+        organizingEventsButton = findViewById(R.id.organizing_button);
         addButton = findViewById(R.id.add_event_button);
+
         eventsRef = FirestoreDB.getEventsRef();
         usersRef = FirestoreDB.getUsersRef();
+        String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        userDoc = usersRef.document(deviceID);
     }
 
     /**
      * This method defines the controllers for the views of the activity.
      */
     private void configureControllers() {
+
         eventsRef.addSnapshotListener((value, error) -> {
             if (error != null) {
                 Toast.makeText(this, "Unable to connect to the database", Toast.LENGTH_LONG).show();
@@ -119,6 +106,98 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
             }
         });
 
+        // filters for all events
+        allEventsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                eventsRef.addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        Toast.makeText(AttendeeOrganizerHome.this, "Unable to connect to the database", Toast.LENGTH_LONG).show();
+                    }
+                    if (value != null) {
+                        eventDataList.clear();
+                        for (QueryDocumentSnapshot doc : value) {
+                            Event event = doc.toObject(Event.class);
+                            eventDataList.add(event);
+                        }
+                        eventRecyclerViewAdapter.notifyDataSetChanged();
+                        Log.d("Firestore", "Number of events: " + eventDataList.size());
+                    }
+                });
+            }
+        });
+
+        // on click of the attending button it filters through the attending events list
+        attendingEventsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                userDoc.get().addOnCompleteListener(task -> {
+                    if(task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            User user = document.toObject(User.class);
+                            ArrayList<String> signedUp = user.getSignedUpEvents();
+                            eventsRef.addSnapshotListener((value, error) -> {
+                                if (error != null) {
+                                    Toast.makeText(AttendeeOrganizerHome.this, "Unable to connect to the database", Toast.LENGTH_LONG).show();
+                                }
+                                if (value != null) {
+                                    eventDataList.clear();
+                                    for (QueryDocumentSnapshot doc : value) {
+                                        Event event = doc.toObject(Event.class);
+                                        if (signedUp.contains(event.getID())){
+                                            eventDataList.add(event);
+                                        }
+                                    }
+                                    eventRecyclerViewAdapter.notifyDataSetChanged();
+                                    Log.d("Firestore", "Number of events: " + eventDataList.size());
+                                }
+                            });
+
+                        }
+                    }
+                });
+            }
+        });
+
+        // on click of the organizer button it filters through the organized events list
+        organizingEventsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                userDoc.get().addOnCompleteListener(task -> {
+                    if(task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            User user = document.toObject(User.class);
+                            ArrayList<String> organizedEvents = user.getOrganizedEvents();
+
+                            eventsRef.addSnapshotListener((value, error) -> {
+                                if (error != null) {
+                                    Toast.makeText(AttendeeOrganizerHome.this, "Unable to connect to the database", Toast.LENGTH_LONG).show();
+                                }
+                                if (value != null) {
+                                    eventDataList.clear();
+                                    for (QueryDocumentSnapshot doc : value) {
+                                        Event event = doc.toObject(Event.class);
+                                        if (organizedEvents.contains(event.getID())){
+                                            eventDataList.add(event);
+                                        }
+                                    }
+                                    eventRecyclerViewAdapter.notifyDataSetChanged();
+                                    Log.d("Firestore", "Number of events: " + eventDataList.size());
+                                }
+                            });
+
+                        }
+                    }
+                });
+            }
+        });
+
+
+
         // to access event details by clicking single event
         eventRecyclerViewAdapter.setOnItemClickListener(new EventRecyclerViewAdapter.OnItemClickListener() {
             @Override
@@ -132,6 +211,8 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
         addButton.setOnClickListener(v -> {
             new AddEventFragment().show(getSupportFragmentManager(), "Add Event");
         });
+
+
     }
 
     /**
