@@ -161,6 +161,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/view_event_announcement_tv1_admin" />
 
+            <Button
+                android:id="@+id/view_event_delete_btn_admin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="144dp"
+                android:gravity="center"
+                android:text="Delete Event"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view_event_see_attendees_btn_admin" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

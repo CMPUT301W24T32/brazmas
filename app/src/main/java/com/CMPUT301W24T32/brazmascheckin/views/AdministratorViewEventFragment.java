@@ -51,6 +51,8 @@ public class AdministratorViewEventFragment extends DialogFragment {
     private CheckBox signedUpCB;
     private ImageView QRCode;
 
+    private Button deleteEventBtn;
+
     /**
      * This function allows for the acceptance of bundle to access event data
      *
@@ -110,6 +112,9 @@ public class AdministratorViewEventFragment extends DialogFragment {
         eventDescription.setText(e.getDescription());
         eventCheckIns.setText(String.valueOf(e.helperCount()));
         eventPoster = view.findViewById(R.id.view_event_poster_iv_admin);
+
+        deleteEventBtn = view.findViewById(R.id.view_event_delete_btn_admin);
+
         //checkedInAttendeesBtn = view.findViewById(R.id.view_event_see_checked_in_attendees_btn);
         //signedUpAttendeesBtn = view.findViewById(R.id.view_event_see_signed_up_attendees_btn);
 
@@ -152,6 +157,11 @@ public class AdministratorViewEventFragment extends DialogFragment {
                             Toast.LENGTH_SHORT).show();
                 }
             }
+        });
+
+        // clicked on delete button on event view
+        deleteEventBtn.setOnClickListener(v -> {
+            deleteEvent(e.getID(), e.getPoster(), e.getQRCode());
         });
 
     }
@@ -200,4 +210,33 @@ public class AdministratorViewEventFragment extends DialogFragment {
     }
 
     // TODO: need to have delete event button and delete poster button
+    private void deleteEvent(String eventID, String posterID, String QRCode) {
+        // delete the event document from the events collection
+        FirestoreDB.deleteEvent(eventID, posterID, QRCode);
+        // delete the poster image from storage
+        deleteImageFromStorage(posterID);
+        // delete the QR code image from the storage
+        deleteImageFromStorage(QRCode);
+
+        dismiss();  // to dismiss the current dialog
+
+
+
+    }
+
+    private void deleteImageFromStorage(String imageID) {
+        if (imageID != null) {
+            StorageReference storage = FirestoreDB.getStorageReference("uploads");
+            StorageReference imageRef = storage.child(imageID);
+
+            imageRef.delete()
+                    .addOnSuccessListener(taskSnapshot -> {
+                        // successful
+                    })
+                    .addOnFailureListener(e -> {
+                        // handle errors
+                        Log.e("DeleteImage", "Error deleting image: " + e.getMessage());
+                    });
+        }
+    }
 }
