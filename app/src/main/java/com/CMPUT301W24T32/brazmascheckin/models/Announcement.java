@@ -2,11 +2,12 @@ package com.CMPUT301W24T32.brazmascheckin.models;
 
 import java.util.Date;
 
-public class Notification {
+public class Announcement {
 
-    String name;
-    String description;
-    Date date;
+    private String name;
+    private String description;
+    private Date date;
+    private String eventID;
 
     public void sendNotification(){
 
@@ -16,10 +17,15 @@ public class Notification {
      *
      *
      */
-    public Notification(String name, String description, Date date) {
+    public Announcement(String name, String description, Date date, String eventID) {
         this.name = name;
         this.description = description;
         this.date = date;
+        this.eventID = eventID;
+    }
+
+    public Announcement() {
+
     }
 
 
@@ -47,8 +53,11 @@ public class Notification {
         this.date = date;
     }
 
+    public String getEventID() {
+        return eventID;
+    }
 
-
-
-
+    public void setEventID(String eventID) {
+        this.eventID = eventID;
+    }
 }

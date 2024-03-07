@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
             //TODO: check if attributes can be empty/null
 
             User user = new User(
-                     firstName, lastName, new ArrayList<String>(), null, null,
+                    firstName, lastName, new ArrayList<String>(), null, null,
                     new ArrayList<String>()
             );
             user.setFirstName(firstName);
