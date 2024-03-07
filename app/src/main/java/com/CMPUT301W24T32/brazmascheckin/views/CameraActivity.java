@@ -89,7 +89,6 @@ public class CameraActivity extends AppCompatActivity {
         barLauncher.launch(options);
     }
 
-    //TODO: need to refactor using QR code class
     ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
         AlertDialog.Builder builder = new AlertDialog.Builder(CameraActivity.this);
 
@@ -115,6 +114,4 @@ public class CameraActivity extends AppCompatActivity {
         });
 
     });
-
-
 }
