@@ -127,8 +127,7 @@ public class AttendeeViewEventFragment extends DialogFragment {
      * @param e
      */
     private void configureControllers(Event e) {
-        String deviceID = Settings.Secure.getString(getContext().getContentResolver(),
-                Settings.Secure.ANDROID_ID);
+        String deviceID = DeviceID.getDeviceID(this.requireContext());
 
         CollectionReference eventsRef = FirestoreDB.getEventsRef();
         CollectionReference usersRef = FirestoreDB.getUsersRef();
@@ -145,8 +144,21 @@ public class AttendeeViewEventFragment extends DialogFragment {
                     Toast.makeText(requireContext(), "Error retrieving attendance information",
                             Toast.LENGTH_SHORT).show();
                 }
+
+                // The number of attendees does not increase past the maximum number of attendees specified by the organizer.
+                ArrayList<String> signUps = dbEvent.getSignUps();
+                int signUpsCount = signUps.size();
+                int maxSignUps = dbEvent.getAttendeeLimit();
+
+                if((signUpsCount + 1 > maxSignUps) && (!signUps.contains(DeviceID.getDeviceID(this.getContext())))) {
+                    signedUpCB.setEnabled(false);
+                } else {
+                    signedUpCB.setEnabled(true);
+                }
             }
         });
+
+
 
         signedUpCB.setOnCheckedChangeListener((buttonView, isChecked) -> {
             // Perform actions based on checkbox state
