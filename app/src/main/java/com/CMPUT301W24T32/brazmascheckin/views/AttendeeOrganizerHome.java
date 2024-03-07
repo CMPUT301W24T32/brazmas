@@ -202,9 +202,6 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
                     // for failure
                     Toast.makeText(this, "Failed to add event to database", Toast.LENGTH_LONG).show();
                 });
-
-
-
     }
 
 
