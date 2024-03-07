@@ -19,7 +19,9 @@ import android.widget.Toast;
 //import com.CMPUT301W24T32.brazmascheckin.AttendeeViewEventFragment;
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.helper.Date;
+import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.helper.EventRecyclerViewAdapter;
+import com.CMPUT301W24T32.brazmascheckin.helper.QRCodeGenerator;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
@@ -151,13 +153,13 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
      */
     @Override
     public void addEvent(Event event) {
-        String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);;
+        String deviceID = DeviceID.getDeviceID(this);
         event.setOrganizer(deviceID);
         eventsRef.add(event)
                 .addOnSuccessListener(documentReference -> {
            // set ID of the event after it has been added to database
            event.setID(documentReference.getId());
-           Bitmap bitmap = generateQRCode(documentReference.getId());
+           Bitmap bitmap = QRCodeGenerator.generateQRCode(documentReference.getId());
 
            // uploading the QR code and linking it to the event
 
@@ -204,21 +206,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
 
     }
 
-    /**
-     * This method generates a QR code based on a seed
-     * @param eventID the seed
-     * @return bitmap of the QR code
-     */
-    private Bitmap generateQRCode(String eventID) {
-        MultiFormatWriter writer = new MultiFormatWriter();
-        try {
-            BitMatrix bitMatrix = writer.encode(eventID, BarcodeFormat.QR_CODE, 300, 300);
-            Bitmap bitmap = new BarcodeEncoder().createBitmap(bitMatrix);
-            return bitmap;
-        } catch(WriterException e) {
-            throw new RuntimeException(e);
-        }
-    }
+
 
 
 

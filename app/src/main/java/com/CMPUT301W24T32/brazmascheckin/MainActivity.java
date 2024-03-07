@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 
 import com.CMPUT301W24T32.brazmascheckin.models.User;
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // getting device ID and storing it in a string
-        String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        String deviceID = DeviceID.getDeviceID(this);
 
         // control flow of different types of users
         verifyAdministratorStatus(deviceID);
