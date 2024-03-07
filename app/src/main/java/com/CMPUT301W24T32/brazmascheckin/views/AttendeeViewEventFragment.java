@@ -159,6 +159,12 @@ public class AttendeeViewEventFragment extends DialogFragment {
         }
     }
 
+    /**
+     * This method retrieves the QR code from the database and displays it in the view
+     * @param code the ID of the QRC code in the database
+     * @param ID the ID of the event
+     */
+
     private void displayQRCode(String code, String ID) {
         if(code != null) {
             StorageReference storage = FirestoreDB.getStorageReference("QRCodes");
@@ -169,8 +175,8 @@ public class AttendeeViewEventFragment extends DialogFragment {
                         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                         QRCode.setImageBitmap(bitmap);
                     })
-                    .addOnSuccessListener(e -> {
-
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(requireContext(), "", Toast.LENGTH_SHORT).show();
                     });
         }
     }
