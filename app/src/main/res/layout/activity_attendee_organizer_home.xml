@@ -8,7 +8,7 @@
     tools:context=".MainActivity">
 
     <EditText
-        android:id="@+id/search_bar_edit"
+        android:id="@+id/user_home_edit_sb"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="14"
@@ -16,59 +16,61 @@
         android:layout_marginTop="8dp"/>
 
     <LinearLayout
+        android:id="@+id/user_home_btns_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/user_home_edit_sb"
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/all_events_button"
+            android:id="@+id/user_home_all_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="All"
             android:layout_marginRight="8dp"/>
 
         <Button
-            android:id="@+id/attending_button"
+            android:id="@+id/user_home_attending_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Attending"
             android:layout_marginRight="8dp"/>
 
         <Button
-            android:id="@+id/organizing_button"
+            android:id="@+id/user_home_organizing_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
             android:text="Organizing"/>
+
+        <Button
+            android:id="@+id/user_home_add_event_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+"
+            android:layout_gravity="right"/>
 
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/all_events_rv"
+        android:id="@+id/user_home_all_events_rv"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:clipToPadding="false"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:scrollbars="vertical"
         android:scrollbarStyle="outsideOverlay"
+        android:layout_below="@id/user_home_btns_ll"
+        android:layout_above="@id/user_home_bnv"
         android:scrollbarThumbVertical="@android:color/darker_gray"/>
-
-    <Button
-        android:id="@+id/add_event_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add"
-        android:layout_gravity="right"/>
-
-
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/bottomNavigationView"
+            android:id="@+id/user_home_bnv"
             android:layout_alignParentBottom="true"
             android:background="@drawable/bottom_background"
             android:layout_marginEnd="20dp"

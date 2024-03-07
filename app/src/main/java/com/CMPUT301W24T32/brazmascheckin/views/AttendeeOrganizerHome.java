@@ -67,7 +67,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
 
 
         // Allows the app to switch between activities
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.user_home_bnv);
         bottomNavigationView.setSelectedItemId(R.id.bottom_event);
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -106,10 +106,10 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
     private void configureViews() {
         eventDataList = new ArrayList<>();
         eventRecyclerViewAdapter = new EventRecyclerViewAdapter(this, eventDataList);
-        eventRecyclerView = findViewById(R.id.all_events_rv);
+        eventRecyclerView = findViewById(R.id.user_home_all_events_rv);
         eventRecyclerView.setAdapter(eventRecyclerViewAdapter);
         eventRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        addButton = findViewById(R.id.add_event_button);
+        addButton = findViewById(R.id.user_home_add_event_btn);
         eventsRef = FirestoreDB.getEventsRef();
         usersRef = FirestoreDB.getUsersRef();
     }
@@ -213,7 +213,6 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
         MultiFormatWriter writer = new MultiFormatWriter();
         try {
             BitMatrix bitMatrix = writer.encode(eventID, BarcodeFormat.QR_CODE, 300, 300);
-            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
             Bitmap bitmap = new BarcodeEncoder().createBitmap(bitMatrix);
             return bitmap;
         } catch(WriterException e) {
