@@ -190,6 +190,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
                         User user = documentSnapshot.toObject(User.class);
 //                        ArrayList<String> organizedEvents = user.getOrganizedEvents();
 //                        organizedEvents.add(documentReference.getId());
+                        assert user != null;
                         user.createEvent(documentReference.getId());
                         usersRef.document(deviceID).set(user);
                     });

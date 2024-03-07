@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.widget.Button;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
-import com.CMPUT301W24T32.brazmascheckin.helper.AttendeeRecyclerViewAdapter;
+import com.CMPUT301W24T32.brazmascheckin.helper.AttendeeCheckedInRecyclerViewAdapter;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
@@ -23,7 +23,7 @@ import java.util.HashMap;
  * Activity to display checked-in attendees
  */
 public class CheckedInAttendees extends AppCompatActivity implements
-        AttendeeRecyclerViewAdapter.OnItemClickListener {
+        AttendeeCheckedInRecyclerViewAdapter.OnItemClickListener {
     private RecyclerView recyclerView;
     private Button share;
     private Button map;
@@ -31,7 +31,7 @@ public class CheckedInAttendees extends AppCompatActivity implements
     private ArrayList<User> userDataList;
     private ArrayList<Integer> userCheckIns;
 
-    private AttendeeRecyclerViewAdapter attendeeRecyclerViewAdapter;
+    private AttendeeCheckedInRecyclerViewAdapter attendeeCheckedInRecyclerViewAdapter;
 
     /**
      * Called when the activity is created
@@ -58,10 +58,10 @@ public class CheckedInAttendees extends AppCompatActivity implements
         share = findViewById(R.id.checked_in_attendees_share_btn);
         map = findViewById(R.id.checked_in_attendees_map_btn);
         notify = findViewById(R.id.checked_in_attendees_notification_btn);
-        attendeeRecyclerViewAdapter = new AttendeeRecyclerViewAdapter(this, userDataList,
+        attendeeCheckedInRecyclerViewAdapter = new AttendeeCheckedInRecyclerViewAdapter(this, userDataList,
                 userCheckIns,
                 this);
-        recyclerView.setAdapter(attendeeRecyclerViewAdapter);
+        recyclerView.setAdapter(attendeeCheckedInRecyclerViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
@@ -77,6 +77,7 @@ public class CheckedInAttendees extends AppCompatActivity implements
         eventDoc.addSnapshotListener((value, error) -> {
             userDataList.clear();
             userCheckIns.clear();
+            attendeeCheckedInRecyclerViewAdapter.notifyDataSetChanged();
             Event dbEvent = value.toObject(Event.class);
             ArrayList<String> attendeeIDs = dbEvent.helperKeys();
             HashMap<String, Integer> checkIns = dbEvent.getCheckIns();
@@ -89,7 +90,7 @@ public class CheckedInAttendees extends AppCompatActivity implements
                                 if(user != null) {
                                     userDataList.add(user);
                                     userCheckIns.add(checkIns.get(id));
-                                    attendeeRecyclerViewAdapter.notifyDataSetChanged();
+                                    attendeeCheckedInRecyclerViewAdapter.notifyItemInserted(userDataList.size() - 1);
                                 }
                             }
                         }).addOnFailureListener(e1 -> {

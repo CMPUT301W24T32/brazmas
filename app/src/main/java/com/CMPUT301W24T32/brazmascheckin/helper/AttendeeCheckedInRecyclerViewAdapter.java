@@ -17,7 +17,7 @@ import java.util.ArrayList;
 /**
  *
  */
-public class AttendeeRecyclerViewAdapter extends RecyclerView.Adapter<AttendeeRecyclerViewAdapter.AttendeeViewHolder> {
+public class AttendeeCheckedInRecyclerViewAdapter extends RecyclerView.Adapter<AttendeeCheckedInRecyclerViewAdapter.AttendeeViewHolder> {
 
     private ArrayList<User> users;
     private ArrayList<Integer> userCheckIns;
@@ -39,9 +39,9 @@ public class AttendeeRecyclerViewAdapter extends RecyclerView.Adapter<AttendeeRe
      * @param users
      * @param listener
      */
-    public AttendeeRecyclerViewAdapter(Context context, ArrayList<User> users,
-                                       ArrayList<Integer> userCheckIns,
-                                       OnItemClickListener listener) {
+    public AttendeeCheckedInRecyclerViewAdapter(Context context, ArrayList<User> users,
+                                                ArrayList<Integer> userCheckIns,
+                                                OnItemClickListener listener) {
         this.context = context;
         this.users = users;
         this.userCheckIns = userCheckIns;

@@ -65,7 +65,10 @@ public class SignedUpAttendees extends AppCompatActivity {
         CollectionReference attendeesRef = FirestoreDB.getUsersRef();
         eventDoc.addSnapshotListener((value, error) -> {
             userDataList.clear();
+            attendeeSignedUpRecyclerViewAdapter.notifyDataSetChanged();
+            assert value != null;
             Event dbEvent = value.toObject(Event.class);
+            assert dbEvent != null;
             ArrayList<String> attendeeIDs = dbEvent.getSignUps();
 
             for(String id: attendeeIDs) {
@@ -75,7 +78,8 @@ public class SignedUpAttendees extends AppCompatActivity {
                                 User user = documentSnapshot.toObject(User.class);
                                 if(user != null) {
                                     userDataList.add(user);
-                                    attendeeSignedUpRecyclerViewAdapter.notifyDataSetChanged();
+//                                    attendeeSignedUpRecyclerViewAdapter.notifyDataSetChanged();
+                                    attendeeSignedUpRecyclerViewAdapter.notifyItemInserted(userDataList.size() - 1);
                                 }
                             }
                         });
