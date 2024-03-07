@@ -41,6 +41,7 @@ public class AttendeeViewEventFragment extends DialogFragment {
     private ImageView eventPoster;
     private TextView eventCheckIns;
     private Button attendeeListbtn;
+    private ImageView QRCode;
 
     /**
      * This function allows me to accept a bundle so i can access event data
@@ -103,6 +104,8 @@ public class AttendeeViewEventFragment extends DialogFragment {
         eventCheckIns.setText(String.valueOf(e.helperCount()));
         eventPoster = view.findViewById(R.id.view_event_poster_iv);
         attendeeListbtn = view.findViewById(R.id.view_event_see_attendees_btn);
+        QRCode = view.findViewById(R.id.view_event_QR_iv);
+        displayQRCode(e.getQRCode(), e.getID());
         displayImage(e.getPoster());
     }
 
@@ -153,6 +156,22 @@ public class AttendeeViewEventFragment extends DialogFragment {
                             "to load event poster.", Toast.LENGTH_SHORT).show());
         } else {
             Toast.makeText(requireContext(), "Unable to display event poster", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void displayQRCode(String code, String ID) {
+        if(code != null) {
+            StorageReference storage = FirestoreDB.getStorageReference("QRCodes");
+            StorageReference imageRef = storage.child(ID + "-QRCODE");
+
+            imageRef.getBytes(Long.MAX_VALUE)
+                    .addOnSuccessListener(bytes -> {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        QRCode.setImageBitmap(bitmap);
+                    })
+                    .addOnSuccessListener(e -> {
+
+                    });
         }
     }
 }

@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -16,10 +18,19 @@ import com.CMPUT301W24T32.brazmascheckin.helper.EventRecyclerViewAdapter;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.views.AttendeeViewEventFragment;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -138,12 +149,41 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
         eventsRef.add(event).addOnSuccessListener(documentReference -> {
            // set ID of the event after it has been added to database
            event.setID(documentReference.getId());
+           Bitmap bitmap = generateQRCode(documentReference.getId());
+
+           ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+           bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+           byte[] imageData = outputStream.toByteArray();
+
+           StorageReference storageRef = FirestoreDB.getStorageReference("QRCodes");
+           StorageReference imageRef = storageRef.child(event.getID() + "-QRCODE");
+
+           UploadTask uploadTask = imageRef.putBytes(imageData);
+           uploadTask.addOnSuccessListener(taskSnapshot ->
+                   imageRef.getDownloadUrl()
+                           .addOnSuccessListener(uri -> {
+                               String QRCodeURI = uri.toString();
+                               event.setQRCode(QRCodeURI);
+                           }));
            // update document with entire event object
             eventsRef.document(documentReference.getId()).set(event);
+
         })
                 .addOnFailureListener(e -> {
                     // for failure
                     Toast.makeText(this, "Failed to add event to database", Toast.LENGTH_LONG).show();
                 });
+    }
+
+    private Bitmap generateQRCode(String eventID) {
+        MultiFormatWriter writer = new MultiFormatWriter();
+        try {
+            BitMatrix bitMatrix = writer.encode(eventID, BarcodeFormat.QR_CODE, 300, 300);
+            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+            Bitmap bitmap = new BarcodeEncoder().createBitmap(bitMatrix);
+            return bitmap;
+        } catch(WriterException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
