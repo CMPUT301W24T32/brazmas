@@ -8,4 +8,5 @@
     <string name="submit">SUBMIT</string>
     <string name="qr_code_option">QR code option</string>
     <string name="limit_atendees">limit atendees</string>
+    <string name="announcement_name">Announcement Name</string>
 </resources>
