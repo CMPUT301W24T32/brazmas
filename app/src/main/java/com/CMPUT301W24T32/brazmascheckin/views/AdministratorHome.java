@@ -25,6 +25,10 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
+/**
+ * This class will be the home page for organizer.
+ * This is where the admin will browse events.
+ */
 public class AdministratorHome extends AppCompatActivity {
 
     private ArrayList<Event> eventDataList;
@@ -34,6 +38,11 @@ public class AdministratorHome extends AppCompatActivity {
 
     private CollectionReference eventsRef;
 
+    /**
+     * Called when activity is created.
+     * @param savedInstanceState is the previous information if it creates
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +53,7 @@ public class AdministratorHome extends AppCompatActivity {
     }
 
     /**
-     * This method intitalizes the views, adapters, and models required for this actvity.
+     * This method initializes the views, adapters, and models required for this activity.
      */
     private void configureViews() {
         eventDataList = new ArrayList<>();
@@ -81,8 +90,4 @@ public class AdministratorHome extends AppCompatActivity {
             fragment.show(getSupportFragmentManager(), "Display Event");
         });
     }
-
-    /**
-     * TODO: This method deletes an event.
-     */
 }
