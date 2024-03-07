@@ -11,22 +11,38 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
-import com.CMPUT301W24T32.brazmascheckin.models.Notification;
+import com.CMPUT301W24T32.brazmascheckin.models.Announcement;
 
 
 import java.util.ArrayList;
 
 public class AnnouncementRecyclerViewAdapter extends RecyclerView.Adapter<AnnouncementRecyclerViewAdapter.AnnouncementViewHolder> {
 
-    private ArrayList<Notification> announcements;
+    /**
+     * List of variables
+     */
+    private ArrayList<Announcement> announcements;
     private Context context;
     private OnItemClickListener onItemClickListener;
 
-    public AnnouncementRecyclerViewAdapter(Context context, ArrayList<Notification> announcements) {
+    /**
+     * Constructor for this adapter
+     * @param context
+     * @param announcements
+     */
+    public AnnouncementRecyclerViewAdapter(Context context, ArrayList<Announcement> announcements) {
         this.context = context;
         this.announcements = announcements;
     }
 
+    /**
+     * Creates a new instance for ViewHolder
+     * @param parent The ViewGroup into which the new View will be added after it is bound to
+     *               an adapter position.
+     * @param viewType The view type of the new View.
+     *
+     * @return the announcement view
+     */
     @NonNull
     @Override
     public AnnouncementViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -34,36 +50,54 @@ public class AnnouncementRecyclerViewAdapter extends RecyclerView.Adapter<Announ
         return new AnnouncementViewHolder(view);
     }
 
+    /**
+     * Binds data to views
+     * @param holder The ViewHolder which should be updated to represent the contents of the
+     *        item at the given position in the data set.
+     * @param position The position of the item within the adapter's data set.
+     */
     @Override
     public void onBindViewHolder(@NonNull AnnouncementViewHolder holder, int position) {
-        Notification announcement = announcements.get(position);
+        Announcement announcement = announcements.get(position);
         holder.bind(announcement);
     }
 
+    /**
+     * Returns count of announcements
+     * @return number of announcements
+     */
     @Override
     public int getItemCount() {
         return announcements.size();
     }
 
-    // Set the click listener
+    /**
+     * Makes announcement clickable
+     * @param onItemClickListener
+     */
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
 
-    // Interface for item click listener
+    /**
+     * Interface for clickListener
+     */
     public interface OnItemClickListener {
         void onItemClick(int position);
     }
 
+    /**
+     * Class to represent each announcement
+     */
     public class AnnouncementViewHolder extends RecyclerView.ViewHolder {
         private TextView announcementTitle;
+        private TextView announcementDescription;
         // Add more TextViews or views for other announcement details if needed
 
         public AnnouncementViewHolder(@NonNull View itemView) {
             super(itemView);
-            announcementTitle = itemView.findViewById(R.id.announcementTitle); // Replace with your actual TextView ID
-            // Initialize other TextViews or views for other announcement details
-
+            announcementTitle = itemView.findViewById(R.id.announcement_title_tv);
+            announcementDescription = itemView.findViewById(R.id.announcementDescriptionText);
             // Set the click listener for the itemView
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -75,9 +109,13 @@ public class AnnouncementRecyclerViewAdapter extends RecyclerView.Adapter<Announ
             });
         }
 
-        public void bind(Notification announcement) {
+        /**
+         * Binds the info to the announcement
+         * @param announcement
+         */
+        public void bind(Announcement announcement) {
             announcementTitle.setText(announcement.getName());
-            // Set other TextViews or views with corresponding announcement details
+            announcementDescription.setText(announcement.getDescription());
         }
     }
 }

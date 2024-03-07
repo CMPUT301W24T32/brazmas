@@ -10,8 +10,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.helper.AnnouncementRecyclerViewAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /**
@@ -20,14 +23,24 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class AnnouncementActivity extends AppCompatActivity {
 
+    /**
+     * variables
+     */
+    private RecyclerView recyclerView;
+    private AnnouncementRecyclerViewAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_announcement);
 
+        // setting recycler view
+        recyclerView = findViewById(R.id.announcement_rv);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         // Allows the app to switch between activities
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.announcement_bnv);
         bottomNavigationView.setSelectedItemId(R.id.bottom_announcement);
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
