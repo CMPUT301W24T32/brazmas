@@ -1,24 +1,26 @@
 package com.CMPUT301W24T32.brazmascheckin;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
-import android.provider.Settings;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
-
 import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.CMPUT301W24T32.brazmascheckin.views.AdministratorHome;
 import com.CMPUT301W24T32.brazmascheckin.views.AttendeeOrganizerHome;
 import com.google.firebase.firestore.CollectionReference;
 
 import java.util.ArrayList;
+
+/**
+ * This class represents the main activity of the application.
+ * It handles the device verification process and redirects users based on their status.
+ */
 
 public class MainActivity extends AppCompatActivity {
 

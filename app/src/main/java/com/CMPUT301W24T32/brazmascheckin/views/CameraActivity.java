@@ -25,24 +25,25 @@ import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 /**
- * Camera activity-> made for testing navigation
+ * Camera activity made for testing navigation and implementing QR code scanning functionality.
  */
 public class CameraActivity extends AppCompatActivity {
 
+    // Current event object
     Event currentEvent;
 
+    // Scan button
     Button btn_scan;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_camera);
 
-        //initialize scan button
+        // Initialize scan button
         btn_scan = findViewById(R.id.qr_code_scan_btn);
-        btn_scan.setOnClickListener(v-> {
-                scanCode();
-                });
+        btn_scan.setOnClickListener(v -> scanCode());
 
         // Allows the app to switch between activities
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
@@ -51,35 +52,32 @@ public class CameraActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 int id = menuItem.getItemId();
-                if (id == (R.id.bottom_announcement)){
+                if (id == R.id.bottom_announcement) {
                     startActivity(new Intent(getApplicationContext(), AnnouncementActivity.class));
-                    overridePendingTransition(0,0);
+                    overridePendingTransition(0, 0);
                     return true;
                 }
-                if (id == (R.id.bottom_camera)){
+                if (id == R.id.bottom_camera) {
                     return true;
                 }
-                if (id == (R.id.bottom_profile)){
+                if (id == R.id.bottom_profile) {
                     startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
-                    overridePendingTransition(0,0);
+                    overridePendingTransition(0, 0);
                     return true;
                 }
-                if (id == (R.id.bottom_event)){
+                if (id == R.id.bottom_event) {
                     startActivity(new Intent(getApplicationContext(), AttendeeOrganizerHome.class));
-                    overridePendingTransition(0,0);
+                    overridePendingTransition(0, 0);
                     return true;
                 }
                 return false;
-
             }
         });
-
     }
 
     /**
-     * This methods scans QR code
+     * This method initiates the QR code scanning process.
      */
-
     public void scanCode() {
         ScanOptions options = new ScanOptions();
         options.setPrompt("volume up to flash on");
@@ -89,19 +87,36 @@ public class CameraActivity extends AppCompatActivity {
         barLauncher.launch(options);
     }
 
+    // Activity result launcher for QR code scanning
     ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
         AlertDialog.Builder builder = new AlertDialog.Builder(CameraActivity.this);
 
+        // Reference to the "events" collection in Firestore
         CollectionReference eventsRef = FirestoreDB.getEventsRef();
+
+        // Get the scanned QR code content (event ID)
         String eventID = result.getContents();
+
+        // Reference to the specific event document
         DocumentReference eventDoc = eventsRef.document(eventID);
+
+        // Retrieve the event document
         eventDoc.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
+                // Convert the document to an Event object
                 currentEvent = documentSnapshot.toObject(Event.class);
+
+                // Get the device ID (unique identifier)
                 String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+                // Perform check-in for the current device
                 currentEvent.checkIn(deviceID);
+
+                // Update the event document in Firestore
                 eventDoc.set(currentEvent);
+
+                // Display a success message
                 builder.setTitle("Successfully checked in!");
                 builder.setMessage(currentEvent.getName());
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -112,6 +127,5 @@ public class CameraActivity extends AppCompatActivity {
                 }).show();
             }
         });
-
     });
 }

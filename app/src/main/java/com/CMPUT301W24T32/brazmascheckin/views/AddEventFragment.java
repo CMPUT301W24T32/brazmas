@@ -35,7 +35,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- *
+ * AddEventFragment is a DialogFragment used for adding new events.
+ * It includes UI elements for event details input, image selection, and date picking.
  */
 public class AddEventFragment extends DialogFragment {
     private ImageView imageView;
@@ -51,7 +52,7 @@ public class AddEventFragment extends DialogFragment {
 
 
     /**
-     *
+     * interface having an addEvent() function that adds an event as an organiser
      */
     interface AddEventDialogListener {
         /**
@@ -78,7 +79,7 @@ public class AddEventFragment extends DialogFragment {
     }
 
     /**
-     *
+     * function that takes an event as input and passes it to an add event fragment, returning the generated fragment.
      * @param event
      * @return
      */

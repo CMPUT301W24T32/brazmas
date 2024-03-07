@@ -18,7 +18,7 @@ import com.CMPUT301W24T32.brazmascheckin.helper.AnnouncementRecyclerViewAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /**
- * Announcement activity-> made for testing navigation
+ * Announcement activity is made for testing navigation
  */
 
 public class AnnouncementActivity extends AppCompatActivity {
