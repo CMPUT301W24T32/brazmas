@@ -6,14 +6,18 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,9 +29,15 @@ import androidx.fragment.app.FragmentTransaction;
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
+import com.CMPUT301W24T32.brazmascheckin.models.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.storage.StorageReference;
+
+import java.util.ArrayList;
 
 /**
  * This class is the fragment for the individual event view
@@ -41,6 +51,8 @@ public class AttendeeViewEventFragment extends DialogFragment {
     private ImageView eventPoster;
     private TextView eventCheckIns;
     private Button attendeeListbtn;
+    private CheckBox signedUpCB;
+    private ImageView QRCode;
 
     /**
      * This function allows me to accept a bundle so i can access event data
@@ -103,6 +115,15 @@ public class AttendeeViewEventFragment extends DialogFragment {
         eventCheckIns.setText(String.valueOf(e.helperCount()));
         eventPoster = view.findViewById(R.id.view_event_poster_iv);
         attendeeListbtn = view.findViewById(R.id.view_event_see_attendees_btn);
+
+        signedUpCB = view.findViewById(R.id.signed_up_CB);
+        String deviceID = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        ArrayList<String> signUps = e.getSignUps();
+        if (signUps.contains(deviceID)){
+            signedUpCB.setChecked(true);
+        }
+        QRCode = view.findViewById(R.id.view_event_QR_iv);
+        displayQRCode(e.getQRCode(), e.getID());
         displayImage(e.getPoster());
     }
 
@@ -111,8 +132,14 @@ public class AttendeeViewEventFragment extends DialogFragment {
      * @param e
      */
     private void configureControllers(Event e) {
+        String deviceID = Settings.Secure.getString(getContext().getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+
         CollectionReference eventsRef = FirestoreDB.getEventsRef();
+        CollectionReference usersRef = FirestoreDB.getUsersRef();
         DocumentReference eventDoc = eventsRef.document(e.getID());
+        DocumentReference userDoc = usersRef.document(deviceID);
+
         eventDoc.addSnapshotListener((documentSnapshot, er) -> {
             Event dbEvent = documentSnapshot.toObject(Event.class);
             if(dbEvent != null) {
@@ -123,6 +150,79 @@ public class AttendeeViewEventFragment extends DialogFragment {
                     Toast.makeText(requireContext(), "Error retrieving attendance information",
                             Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        signedUpCB.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            // Perform actions based on checkbox state
+            if (isChecked) {
+                eventDoc.get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            // Convert document snapshot to a User object
+                            Event e1 = document.toObject(Event.class);
+                            // Now you can use the user object
+//                            ArrayList<String> signUps = e1.getSignUps();
+//                            signUps.add(deviceID);
+                            e1.signUp(deviceID);
+                            eventDoc.set(e1);
+                        }
+                    } else {
+                        Toast.makeText(getContext(), "Unable to update event",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                userDoc.get().addOnCompleteListener(task -> {
+                   if(task.isSuccessful()) {
+                       DocumentSnapshot document = task.getResult();
+                       User user = document.toObject(User.class);
+
+//                       ArrayList<String> signUps = user.getSignedUpEvents();
+//                       signUps.add(e.getID());
+                       user.signUpEvent(e.getID());
+                       userDoc.set(user);
+                   } else {
+                       Toast.makeText(getContext(), "Unable to update user",
+                               Toast.LENGTH_SHORT).show();
+                   }
+                });
+
+
+            } else {
+                eventDoc.get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            String deviceID1 = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+                            Event e1 = document.toObject(Event.class);
+//                            ArrayList<String> signUps = e1.getSignUps();
+//                            signUps.remove(deviceID1);
+                            e1.unSignUp(deviceID);
+                            eventDoc.set(e1);
+
+                        }
+                    } else {
+                        Toast.makeText(getContext(), "Unable to update event",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                userDoc.get().addOnCompleteListener(task -> {
+                    if(task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        User user = document.toObject(User.class);
+
+//                        ArrayList<String> signUps = user.getSignedUpEvents();
+//                        signUps.remove(e.getID());
+                        user.unSignUpEvent(e.getID());
+                        userDoc.set(user);
+                    } else {
+                        Toast.makeText(getContext(), "Unable to update user",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
 
@@ -153,6 +253,28 @@ public class AttendeeViewEventFragment extends DialogFragment {
                             "to load event poster.", Toast.LENGTH_SHORT).show());
         } else {
             Toast.makeText(requireContext(), "Unable to display event poster", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * This method retrieves the QR code from the database and displays it in the view
+     * @param code the ID of the QRC code in the database
+     * @param ID the ID of the event
+     */
+
+    private void displayQRCode(String code, String ID) {
+        if(code != null) {
+            StorageReference storage = FirestoreDB.getStorageReference("QRCodes");
+            StorageReference imageRef = storage.child(ID + "-QRCODE");
+
+            imageRef.getBytes(Long.MAX_VALUE)
+                    .addOnSuccessListener(bytes -> {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        QRCode.setImageBitmap(bitmap);
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(requireContext(), "", Toast.LENGTH_SHORT).show();
+                    });
         }
     }
 }

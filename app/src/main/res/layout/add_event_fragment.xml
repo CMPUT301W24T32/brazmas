@@ -63,7 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="@string/limit_atendees"
+            android:hint="@string/limit_attendees"
             android:inputType="number"
             android:textColorHint="#9C27B0" />
 

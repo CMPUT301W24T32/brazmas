@@ -94,7 +94,11 @@ public class User {
      * @return the list of events the user has signed-up to event
      */
     public ArrayList<String> getSignedUpEvents() {
-        return signedUpEvents;
+       if(signedUpEvents != null) {
+           return signedUpEvents;
+       } else {
+           return new ArrayList<String>();
+       }
     }
 
     /**
@@ -123,11 +127,13 @@ public class User {
      * @param e the reference ID of the event
      */
     public void unSignUpEvent(String e){
-        if (signedUpEvents.contains(e)) {
-            signedUpEvents.remove(e);
-        }
-        else{
-            throw new IllegalArgumentException();
+        if(signedUpEvents != null) {
+            if (signedUpEvents.contains(e)) {
+                signedUpEvents.remove(e);
+            }
+            else{
+                throw new IllegalArgumentException();
+            }
         }
     }
 
@@ -192,7 +198,12 @@ public class User {
      * @return the list of events organized by the user
      */
     public ArrayList<String> getOrganizedEvents() {
-        return organizedEvents;
+        if(organizedEvents != null) {
+            return organizedEvents;
+        } else {
+            return new ArrayList<>();
+        }
+
     }
 
     // TODO: public void setProfilePicture(Image picture)
