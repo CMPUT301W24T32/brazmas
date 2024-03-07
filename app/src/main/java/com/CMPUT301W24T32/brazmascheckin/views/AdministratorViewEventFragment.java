@@ -44,7 +44,7 @@ public class AdministratorViewEventFragment extends DialogFragment {
     private ImageView eventPoster;
     private TextView eventCheckIns;
 
-    // don't display them but make sure they are removed when event is deleted
+    // don't display them? but make sure they are removed when event is deleted
     private TextView eventAnnouncements;
     private Button checkedInAttendeesBtn;
     private Button signedUpAttendeesBtn;
@@ -103,26 +103,24 @@ public class AdministratorViewEventFragment extends DialogFragment {
         eventName = view.findViewById(R.id.view_event_name_tv_admin);
         eventDescription = view.findViewById(R.id.view_event_description_tv_admin);
         eventDate = view.findViewById(R.id.view_event_date_tv_admin);
-        //eventAnnouncements = view.findViewById(R.id.view_event_announcement_tv1_admin);
-        //eventCheckIns = view.findViewById(R.id.view_event_checkins_tv_admin);
+        eventAnnouncements = view.findViewById(R.id.view_event_announcement_tv1_admin);
+        eventCheckIns = view.findViewById(R.id.view_event_checkins_tv_admin);
         eventName.setText(e.getName());
         eventDate.setText(e.getDate().getPrettyDate());
         eventDescription.setText(e.getDescription());
-        //eventCheckIns.setText(String.valueOf(e.helperCount()));
+        eventCheckIns.setText(String.valueOf(e.helperCount()));
         eventPoster = view.findViewById(R.id.view_event_poster_iv_admin);
-        //checkedInAttendeesBtn = view.findViewById(R.id.view_event_see_attendees_btn_admin);
+        //checkedInAttendeesBtn = view.findViewById(R.id.view_event_see_checked_in_attendees_btn);
         //signedUpAttendeesBtn = view.findViewById(R.id.view_event_see_signed_up_attendees_btn);
 
         /*signedUpCB = view.findViewById(R.id.signed_up_CB);
         String deviceID = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         ArrayList<String> signUps = e.getSignUps();
-        if (signUps.contains(deviceID)) {
+        if (signUps.contains(deviceID)){
             signedUpCB.setChecked(true);
-        }
-
-        QRCode = view.findViewById(R.id.view_event_QR_iv_admin);
-        displayQRcode(e.getQRCode(), e.getID());*/
-
+        }*/
+        //QRCode = view.findViewById(R.id.view_event_QR_iv);
+        //displayQRCode(e.getQRCode(), e.getID());
         displayImage(e.getPoster());
 
     }
@@ -133,14 +131,16 @@ public class AdministratorViewEventFragment extends DialogFragment {
      */
     private void configureControllers(Event e) {
 
-        String deviceID = Settings.Secure.getString(getContext(). getContentResolver(),
+        String deviceID = Settings.Secure.getString(getContext().getContentResolver(),
                 Settings.Secure.ANDROID_ID);
 
         CollectionReference eventsRef = FirestoreDB.getEventsRef();
+        //CollectionReference usersRef = FirestoreDB.getUsersRef();
         DocumentReference eventDoc = eventsRef.document(e.getID());
+        //DocumentReference userDoc = usersRef.document(deviceID);
 
 
-        /////////////// still need to do this
+        // TODO: do we need this for the admin?
         eventDoc.addSnapshotListener((documentSnapshot, er) -> {
             Event dbEvent = documentSnapshot.toObject(Event.class);
             if(dbEvent != null) {
@@ -154,11 +154,6 @@ public class AdministratorViewEventFragment extends DialogFragment {
             }
         });
 
-        attendeeListbtn.setOnClickListener(view -> {
-            Intent intent = new Intent(getActivity(), CheckedInAttendees.class);
-            intent.putExtra("EVENT", e);
-            startActivity(intent);
-        });
     }
 
     /**
@@ -181,6 +176,26 @@ public class AdministratorViewEventFragment extends DialogFragment {
                             "to load event poster.", Toast.LENGTH_SHORT).show());
         } else {
             Toast.makeText(requireContext(), "Unable to display event poster", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * This method retrieves the QR code from the database and displays it in the view
+     * DO WE NEED THIS FOR THE ADMIN?
+     */
+    private void displayQRCode(String code, String ID) {
+        if(code != null) {
+            StorageReference storage = FirestoreDB.getStorageReference("QRCodes");
+            StorageReference imageRef = storage.child(ID + "-QRCODE");
+
+            imageRef.getBytes(Long.MAX_VALUE)
+                    .addOnSuccessListener(bytes -> {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        QRCode.setImageBitmap(bitmap);
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(requireContext(), "", Toast.LENGTH_SHORT).show();
+                    });
         }
     }
 
