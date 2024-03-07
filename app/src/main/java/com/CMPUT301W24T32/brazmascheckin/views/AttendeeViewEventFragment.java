@@ -7,31 +7,23 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -50,7 +42,8 @@ public class AttendeeViewEventFragment extends DialogFragment {
     private TextView eventAnnouncements;
     private ImageView eventPoster;
     private TextView eventCheckIns;
-    private Button attendeeListbtn;
+    private Button checkedInAttendeesBtn;
+    private Button signedUpAttendeesBtn;
     private CheckBox signedUpCB;
     private ImageView QRCode;
 
@@ -114,7 +107,8 @@ public class AttendeeViewEventFragment extends DialogFragment {
         eventDescription.setText(e.getDescription());
         eventCheckIns.setText(String.valueOf(e.helperCount()));
         eventPoster = view.findViewById(R.id.view_event_poster_iv);
-        attendeeListbtn = view.findViewById(R.id.view_event_see_attendees_btn);
+        checkedInAttendeesBtn = view.findViewById(R.id.view_event_see_checked_in_attendees_btn);
+        signedUpAttendeesBtn = view.findViewById(R.id.view_event_see_signed_up_attendees_btn);
 
         signedUpCB = view.findViewById(R.id.signed_up_CB);
         String deviceID = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -226,8 +220,14 @@ public class AttendeeViewEventFragment extends DialogFragment {
             }
         });
 
-        attendeeListbtn.setOnClickListener(view -> {
+        checkedInAttendeesBtn.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), CheckedInAttendees.class);
+            intent.putExtra("EVENT", e);
+            startActivity(intent);
+        });
+
+        signedUpAttendeesBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), SignedUpAttendees.class);
             intent.putExtra("EVENT", e);
             startActivity(intent);
         });

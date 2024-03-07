@@ -154,13 +154,23 @@
                 app:layout_constraintTop_toBottomOf="@+id/view_event_date_title_tv" />
 
             <Button
-                android:id="@+id/view_event_see_attendees_btn"
+                android:id="@+id/view_event_see_checked_in_attendees_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/view_event_announcement_tv1"
-                android:text="See users"
+                android:text="See checked in users"
+                />
+
+            <Button
+                android:id="@+id/view_event_see_signed_up_attendees_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="See signed up users"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view_event_see_checked_in_attendees_btn"
                 />
 
             <CheckBox
@@ -175,7 +185,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/view_event_QR_iv"
-                app:layout_constraintTop_toBottomOf="@id/view_event_see_attendees_btn"
+                app:layout_constraintTop_toBottomOf="@id/view_event_see_signed_up_attendees_btn"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 />

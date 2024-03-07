@@ -34,6 +34,9 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ *
+ */
 public class AddEventFragment extends DialogFragment {
     private ImageView imageView;
     private Uri imageUri;

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 public class AttendeeRecyclerViewAdapter extends RecyclerView.Adapter<AttendeeRecyclerViewAdapter.AttendeeViewHolder> {
 
     private ArrayList<User> users;
+    private ArrayList<Integer> userCheckIns;
     private Context context;
     private OnItemClickListener listener;
 
@@ -39,9 +40,11 @@ public class AttendeeRecyclerViewAdapter extends RecyclerView.Adapter<AttendeeRe
      * @param listener
      */
     public AttendeeRecyclerViewAdapter(Context context, ArrayList<User> users,
+                                       ArrayList<Integer> userCheckIns,
                                        OnItemClickListener listener) {
         this.context = context;
         this.users = users;
+        this.userCheckIns = userCheckIns;
         this.listener = listener;
     }
 
@@ -69,7 +72,8 @@ public class AttendeeRecyclerViewAdapter extends RecyclerView.Adapter<AttendeeRe
     @Override
     public void onBindViewHolder(@NonNull AttendeeViewHolder holder, int position) {
         User user = users.get(position);
-        holder.bind(user);
+        int checkInCount = userCheckIns.get(position);
+        holder.bind(user, checkInCount);
     }
 
     /**
@@ -87,6 +91,7 @@ public class AttendeeRecyclerViewAdapter extends RecyclerView.Adapter<AttendeeRe
     public class AttendeeViewHolder extends RecyclerView.ViewHolder {
         private TextView name;
         private TextView ID;
+        private TextView checkIn;
 
         /**
          *
@@ -96,6 +101,7 @@ public class AttendeeRecyclerViewAdapter extends RecyclerView.Adapter<AttendeeRe
             super(itemView);
             name = itemView.findViewById(R.id.attendee_view_card_name_tv);
             ID = itemView.findViewById(R.id.attendee_view_card_id_tv);
+            checkIn = itemView.findViewById(R.id.attendee_view_card_check_ins_tv);
 
             itemView.setOnClickListener(view -> {
                 if(listener != null) {
@@ -115,10 +121,11 @@ public class AttendeeRecyclerViewAdapter extends RecyclerView.Adapter<AttendeeRe
          *
          * @param user
          */
-        public void bind(User user) {
+        public void bind(User user, int checkInCount) {
             String combinedName = user.getFirstName() + " " + user.getLastName();
             name.setText(combinedName);
             ID.setText(user.getID());
+            checkIn.setText("Check Ins: " + checkInCount);
         }
     }
 }

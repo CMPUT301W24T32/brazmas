@@ -6,10 +6,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
-import com.CMPUT301W24T32.brazmascheckin.helper.AttendeeRecyclerViewAdapter;
+import com.CMPUT301W24T32.brazmascheckin.helper.AttendeeSignedUpRecyclerViewAdapter;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
@@ -17,21 +16,15 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
- * Activity to display checked-in attendees
+ * Activity to display signed-up attendees
  */
-public class CheckedInAttendees extends AppCompatActivity implements
-        AttendeeRecyclerViewAdapter.OnItemClickListener {
-    private RecyclerView recyclerView;
-    private Button share;
-    private Button map;
-    private Button notify;
-    private ArrayList<User> userDataList;
-    private ArrayList<Integer> userCheckIns;
+public class SignedUpAttendees extends AppCompatActivity {
 
-    private AttendeeRecyclerViewAdapter attendeeRecyclerViewAdapter;
+    private RecyclerView recyclerView;
+    private ArrayList<User> userDataList;
+    private AttendeeSignedUpRecyclerViewAdapter attendeeSignedUpRecyclerViewAdapter;
 
     /**
      * Called when the activity is created
@@ -40,7 +33,7 @@ public class CheckedInAttendees extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_checked_in_attendees);
+        setContentView(R.layout.activity_signed_up_attendees);
 
         Intent intent = getIntent();
         Event e = (Event) intent.getSerializableExtra("EVENT");
@@ -53,21 +46,17 @@ public class CheckedInAttendees extends AppCompatActivity implements
      */
     private void configureViews() {
         userDataList = new ArrayList<>();
-        userCheckIns = new ArrayList<>();
-        recyclerView = findViewById(R.id.checked_in_attendees_attendees_rv);
-        share = findViewById(R.id.checked_in_attendees_share_btn);
-        map = findViewById(R.id.checked_in_attendees_map_btn);
-        notify = findViewById(R.id.checked_in_attendees_notification_btn);
-        attendeeRecyclerViewAdapter = new AttendeeRecyclerViewAdapter(this, userDataList,
-                userCheckIns,
-                this);
-        recyclerView.setAdapter(attendeeRecyclerViewAdapter);
+        recyclerView = findViewById(R.id.signed_up_attendees_attendees_rv);
+        attendeeSignedUpRecyclerViewAdapter = new AttendeeSignedUpRecyclerViewAdapter(
+                this, userDataList
+        );
+        recyclerView.setAdapter(attendeeSignedUpRecyclerViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     /**
-     * This method configures the controllers of the activity base don an event
-     * @param e
+     * This method configures the controllers of the activity based on an event
+     * @param e an event
      */
     private void configureControllers(Event e) {
         CollectionReference eventsRef = FirestoreDB.getEventsRef();
@@ -76,45 +65,21 @@ public class CheckedInAttendees extends AppCompatActivity implements
         CollectionReference attendeesRef = FirestoreDB.getUsersRef();
         eventDoc.addSnapshotListener((value, error) -> {
             userDataList.clear();
-            userCheckIns.clear();
             Event dbEvent = value.toObject(Event.class);
-            ArrayList<String> attendeeIDs = dbEvent.helperKeys();
-            HashMap<String, Integer> checkIns = dbEvent.getCheckIns();
+            ArrayList<String> attendeeIDs = dbEvent.getSignUps();
 
-            for(String id : attendeeIDs) {
+            for(String id: attendeeIDs) {
                 attendeesRef.document(id).get()
                         .addOnSuccessListener(documentSnapshot -> {
                             if(documentSnapshot != null) {
                                 User user = documentSnapshot.toObject(User.class);
                                 if(user != null) {
                                     userDataList.add(user);
-                                    userCheckIns.add(checkIns.get(id));
-                                    attendeeRecyclerViewAdapter.notifyDataSetChanged();
+                                    attendeeSignedUpRecyclerViewAdapter.notifyDataSetChanged();
                                 }
                             }
-                        }).addOnFailureListener(e1 -> {
-
                         });
             }
         });
-    }
-
-
-    /**
-     * A listener for the click action on an item of the recycler view
-     * @param position position of the clicked item
-     */
-    @Override
-    public void onItemClick(int position) {
-
-    }
-
-    /**
-     * A listener for the long click action of an item of the recycler view
-     * @param position position of the clicked item
-     */
-    @Override
-    public void onItemLongClick(int position) {
-
     }
 }
