@@ -1,11 +1,15 @@
 package com.CMPUT301W24T32.brazmascheckin.views;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -16,6 +20,7 @@ import com.CMPUT301W24T32.brazmascheckin.helper.EventRecyclerViewAdapter;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.views.AttendeeViewEventFragment;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -43,6 +48,37 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
 
         configureViews();
         configureControllers();
+
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setSelectedItemId(R.id.bottom_event);
+        bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                if (id == (R.id.bottom_announcement)){
+                    startActivity(new Intent(getApplicationContext(), AnnouncementActivity.class));
+                    overridePendingTransition(0,0);
+                    return true;
+                }
+                if (id == (R.id.bottom_camera)){
+                    startActivity(new Intent(getApplicationContext(), CameraActivity.class));
+                    overridePendingTransition(0,0);
+                    return true;
+                }
+                if (id == (R.id.bottom_profile)){
+                    startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                    overridePendingTransition(0,0);
+                    return true;
+                }
+                if (id == (R.id.bottom_event)){
+                    return true;
+                }
+                return false;
+
+            }
+        });
+
 
     }
 
@@ -146,4 +182,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
                     Toast.makeText(this, "Failed to add event to database", Toast.LENGTH_LONG).show();
                 });
     }
+
+
+
 }
