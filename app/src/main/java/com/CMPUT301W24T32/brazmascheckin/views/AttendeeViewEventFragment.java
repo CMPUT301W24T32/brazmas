@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
@@ -111,7 +112,7 @@ public class AttendeeViewEventFragment extends DialogFragment {
         signedUpAttendeesBtn = view.findViewById(R.id.view_event_see_signed_up_attendees_btn);
 
         signedUpCB = view.findViewById(R.id.signed_up_CB);
-        String deviceID = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        String deviceID = DeviceID.getDeviceID(getContext());
         ArrayList<String> signUps = e.getSignUps();
         if (signUps.contains(deviceID)){
             signedUpCB.setChecked(true);
