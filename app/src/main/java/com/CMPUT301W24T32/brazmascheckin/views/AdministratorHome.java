@@ -90,4 +90,6 @@ public class AdministratorHome extends AppCompatActivity {
             fragment.show(getSupportFragmentManager(), "Display Event");
         });
     }
+
+    //TODO: implement a long click action for event clicked then delete?
 }

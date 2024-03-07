@@ -39,10 +39,10 @@ import java.util.ArrayList;
 public class AdministratorViewEventFragment extends DialogFragment {
     private TextView eventName;
     private TextView  eventDescription;
-
     private TextView eventDate;
-    private ImageView eventPoster;
     private TextView eventCheckIns;
+
+    private ImageView eventPoster;
 
     // don't display them? but make sure they are removed when event is deleted
     private TextView eventAnnouncements;
@@ -54,10 +54,9 @@ public class AdministratorViewEventFragment extends DialogFragment {
     private Button deleteEventBtn;
 
     /**
-     * This function allows for the acceptance of bundle to access event data
-     *
-     * @param e event
-     * @return fragment
+     * This method allows for the acceptance of bundle to access event data
+     * @param e event that has been selected by admin
+     * @return fragment, will contain event data
      */
     public static AdministratorViewEventFragment sendEvent(Event e) {
         Bundle args = new Bundle();
@@ -68,10 +67,9 @@ public class AdministratorViewEventFragment extends DialogFragment {
     }
 
     /**
-     * This method creates the dialog box and sets all the texts
+     * This method creates the dialog box and sets all the text.
      * @param savedInstanceState The last saved instance state of the Fragment,
-     * or null if this is a freshly created Fragment.
-     *
+     * if it exists.
      * @return the builder
      */
     @NonNull
@@ -91,16 +89,14 @@ public class AdministratorViewEventFragment extends DialogFragment {
         return builder
                 .setNegativeButton("Back",null)
                 .setView(view).create();
-
     }
 
-
-
     /**
-     * This method configures the views required by the fragment
+     * This method configures the views required by the fragment.
      * @param view view of the fragment
      * @param e event to be displayed
      */
+    //TODO: decide what is actually shown to admin from the event details
     private void configureViews(View view, Event e) {
         eventName = view.findViewById(R.id.view_event_name_tv_admin);
         eventDescription = view.findViewById(R.id.view_event_description_tv_admin);
@@ -126,22 +122,23 @@ public class AdministratorViewEventFragment extends DialogFragment {
         }*/
         //QRCode = view.findViewById(R.id.view_event_QR_iv);
         //displayQRCode(e.getQRCode(), e.getID());
-        displayImage(e.getPoster());
 
+        displayImage(e.getPoster());
     }
 
     /**
      * This method configures the controllers required by the fragment.
-     * @param e the event
+     * @param e the event selected by the admin
      */
+    //TODO: decide what is the actually shown to the admin from the event details
     private void configureControllers(Event e) {
 
         String deviceID = Settings.Secure.getString(getContext().getContentResolver(),
                 Settings.Secure.ANDROID_ID);
 
         CollectionReference eventsRef = FirestoreDB.getEventsRef();
-        //CollectionReference usersRef = FirestoreDB.getUsersRef();
         DocumentReference eventDoc = eventsRef.document(e.getID());
+        //CollectionReference usersRef = FirestoreDB.getUsersRef();
         //DocumentReference userDoc = usersRef.document(deviceID);
 
 
@@ -159,15 +156,14 @@ public class AdministratorViewEventFragment extends DialogFragment {
             }
         });
 
-        // clicked on delete button on event view
+        // wants to delete the event
         deleteEventBtn.setOnClickListener(v -> {
             deleteEvent(e.getID(), e.getPoster(), e.getQRCode());
         });
-
     }
 
     /**
-     * This method retrieves the poster image from the database and displays it in the view
+     * This method retrieves the poster image from the database and displays it in the view.
      * @param posterID the ID of the image in the database
      */
     private void displayImage(String posterID) {
@@ -193,6 +189,7 @@ public class AdministratorViewEventFragment extends DialogFragment {
      * This method retrieves the QR code from the database and displays it in the view
      * DO WE NEED THIS FOR THE ADMIN?
      */
+    //TODO: do we need this for the admin?
     private void displayQRCode(String code, String ID) {
         if(code != null) {
             StorageReference storage = FirestoreDB.getStorageReference("QRCodes");
@@ -209,7 +206,12 @@ public class AdministratorViewEventFragment extends DialogFragment {
         }
     }
 
-    // TODO: need to have delete event button and delete poster button
+    /**
+     * This method deletes the event.
+     * @param eventID the ID of the event in the database.
+     * @param posterID the ID of the poster in the database.
+     * @param QRCode the ID of the QR Code.
+     */
     private void deleteEvent(String eventID, String posterID, String QRCode) {
         // delete the event document from the events collection
         FirestoreDB.deleteEvent(eventID, posterID, QRCode);
@@ -224,6 +226,10 @@ public class AdministratorViewEventFragment extends DialogFragment {
 
     }
 
+    /**
+     * This method deletes the image (poster or QR code) form the database.
+     * @param imageID the ID of the image in the database.
+     */
     private void deleteImageFromStorage(String imageID) {
         if (imageID != null) {
             StorageReference storage = FirestoreDB.getStorageReference("uploads");
@@ -232,10 +238,12 @@ public class AdministratorViewEventFragment extends DialogFragment {
             imageRef.delete()
                     .addOnSuccessListener(taskSnapshot -> {
                         // successful
+                        //TODO: have a toast
                     })
                     .addOnFailureListener(e -> {
                         // handle errors
                         Log.e("DeleteImage", "Error deleting image: " + e.getMessage());
+                        //TODO: have a toast
                     });
         }
     }
