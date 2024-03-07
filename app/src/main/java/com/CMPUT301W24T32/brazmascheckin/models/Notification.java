@@ -16,7 +16,10 @@ public class Notification {
      *
      *
      */
-    public Notification() {
+    public Notification(String name, String description, Date date) {
+        this.name = name;
+        this.description = description;
+        this.date = date;
     }
 
 
