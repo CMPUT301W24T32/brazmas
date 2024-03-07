@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.provider.Settings;
 import android.widget.TextView;
@@ -12,8 +11,8 @@ import android.widget.Toast;
 
 
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
-import com.CMPUT301W24T32.brazmascheckin.models.Organizer;
 
+import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.CMPUT301W24T32.brazmascheckin.views.AdministratorHome;
 import com.CMPUT301W24T32.brazmascheckin.views.AttendeeOrganizerHome;
 import com.google.firebase.firestore.CollectionReference;
@@ -90,12 +89,12 @@ public class MainActivity extends AppCompatActivity {
             String lastName = lastNameEditText.getText().toString();
             //TODO: check if attributes can be empty/null
 
-            Organizer organizer = new Organizer();
-            organizer.setFirstName(firstName);
-            organizer.setLastName(lastName);
-            organizer.setID(deviceID);
+            User user = new User();
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            user.setID(deviceID);
 
-            usersRef.document(deviceID).set(organizer)
+            usersRef.document(deviceID).set(user)
                     .addOnSuccessListener(documentReference -> {
                         startActivity(intent);
                         finish();

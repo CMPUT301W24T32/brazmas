@@ -1,9 +1,11 @@
 package com.CMPUT301W24T32.brazmascheckin.helper;
 
+import java.io.Serializable;
+
 /**
  * This class ia a representation of the date in a usable format to be displayed
  */
-public class Date {
+public class Date implements Serializable {
 
     //TODO: may need to change to support multiple languages
     //TODO: need to add time

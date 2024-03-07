@@ -3,7 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/view_event_container_cl"
     android:layout_height="match_parent">
+
+<!--    <FrameLayout-->
+<!--        android:id="@+id/view_event_container_cl"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        >-->
+<!--        -->
+<!--    </FrameLayout>-->
 
     <ScrollView
         android:layout_width="match_parent"
@@ -141,6 +153,15 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/view_event_date_title_tv" />
 
+            <Button
+                android:id="@+id/view_event_see_attendees_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view_event_announcement_tv1"
+                android:text="See users"
+                />
 
 
 
