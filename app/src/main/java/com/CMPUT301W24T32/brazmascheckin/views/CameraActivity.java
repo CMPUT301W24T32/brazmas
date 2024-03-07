@@ -29,6 +29,8 @@ import com.journeyapps.barcodescanner.ScanOptions;
  */
 public class CameraActivity extends AppCompatActivity {
 
+    Event currentEvent;
+
     Button btn_scan;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +76,10 @@ public class CameraActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * This methods scans QR code
+     */
+
     public void scanCode() {
         ScanOptions options = new ScanOptions();
         options.setPrompt("volume up to flash on");
@@ -83,6 +89,7 @@ public class CameraActivity extends AppCompatActivity {
         barLauncher.launch(options);
     }
 
+    //TODO: need to refactor using QR code class
     ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
         AlertDialog.Builder builder = new AlertDialog.Builder(CameraActivity.this);
 
@@ -92,20 +99,22 @@ public class CameraActivity extends AppCompatActivity {
         eventDoc.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Event e = documentSnapshot.toObject(Event.class);
+                currentEvent = documentSnapshot.toObject(Event.class);
                 String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-                e.checkIn(deviceID);
-                eventDoc.set(e);
+                currentEvent.checkIn(deviceID);
+                eventDoc.set(currentEvent);
+                builder.setTitle("Successfully checked in!");
+                builder.setMessage(currentEvent.getName());
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
             }
         });
-        builder.setTitle("Successfully checked in!");
-        builder.setMessage(result.getContents());
-        builder.setMessage(result.getContents());
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        }).show();
+
     });
+
+
 }
