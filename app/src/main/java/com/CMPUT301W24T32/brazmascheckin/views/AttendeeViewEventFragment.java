@@ -182,18 +182,18 @@ public class AttendeeViewEventFragment extends DialogFragment {
                 });
 
                 userDoc.get().addOnCompleteListener(task -> {
-                   if(task.isSuccessful()) {
-                       DocumentSnapshot document = task.getResult();
-                       User user = document.toObject(User.class);
+                    if(task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        User user = document.toObject(User.class);
 
 //                       ArrayList<String> signUps = user.getSignedUpEvents();
 //                       signUps.add(e.getID());
-                       user.signUpEvent(e.getID());
-                       userDoc.set(user);
-                   } else {
-                       Toast.makeText(getContext(), "Unable to update user",
-                               Toast.LENGTH_SHORT).show();
-                   }
+                        user.signUpEvent(e.getID());
+                        userDoc.set(user);
+                    } else {
+                        Toast.makeText(getContext(), "Unable to update user",
+                                Toast.LENGTH_SHORT).show();
+                    }
                 });
 
 

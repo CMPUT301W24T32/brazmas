@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:id="@+id/view_event_container_cl"
+    android:id="@+id/view_event_container_cl_admin"
     android:layout_height="match_parent">
 
     <!--    <FrameLayout-->
@@ -21,15 +21,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="1dp">
+        tools:layout_editor_absoluteY="-156dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/view_event_date_title_tv"
+                android:id="@+id/view_event_date_title_tv_admin"
                 android:layout_width="113dp"
                 android:layout_height="36dp"
                 android:gravity="center"
@@ -37,10 +37,10 @@
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/view_event_poster_iv" />
+                app:layout_constraintTop_toBottomOf="@+id/view_event_poster_iv_admin" />
 
             <TextView
-                android:id="@+id/view_event_announcement_tv1"
+                android:id="@+id/view_event_announcement_tv1_admin"
                 android:layout_width="264dp"
                 android:layout_height="48dp"
                 android:layout_marginTop="16dp"
@@ -48,10 +48,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.503"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/view_event_announcementtv2" />
+                app:layout_constraintTop_toBottomOf="@+id/view_event_announcementtv2_admin" />
 
             <TextView
-                android:id="@+id/view_event_announcement_title_tv"
+                android:id="@+id/view_event_announcement_title_tv_admin"
                 android:layout_width="136dp"
                 android:layout_height="45dp"
                 android:gravity="center"
@@ -60,10 +60,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/view_event_description_tv" />
+                app:layout_constraintTop_toBottomOf="@+id/view_event_description_tv_admin" />
 
             <TextView
-                android:id="@+id/view_event_description_title_tv"
+                android:id="@+id/view_event_description_title_tv_admin"
                 android:layout_width="140dp"
                 android:layout_height="40dp"
                 android:gravity="center"
@@ -71,19 +71,18 @@
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/view_event_date_tv" />
+                app:layout_constraintTop_toBottomOf="@+id/view_event_date_tv_admin" />
 
             <TextView
+                android:id="@+id/view_event_checkins_tv_admin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/view_event_checkins_tv"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/view_event_name_tv"
-                />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view_event_name_tv_admin" />
 
             <TextView
-                android:id="@+id/view_event_name_tv"
+                android:id="@+id/view_event_name_tv_admin"
                 android:layout_width="123dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="156dp"
@@ -97,30 +96,30 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/view_event_poster_text_tv"
+                android:id="@+id/view_event_poster_text_tv_admin"
                 android:layout_width="103dp"
                 android:layout_height="38dp"
                 android:layout_marginTop="32dp"
+                android:gravity="center"
                 android:text="Event Poster"
                 android:textSize="18sp"
-                android:gravity="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/view_event_name_tv" />
+                app:layout_constraintTop_toBottomOf="@+id/view_event_name_tv_admin" />
 
             <ImageView
-                android:id="@+id/view_event_poster_iv"
+                android:id="@+id/view_event_poster_iv_admin"
                 android:layout_width="279dp"
                 android:layout_height="186dp"
                 android:layout_marginTop="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.492"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/view_event_poster_text_tv"
+                app:layout_constraintTop_toBottomOf="@+id/view_event_poster_text_tv_admin"
                 tools:srcCompat="@tools:sample/avatars" />
 
             <TextView
-                android:id="@+id/view_event_description_tv"
+                android:id="@+id/view_event_description_tv_admin"
                 android:layout_width="282dp"
                 android:layout_height="110dp"
                 android:layout_marginTop="12dp"
@@ -128,10 +127,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.492"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/view_event_description_title_tv" />
+                app:layout_constraintTop_toBottomOf="@+id/view_event_description_title_tv_admin" />
 
             <TextView
-                android:id="@+id/view_event_announcementtv2"
+                android:id="@+id/view_event_announcementtv2_admin"
                 android:layout_width="264dp"
                 android:layout_height="48dp"
                 android:layout_marginTop="12dp"
@@ -139,10 +138,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.503"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/view_event_announcement_title_tv" />
+                app:layout_constraintTop_toBottomOf="@+id/view_event_announcement_title_tv_admin" />
 
             <TextView
-                android:id="@+id/view_event_date_tv"
+                android:id="@+id/view_event_date_tv_admin"
                 android:layout_width="177dp"
                 android:layout_height="35dp"
                 android:layout_marginTop="6dp"
@@ -151,44 +150,28 @@
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/view_event_date_title_tv" />
+                app:layout_constraintTop_toBottomOf="@+id/view_event_date_title_tv_admin" />
 
             <Button
-                android:id="@+id/view_event_see_checked_in_attendees_btn"
+                android:id="@+id/view_event_see_attendees_btn_admin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
+                android:text="See users"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/view_event_announcement_tv1"
-                android:text="See checked in users"
-                />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view_event_announcement_tv1_admin" />
 
             <Button
-                android:id="@+id/view_event_see_signed_up_attendees_btn"
+                android:id="@+id/view_event_delete_btn_admin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="See signed up users"
-                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="144dp"
+                android:gravity="center"
+                android:text="Delete Event"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/view_event_see_checked_in_attendees_btn"
-                />
-
-            <CheckBox
-                android:id="@+id/signed_up_CB"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Attend?"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/view_event_see_attendees_btn_admin" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/view_event_QR_iv"
-                app:layout_constraintTop_toBottomOf="@id/view_event_see_signed_up_attendees_btn"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

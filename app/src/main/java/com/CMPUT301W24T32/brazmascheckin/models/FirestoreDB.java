@@ -16,6 +16,7 @@ import com.google.firebase.storage.StorageReference;
  * through static methods.
  */
 public class FirestoreDB {
+
     /**
      * This method provides an instance of the Firestore database.
      * @return the FirebaseFirestore database instance
@@ -54,4 +55,39 @@ public class FirestoreDB {
     public static DatabaseReference getDatabaseReference(String ref) {
         return FirebaseDatabase.getInstance().getReference(ref);
     }
+
+    public static void deleteEvent(String eventID, String posterID, String qrCodeID) {
+        // Delete the event document from the "events" collection
+        getEventsRef().document(eventID)
+                .delete()
+                .addOnSuccessListener(aVoid -> {
+                    // Event document deleted successfully
+                })
+                .addOnFailureListener(e -> {
+                    // Handle any errors that occurred while deleting the event document
+                });
+
+        // Delete the poster image from the storage
+        deleteImageFromStorage(posterID);
+
+        // Delete the QR code image from the storage
+        deleteImageFromStorage(qrCodeID);
+    }
+
+    private static void deleteImageFromStorage(String imageID) {
+        if (imageID != null) {
+            StorageReference storage = getStorageReference("uploads");
+            StorageReference imageRef = storage.child(imageID);
+
+            imageRef.delete()
+                    .addOnSuccessListener(aVoid -> {
+                        // Image deleted successfully
+                    })
+                    .addOnFailureListener(exception -> {
+                        // Handle any errors that occurred while deleting the image
+                    });
+        }
+    }
+
+
 }
