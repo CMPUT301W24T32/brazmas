@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         // control flow of different types of users
         verifyAdministratorStatus(deviceID);
         verifyUserStatus(deviceID);
+
     }
 
     /**
