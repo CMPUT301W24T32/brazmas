@@ -117,6 +117,7 @@ public class AddEventFragment extends DialogFragment {
         String[] options = {"Generate new QR code", "Use existing QR code"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, options);
         AutoCompleteTextView autoCompleteTextView = view.findViewById(R.id.autoCompleteTextView);
+        autoCompleteTextView.setText(options[0]);
         autoCompleteTextView.setAdapter(adapter);
 
         return builder.create();
@@ -128,7 +129,16 @@ public class AddEventFragment extends DialogFragment {
     private void retrieveInput() {
         String title = editName.getText().toString();
         String desc = editDesc.getText().toString();
-        int limit = Integer.parseInt(editLimit.getText().toString());
+        String limitText = editLimit.getText().toString();
+//        int limit = Integer.parseInt(editLimit.getText().toString());
+        int limit = 0;
+        if(!limitText.isEmpty() && limitText != null) {
+            limit = Integer.parseInt(limitText);
+            if(limit < 0) {
+                limit = 0;
+            }
+        }
+
         int day = datePicker.getDayOfMonth();
         int month = datePicker.getMonth() ;
         int year = datePicker.getYear();
@@ -139,7 +149,13 @@ public class AddEventFragment extends DialogFragment {
         String QRCodeID = "id";
         String shareQRCodeID = "id";
         String id = "1";
-        listener.addEvent(new Event(id, title, date, desc, checkIns, signUps, limit, posterID, QRCodeID, shareQRCodeID, ""));
+
+        if(title.isEmpty() || desc.isEmpty()) {
+            Toast.makeText(getContext(), "Enter all text fields", Toast.LENGTH_SHORT).show();
+        } else {
+            listener.addEvent(new Event(id, title, date, desc, checkIns, signUps, limit, posterID, QRCodeID, shareQRCodeID, ""));
+        }
+
     }
 
     /**
