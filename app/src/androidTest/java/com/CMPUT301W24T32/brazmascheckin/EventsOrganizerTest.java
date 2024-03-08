@@ -123,16 +123,6 @@ public class EventsOrganizerTest {
                 .perform(ViewActions.click());
         Espresso.onView(ViewMatchers.withText("Add"))
                 .perform(ViewActions.click());
-
-
-        /*try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // Check if the toast message with the expected text is displayed
-        onView(withText(expectedWarning))
-                .inRoot(withDecorView(Matchers.is(decorView)))// Here we use decorView
-                .check(matches(isDisplayed()));*/
+        
     }
 }
