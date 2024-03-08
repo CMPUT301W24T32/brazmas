@@ -1,22 +1,26 @@
 package com.CMPUT301W24T32.brazmascheckin;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
-import android.provider.Settings;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 
+import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
-import com.CMPUT301W24T32.brazmascheckin.models.Organizer;
-
+import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.CMPUT301W24T32.brazmascheckin.views.AdministratorHome;
 import com.CMPUT301W24T32.brazmascheckin.views.AttendeeOrganizerHome;
 import com.google.firebase.firestore.CollectionReference;
+
+import java.util.ArrayList;
+
+/**
+ * This class represents the main activity of the application.
+ * It handles the device verification process and redirects users based on their status.
+ */
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,11 +30,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // getting device ID and storing it in a string
-        String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        String deviceID = DeviceID.getDeviceID(this);
 
         // control flow of different types of users
         verifyAdministratorStatus(deviceID);
         verifyUserStatus(deviceID);
+
     }
 
     /**
@@ -90,12 +95,15 @@ public class MainActivity extends AppCompatActivity {
             String lastName = lastNameEditText.getText().toString();
             //TODO: check if attributes can be empty/null
 
-            Organizer organizer = new Organizer();
-            organizer.setFirstName(firstName);
-            organizer.setLastName(lastName);
-            organizer.setID(deviceID);
+            User user = new User(
+                    firstName, lastName, new ArrayList<String>(), null, null,
+                    new ArrayList<String>()
+            );
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            user.setID(deviceID);
 
-            usersRef.document(deviceID).set(organizer)
+            usersRef.document(deviceID).set(user)
                     .addOnSuccessListener(documentReference -> {
                         startActivity(intent);
                         finish();

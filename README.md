@@ -1,4 +1,4 @@
-# brazmas
+ brazmas
 
 Citation:
 
@@ -10,3 +10,8 @@ Date: 2024-02-14
 
 Use: Utilized figma template to structure mock ui design
 
+Link: https://chat.mistral.ai/
+
+Date: 2024-03-07
+
+Use: Creating unit testing

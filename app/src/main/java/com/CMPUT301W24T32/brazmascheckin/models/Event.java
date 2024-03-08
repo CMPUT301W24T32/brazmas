@@ -2,14 +2,16 @@ package com.CMPUT301W24T32.brazmascheckin.models;
 
 import com.CMPUT301W24T32.brazmascheckin.helper.Date;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
 /**
- * This class is a representation of the Event entity.
+ * The Event class represents an event entity with various attributes such as ID, name, date, description, etc.
+ * It includes methods for handling check-ins, sign-ups, and other event-related operations.
  */
-public class Event {
+public class Event implements Serializable {
     private String ID;
 
     private String name;
@@ -25,6 +27,7 @@ public class Event {
     private String poster;
     private String QRCode;
     private String shareQRCode;
+    private String organizer;
 
     //TODO: add geolocation/event map
 
@@ -40,10 +43,11 @@ public class Event {
      * @param posterID Reference to the image
      * @param QRCodeID Reference to the image
      * @param shareQRCodeID Reference to the image
+     * @param organizer Reference to the user who created the event
      */
     public Event(String ID, String name, Date date, String description, HashMap<String, Integer> checkIns,
                  ArrayList<String> signUps, int attendeeLimit, String posterID, String QRCodeID,
-                 String shareQRCodeID) {
+                 String shareQRCodeID, String organizer) {
         this.ID = ID;
         this.name = name;
         this.date = date;
@@ -54,6 +58,7 @@ public class Event {
         this.poster = posterID;
         this.QRCode = QRCodeID;
         this.shareQRCode = shareQRCodeID;
+        this.organizer = organizer;
     }
 
     /**
@@ -70,15 +75,16 @@ public class Event {
      * @param description Description of the event
      * @param checkIns Attendees who have checked in, including number of times they have checked in
      * @param signUps Attendees who have signed up
+     * @param organizer Reference to the user who created the event
      */
     public Event(String ID, String name, String description, HashMap<String, Integer> checkIns,
-                 ArrayList<String> signUps) {
+                 ArrayList<String> signUps, String organizer) {
         this.ID = ID;
         this.name = name;
         this.description = description;
         this.checkIns = checkIns;
         this.signUps = signUps;
-
+        this.organizer = organizer;
     }
 
     /**
@@ -176,9 +182,13 @@ public class Event {
      * This method provides the list of attendees checked-into the event.
      * @return list of attendees checked-into the event
      */
-    public ArrayList<String> getCheckInsKeys() {
-        Set<String> keySet = checkIns.keySet();
-        return new ArrayList<>(keySet);
+    public ArrayList<String> helperKeys() {
+        if(checkIns != null) {
+            Set<String> keySet = checkIns.keySet();
+            return new ArrayList<>(keySet);
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     /**
@@ -201,9 +211,13 @@ public class Event {
      * This method provides the number of attendees who have checked-into the event.
      * @return the number of attendees who have checked-into the event
      */
-    public int getCheckInsCount() {
-        ArrayList<String> attendees = getCheckInsKeys();
-        return attendees.size();
+    public int helperCount() {
+        if(checkIns != null) {
+            ArrayList<String> attendees = helperKeys();
+            return attendees.size();
+        } else {
+            return -1;
+        }
     }
 
     /**
@@ -306,5 +320,21 @@ public class Event {
      */
     public void setShareQRCode(String shareQRCode) {
         this.shareQRCode = shareQRCode;
+    }
+
+    /**
+     * Getter for the reference to the user who created the event
+     * @return reference to the user who created the event
+     */
+    public String getOrganizer() {
+        return organizer;
+    }
+
+    /**
+     * Setter for the reference to the user who created the event
+     * @param organizer the user who created the event
+     */
+    public void setOrganizer(String organizer) {
+        this.organizer = organizer;
     }
 }
