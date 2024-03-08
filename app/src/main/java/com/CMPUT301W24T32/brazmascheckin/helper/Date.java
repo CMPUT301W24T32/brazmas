@@ -16,6 +16,11 @@ public class Date implements Serializable {
     private int month;
     private int year;
 
+
+    /**
+     * empty constructor for Date
+     */
+    public Date() {}
     /**
      * Constructs a new instance of the Date class as required by Firebase
      */
