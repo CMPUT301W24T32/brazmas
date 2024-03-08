@@ -18,6 +18,7 @@
     <!--    </FrameLayout>-->
 
     <ScrollView
+        android:id="@+id/view_scroll_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout_editor_absoluteX="0dp"

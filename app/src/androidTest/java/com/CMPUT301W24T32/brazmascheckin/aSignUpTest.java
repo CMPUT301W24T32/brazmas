@@ -11,18 +11,21 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
+import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class SignUpTest {
+public class aSignUpTest {
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<MainActivity>(MainActivity.class);
 
     @Test
     public void testSignUp(){
+        // will only pass on first try
         Intents.init();
         onView(withId(R.id.main_firstname_textview)).perform(typeText("John"), closeSoftKeyboard());
         onView(withId(R.id.main_lastname_textview)).perform(typeText("White"), closeSoftKeyboard());
