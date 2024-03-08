@@ -28,6 +28,7 @@ import org.junit.runner.RunWith;
 public class NavBarTest {
 
 
+
         @Rule
         public ActivityScenarioRule<AttendeeOrganizerHome> mActivityScenarioRule =
                 new ActivityScenarioRule<AttendeeOrganizerHome>(AttendeeOrganizerHome.class);
@@ -36,7 +37,7 @@ public class NavBarTest {
         * Tests to see if navigation controller can switch from event(main page for users) to announcement
         */
         @Test
-        public void clickAnnouncmentNavTest() {
+        public void clickAnnouncementNavTest() {
             Intents.init();
             Espresso.onView(ViewMatchers.withId(R.id.bottom_announcement)).perform(ViewActions.click());
             intended(hasComponent(AnnouncementActivity.class.getName()));
