@@ -8,15 +8,12 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import android.view.View;
 
-import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
-
-import com.CMPUT301W24T32.brazmascheckin.views.AttendeeOrganizerHome;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -45,13 +42,21 @@ public class EventsOrganizerTest {
     @Test
     public void eventsOrganizerTest() {
         try {
-            Thread.sleep(3000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
+        Espresso.onView(ViewMatchers.withId(R.id.user_home_add_event_btn))
+                .perform(ViewActions.click());
+        Espresso.onView(ViewMatchers.withId(R.id.add_event_name_tv))
+                .perform(ViewActions.typeText("Event Name"), ViewActions.closeSoftKeyboard());
+        Espresso.onView(ViewMatchers.withId(R.id.add_event_limit_et))
+                .perform(ViewActions.typeText("1"));
+        Espresso.onView(ViewMatchers.withId(R.id.add_event_desc_et))
+                .perform(ViewActions.typeText("Event Description"), ViewActions.closeSoftKeyboard());
+        Espresso.onView(ViewMatchers.withText("Add"))
+                .perform(ViewActions.click());
     }
-
     /**
      * test to check filtering of events
      */
