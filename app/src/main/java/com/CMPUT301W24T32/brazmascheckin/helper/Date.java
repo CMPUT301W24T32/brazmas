@@ -19,7 +19,7 @@ public class Date implements Serializable {
     /**
      * Constructs a new instance of the Date class as required by Firebase
      */
-    public Date() {}
+    public Date(String date) {}
 
     /**
      * Constructs a new instance of the Date class with full information
