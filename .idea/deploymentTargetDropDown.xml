@@ -5,10 +5,10 @@
       <entry key="app">
         <State />
       </entry>
-      <entry key="attendingFilterTest()">
+      <entry key="eventsOrganizerTest()">
         <State />
       </entry>
-      <entry key="eventsOrganizerTest()">
+      <entry key="given_when_thenShouldShowToast()">
         <State />
       </entry>
     </value>
