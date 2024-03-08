@@ -2,8 +2,11 @@ package com.CMPUT301W24T32.brazmascheckin.models;
 
 import java.util.ArrayList;
 
+
 /**
- * This class is a representation of the Attendee entity.
+ * The User class is a representation of the Attendee entity.
+ * It includes information such as first name, last name, signed-up events, user ID, profile picture reference,
+ * and a list of organized events.
  */
 public class User {
     private String firstName;

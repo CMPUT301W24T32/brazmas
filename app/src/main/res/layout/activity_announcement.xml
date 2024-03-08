@@ -16,6 +16,14 @@ tools:context=".views.AnnouncementActivity">
         android:textColor="@color/black"
         android:id="@+id/announcement_title_tv"
         android:textSize="36sp" />
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Announcement"
+    android:textSize="36sp"
+    android:textColor="@color/black"
+    android:id="@+id/announcement_title_tv"
+    android:layout_centerInParent="true"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
@@ -24,7 +32,7 @@ tools:context=".views.AnnouncementActivity">
         android:layout_above="@id/announcement_bnv"
         android:id="@+id/announcement_rv"
 
-        />
+
 <com.google.android.material.bottomnavigation.BottomNavigationView
 
     android:layout_width="match_parent"

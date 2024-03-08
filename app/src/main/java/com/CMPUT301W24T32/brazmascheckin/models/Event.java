@@ -8,7 +8,8 @@ import java.util.HashMap;
 import java.util.Set;
 
 /**
- * This class is a representation of the Event entity.
+ * The Event class represents an event entity with various attributes such as ID, name, date, description, etc.
+ * It includes methods for handling check-ins, sign-ups, and other event-related operations.
  */
 public class Event implements Serializable {
     private String ID;

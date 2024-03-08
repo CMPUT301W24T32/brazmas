@@ -2,6 +2,13 @@ package com.CMPUT301W24T32.brazmascheckin.models;
 
 import java.util.Date;
 
+/**
+ * Represents an announcement related to a specific event.
+ *
+ * This class encapsulates information about an announcement, including its name,
+ * description, date, and associated event ID. It also provides methods for sending
+ * notifications related to the announcement.
+ */
 public class Announcement {
 
     private String name;
@@ -13,9 +20,11 @@ public class Announcement {
 
     }
     /**
-     * This constructor...
-     *
-     *
+     * This constructor is for creating an Announcement object.
+     * @param name The name of announcement.
+     * @param description The description of announcement.
+     * @param date The date of the announcement.
+     * @ eventID The ID of the event related to the announcement.
      */
     public Announcement(String name, String description, Date date, String eventID) {
         this.name = name;
@@ -24,39 +33,73 @@ public class Announcement {
         this.eventID = eventID;
     }
 
+    /**
+     * The default constructor.
+     */
     public Announcement() {
 
     }
 
-
+    /**
+     * To get the name of announcement.
+     * @return the name of the announcement.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * To set the name of announcement.
+     * @param name the name that will be set of announcement.
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * To get the description of announcement.
+     * @return The description of announcement.
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * To set the description of announcement.
+     * @param description what the announcement's description will be set to.
+     */
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /**
+     * To get the date of the announcement.
+     * @return The date of announcement.
+     */
     public Date getDate() {
         return date;
     }
 
+    /**
+     * To set the date of announcement.
+     * @param date the date which announcement will be set to.
+     */
     public void setDate(Date date) {
         this.date = date;
     }
 
+    /**
+     * To get the event ID of announcement.
+     * @return The event ID of announcement.
+     */
     public String getEventID() {
         return eventID;
     }
 
+    /**
+     * To set the event ID of announcement.
+     * @param eventID The event ID that will be set for announcement.
+     */
     public void setEventID(String eventID) {
         this.eventID = eventID;
     }

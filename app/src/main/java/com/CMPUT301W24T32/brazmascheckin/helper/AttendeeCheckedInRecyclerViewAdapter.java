@@ -15,7 +15,7 @@ import com.CMPUT301W24T32.brazmascheckin.models.User;
 import java.util.ArrayList;
 
 /**
- *
+ * Adapter for the checked in attendees recycler view.
  */
 public class AttendeeCheckedInRecyclerViewAdapter extends RecyclerView.Adapter<AttendeeCheckedInRecyclerViewAdapter.AttendeeViewHolder> {
 
@@ -26,7 +26,7 @@ public class AttendeeCheckedInRecyclerViewAdapter extends RecyclerView.Adapter<A
 
 
     /**
-     *
+     * This method is an interface for an item click listener.
      */
     public interface OnItemClickListener {
         void onItemClick(int position);
@@ -34,10 +34,10 @@ public class AttendeeCheckedInRecyclerViewAdapter extends RecyclerView.Adapter<A
     }
 
     /**
-     *
-     * @param context
-     * @param users
-     * @param listener
+     * Constructs a new AttendeeCheckedInRecyclerViewAdapter
+     * @param context the context in which the adapter is being used
+     * @param users the list of checked-in attendees
+     * @param listener the on item clicked listener
      */
     public AttendeeCheckedInRecyclerViewAdapter(Context context, ArrayList<User> users,
                                                 ArrayList<Integer> userCheckIns,
@@ -49,12 +49,12 @@ public class AttendeeCheckedInRecyclerViewAdapter extends RecyclerView.Adapter<A
     }
 
     /**
-     *
+     * This method is called when a recycler view requires a view holder to
+     * represent the data (the checked-in attendee).
      * @param parent The ViewGroup into which the new View will be added after it is bound to
-     *               an adapter position.
+     * an adapter position.
      * @param viewType The view type of the new View.
-     *
-     * @return
+     * @return The checked in attendee view holder.
      */
     @NonNull
     @Override
@@ -64,9 +64,9 @@ public class AttendeeCheckedInRecyclerViewAdapter extends RecyclerView.Adapter<A
     }
 
     /**
-     *
+     * This method is called to display an item at a specific position in the recycler view.
      * @param holder The ViewHolder which should be updated to represent the contents of the
-     *        item at the given position in the data set.
+     * item at the given position in the data set.
      * @param position The position of the item within the adapter's data set.
      */
     @Override
@@ -77,8 +77,8 @@ public class AttendeeCheckedInRecyclerViewAdapter extends RecyclerView.Adapter<A
     }
 
     /**
-     *
-     * @return
+     * Getter for the number of items being represented in the recycler view
+     * @return the number of items.
      */
     @Override
     public int getItemCount() {
@@ -86,7 +86,7 @@ public class AttendeeCheckedInRecyclerViewAdapter extends RecyclerView.Adapter<A
     }
 
     /**
-     *
+     * This ViewHolder class displays the individual attendees checked in items in the RecyclerView.
      */
     public class AttendeeViewHolder extends RecyclerView.ViewHolder {
         private TextView name;
@@ -94,8 +94,8 @@ public class AttendeeCheckedInRecyclerViewAdapter extends RecyclerView.Adapter<A
         private TextView checkIn;
 
         /**
-         *
-         * @param itemView
+         * This method is a constructor.
+         * @param itemView Represents the individual item in the RecyclerView
          */
         public AttendeeViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -118,8 +118,9 @@ public class AttendeeCheckedInRecyclerViewAdapter extends RecyclerView.Adapter<A
         }
 
         /**
-         *
-         * @param user
+         * This method binds data from provided User to views within AttendeeViewHolder.
+         * @param user The User object contains data to be displayed.
+         * @param checkInCount The count of check-ins associated with user.
          */
         public void bind(User user, int checkInCount) {
             String combinedName = user.getFirstName() + " " + user.getLastName();

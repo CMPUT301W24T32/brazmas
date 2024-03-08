@@ -7,15 +7,12 @@ import android.view.MenuItem;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /**
- * Profile activity-> made for testing navigation
+ * Profile activity made for testing navigation
  */
 
 public class ProfileActivity extends AppCompatActivity {
