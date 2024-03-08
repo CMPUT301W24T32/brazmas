@@ -4,7 +4,6 @@ import java.util.Date;
 
 /**
  * Represents an announcement related to a specific event.
- *
  * This class encapsulates information about an announcement, including its name,
  * description, date, and associated event ID. It also provides methods for sending
  * notifications related to the announcement.
