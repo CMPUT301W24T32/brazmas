@@ -203,8 +203,8 @@ public class AddEventFragment extends DialogFragment {
                         Log.d("URI", e.toString());
                     });
         } else {
-            Toast.makeText(requireContext(), "Unable to" +
-                    " upload event poster", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(requireContext(), "Unable to" +
+//                    " upload event poster", Toast.LENGTH_SHORT).show();
             fileID = null;
         }
         return fileID;

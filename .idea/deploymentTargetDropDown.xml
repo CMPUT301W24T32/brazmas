@@ -5,6 +5,12 @@
       <entry key="app">
         <State />
       </entry>
+      <entry key="eventsOrganizerTest()">
+        <State />
+      </entry>
+      <entry key="given_when_thenShouldShowToast()">
+        <State />
+      </entry>
     </value>
   </component>
 </project>
