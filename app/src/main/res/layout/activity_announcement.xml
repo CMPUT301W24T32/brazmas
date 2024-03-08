@@ -7,6 +7,15 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 tools:context=".views.AnnouncementActivity">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="Announcement"
+        android:textColor="@color/black"
+        android:id="@+id/announcement_title_tv"
+        android:textSize="36sp" />
 <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -19,10 +28,11 @@ tools:context=".views.AnnouncementActivity">
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/announcement_rv"
-        android:layout_above="@id/bottomNavigationView"
         android:layout_below="@id/announcement_title_tv"
-        />
+        android:layout_above="@id/announcement_bnv"
+        android:id="@+id/announcement_rv"
+
+
 <com.google.android.material.bottomnavigation.BottomNavigationView
 
     android:layout_width="match_parent"
