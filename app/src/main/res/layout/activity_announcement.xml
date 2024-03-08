@@ -14,7 +14,7 @@ tools:context=".views.AnnouncementActivity">
         android:layout_centerHorizontal="true"
         android:text="Announcement"
         android:textColor="@color/black"
-        android:id="@+id/announcement_title_tv"
+        android:id="@+id/announcement_title_tv1"
         android:textSize="36sp" />
 <TextView
     android:layout_width="wrap_content"
@@ -30,7 +30,7 @@ tools:context=".views.AnnouncementActivity">
         android:layout_height="wrap_content"
         android:layout_below="@id/announcement_title_tv"
         android:layout_above="@id/announcement_bnv"
-        android:id="@+id/announcement_rv"
+        android:id="@+id/announcement_rv"></androidx.recyclerview.widget.RecyclerView>
 
 
 <com.google.android.material.bottomnavigation.BottomNavigationView
