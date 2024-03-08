@@ -33,7 +33,7 @@ public class AdminDeleteEventTest {
             e.printStackTrace();
         }
 
-        onView(withText("Admin")).perform(ViewActions.click());
+        onView(withText("Mehar cool events")).perform(ViewActions.click());
         onView(withId(R.id.view_event_delete_btn_admin))
                 .perform(ViewActions.click());
 
