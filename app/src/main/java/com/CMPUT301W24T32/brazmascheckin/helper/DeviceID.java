@@ -6,6 +6,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.provider.Settings;
 
+/**
+ * This class represents the device ID entity.
+ */
 public class DeviceID {
 
     /**
