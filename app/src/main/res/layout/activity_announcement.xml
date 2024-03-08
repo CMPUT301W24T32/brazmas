@@ -7,18 +7,29 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 tools:context=".views.AnnouncementActivity">
 
-<TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Announcement"
-    android:textSize="36sp"
-    android:textColor="@color/black"
-    android:layout_centerInParent="true"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="Announcement"
+        android:textColor="@color/black"
+        android:id="@+id/announcement_title_tv"
+        android:textSize="36sp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/announcement_title_tv"
+        android:layout_above="@id/announcement_bnv"
+        android:id="@+id/announcement_rv"
+
+        />
 <com.google.android.material.bottomnavigation.BottomNavigationView
 
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/bottomNavigationView"
+    android:id="@+id/announcement_bnv"
     android:layout_alignParentBottom="true"
     android:background="@drawable/bottom_background"
     android:layout_marginEnd="20dp"
