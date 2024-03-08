@@ -13,12 +13,21 @@ tools:context=".views.AnnouncementActivity">
     android:text="Announcement"
     android:textSize="36sp"
     android:textColor="@color/black"
+    android:id="@+id/announcement_title_tv"
     android:layout_centerInParent="true"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/announcement_rv"
+        android:layout_above="@id/bottomNavigationView"
+        android:layout_below="@id/announcement_title_tv"
+        />
 <com.google.android.material.bottomnavigation.BottomNavigationView
 
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/bottomNavigationView"
+    android:id="@+id/announcement_bnv"
     android:layout_alignParentBottom="true"
     android:background="@drawable/bottom_background"
     android:layout_marginEnd="20dp"
