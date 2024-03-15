@@ -42,7 +42,7 @@ public class FirestoreDB {
     }
 
     public static CollectionReference getAdminsRef() {
-        return getDatabaseInstance().collection("admins");
+        return getDatabaseInstance().collection("admin");
     }
 
     public static FirebaseStorage getStorageInstance() {
