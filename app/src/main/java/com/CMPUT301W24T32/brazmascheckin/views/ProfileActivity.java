@@ -1,9 +1,11 @@
 package com.CMPUT301W24T32.brazmascheckin.views;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +34,9 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView userName;
     private CollectionReference usersRef;
     private DocumentReference userDoc;
+    private Uri imageUri;
+    private Button changeProfileBtn;
+    private final int IMG_REQ = 200;
     /**
      *This method initializes the Profile activity.
      * @param savedInstanceState If the activity is being re-initialized after
@@ -89,9 +94,11 @@ public class ProfileActivity extends AppCompatActivity {
     public void configureViews(){
         profilePicture = findViewById(R.id.profile_picture);
         userName = findViewById(R.id.name_tv);
+        changeProfileBtn = findViewById(R.id.change_profile_picture_btn);
         usersRef = FirestoreDB.getUsersRef();
         String deviceID = DeviceID.getDeviceID(this);
         userDoc = usersRef.document(deviceID);
+
     }
 
     /**
@@ -105,5 +112,15 @@ public class ProfileActivity extends AppCompatActivity {
             String fullName = firstName + " " + lastName;
             userName.setText(fullName);
         });
+        }
+
+    /**
+     * This method opens the device storage to retrieve a file.
+     */
+    private void openFileChooser(){
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, IMG_REQ);
     }
 }
