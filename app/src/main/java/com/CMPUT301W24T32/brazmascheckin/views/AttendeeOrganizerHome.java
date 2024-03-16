@@ -19,10 +19,15 @@ import android.widget.Toast;
 
 //import com.CMPUT301W24T32.brazmascheckin.AttendeeViewEventFragment;
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.controllers.EventAddListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
+import com.CMPUT301W24T32.brazmascheckin.controllers.EventSetListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
+import com.CMPUT301W24T32.brazmascheckin.controllers.ImageUploadListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserGetListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.UserSetListener;
 import com.CMPUT301W24T32.brazmascheckin.helper.Date;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.helper.EventRecyclerViewAdapter;
@@ -73,6 +78,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
 
     private EventController eventController;
     private UserController userController;
+    private ImageController imageController;
     private String deviceID;
 
 
@@ -156,6 +162,8 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
     private void configureControllers() {
         eventController = new EventController(this);
         userController = new UserController(this);
+        imageController = new ImageController(this);
+
         showAllEvents();
         // filters for all events
         allEventsButton.setOnClickListener(view -> {
@@ -277,54 +285,83 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
      */
     @Override
     public void addEvent(Event event) {
-//        String deviceID = DeviceID.getDeviceID(this);
-//        event.setOrganizer(deviceID);
-//        eventsRef.add(event)
-//                .addOnSuccessListener(documentReference -> {
-//           // set ID of the event after it has been added to database
-//           event.setID(documentReference.getId());
-//           Bitmap bitmap = QRCodeGenerator.generateQRCode(documentReference.getId());
-//
-//           // uploading the QR code and linking it to the event
-//
-//           ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//           bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-//           byte[] imageData = outputStream.toByteArray();
-//
-//           StorageReference storageRef = FirestoreDB.getStorageReference("QRCodes");
-//           StorageReference imageRef = storageRef.child(event.getID() + "-QRCODE");
-//
-//           UploadTask uploadTask = imageRef.putBytes(imageData);
-//           uploadTask.addOnSuccessListener(taskSnapshot ->
-//                   imageRef.getDownloadUrl()
-//                           .addOnSuccessListener(uri -> {
-//                               String QRCodeURI = uri.toString();
-//                               event.setQRCode(QRCodeURI);
-//                           }));
-//
-//           uploadTask.addOnFailureListener(e -> Toast.makeText(AttendeeOrganizerHome.this,
-//                   "Unable to " +
-//                   "store QR code", Toast.LENGTH_SHORT).show());
-//
-//           // update document with entire event object
-//            eventsRef.document(documentReference.getId()).set(event);
-//
-//            usersRef.document(deviceID).get()
-//                    .addOnSuccessListener(documentSnapshot -> {
-//                        User user = documentSnapshot.toObject(User.class);
-////                        ArrayList<String> organizedEvents = user.getOrganizedEvents();
-////                        organizedEvents.add(documentReference.getId());
-//                        assert user != null;
-//                        user.createEvent(documentReference.getId());
-//                        usersRef.document(deviceID).set(user);
-//                    });
-//                }).addOnFailureListener(e -> {
-//
-//        })
-//                .addOnFailureListener(e -> {
-//
-//                    // for failure
-//                    Toast.makeText(this, "Failed to add event to database", Toast.LENGTH_LONG).show();
-//                });
+        event.setOrganizer(deviceID);
+        eventController.addEvent(event, new EventAddListener() {
+            @Override
+            public void onEventAddSuccess(DocumentReference documentReference) {
+                event.setID(documentReference.getId());
+
+                // can turn into method in QR Code
+                Bitmap bitmap = QRCodeGenerator.generateQRCode(documentReference.getId());
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+                byte[] imageData = outputStream.toByteArray();
+
+                String fileID = event.getID() + "-QRCODE";
+
+                imageController.uploadQRCode(fileID, imageData, new ImageUploadListener() {
+                    @Override
+                    public void onImageUploadSuccess(UploadTask.TaskSnapshot taskSnapshot,
+                                                     StorageReference imageReference) {
+
+                        // ???? shouldn't do this
+                        imageReference.getDownloadUrl()
+                                .addOnSuccessListener(uri -> {
+                                   String QRCodeURI = uri.toString();
+                                   event.setQRCode(QRCodeURI);
+                                })
+                                .addOnFailureListener(e -> {
+                                    Toast.makeText(AttendeeOrganizerHome.this, "Unable " +
+                                            "to store QR code", Toast.LENGTH_SHORT).show();
+                                });
+                    }
+                    @Override
+                    public void onImageUploadFailure(Exception e) {
+                        Toast.makeText(AttendeeOrganizerHome.this, "Unable " +
+                                "to store QR code", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                eventController.setEvent(event, new EventSetListener() {
+                    @Override
+                    public void onEventSetSuccess() {
+
+                    }
+
+                    @Override
+                    public void onEventSetFailure(Exception e) {
+
+                    }
+                });
+
+                userController.getUser(deviceID, new UserGetListener() {
+                    @Override
+                    public void onUserGetSuccess(User user) {
+                        user.createEvent(documentReference.getId());
+                        userController.setUser(user, new UserSetListener() {
+                            @Override
+                            public void onUserSetSuccess() {
+
+                            }
+
+                            @Override
+                            public void onUserSetFailure() {
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onUserGetFailure(Exception e) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onEventAddFailure(Exception e) {
+
+            }
+        });
     }
 }
