@@ -21,41 +21,38 @@ public class EventController {
     }
 
     public void addEvent(Event event, EventAddListener listener) {
-        eventsRef.add(event)
-                .addOnSuccessListener(listener::onEventAddSuccess)
-                .addOnFailureListener(listener::onEventAddFailure);
+        if(listener != null) {
+            eventsRef.add(event)
+                    .addOnSuccessListener(listener::onEventAddSuccess)
+                    .addOnFailureListener(listener::onEventAddFailure);
+        } else {
+            eventsRef.add(event);
+        }
     }
 
-    /*
-    Significance: can still have nested
-       private void interaction() {
-        eventController.interaction(new InteractionListener() {
-            @Override
-            public void onSuccess() {
-
-            }
-
-            @Override
-            public void onError(Exception e) {
-
-            }
-        });
-    }
-     */
 
     public void setEvent(Event event, EventSetListener listener) {
         String ID = event.getID();
-        eventsRef.document(ID).set(event)
-                .addOnSuccessListener(temp -> listener.onEventSetSuccess())
-                .addOnFailureListener(listener::onEventSetFailure);
+
+        if(listener != null) {
+            eventsRef.document(ID).set(event)
+                    .addOnSuccessListener(temp -> listener.onEventSetSuccess())
+                    .addOnFailureListener(listener::onEventSetFailure);
+        } else {
+            eventsRef.document(ID).set(event);
+        }
     }
 
     public void deleteEvent(String ID, EventDeleteListener listener) {
-        eventsRef.document(ID).delete()
-                .addOnSuccessListener(unused -> {
-                    listener.onEventDeleteSuccess();;
-                })
-                .addOnFailureListener(listener::onEventDeleteFailure);
+        if(listener != null) {
+            eventsRef.document(ID).delete()
+                    .addOnSuccessListener(unused -> {
+                        listener.onEventDeleteSuccess();;
+                    })
+                    .addOnFailureListener(listener::onEventDeleteFailure);
+        } else {
+            eventsRef.document(ID).delete();
+        }
     }
 
     public ListenerRegistration addSnapshotListener(SnapshotListener listener) {

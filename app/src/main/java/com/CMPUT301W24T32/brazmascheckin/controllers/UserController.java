@@ -29,10 +29,13 @@ public class UserController {
 
     public void setUser(User user, UserSetListener listener) {
         String ID = user.getID();
-
-        usersRef.document(ID).set(user)
-                .addOnSuccessListener(temp -> listener.onUserSetSuccess())
-                .addOnFailureListener(temp -> listener.onUserSetFailure());
+        if(listener != null) {
+            usersRef.document(ID).set(user)
+                    .addOnSuccessListener(temp -> listener.onUserSetSuccess())
+                    .addOnFailureListener(temp -> listener.onUserSetFailure());
+        } else {
+            usersRef.document(ID).set(user);
+        }
     }
 
     public void getUser(String ID, UserGetListener listener) {
@@ -54,9 +57,14 @@ public class UserController {
 
     public void deleteUser(User user, UserDeleteListener listener) {
         String ID = user.getID();
-        usersRef.document(ID).delete()
-                .addOnSuccessListener(temp -> listener.onUserDeleteSuccess())
-                .addOnFailureListener(temp -> listener.onUserDeleteFailure());
+
+        if(listener != null) {
+            usersRef.document(ID).delete()
+                    .addOnSuccessListener(temp -> listener.onUserDeleteSuccess())
+                    .addOnFailureListener(temp -> listener.onUserDeleteFailure());
+        } else {
+            usersRef.document(ID).delete();
+        }
     }
 
     public ListenerRegistration addSnapshotListener(SnapshotListener listener) {

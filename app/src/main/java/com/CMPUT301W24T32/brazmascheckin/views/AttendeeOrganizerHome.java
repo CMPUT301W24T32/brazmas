@@ -17,49 +17,34 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-//import com.CMPUT301W24T32.brazmascheckin.AttendeeViewEventFragment;
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventAddListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.EventSetListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageUploadListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserGetListener;
-import com.CMPUT301W24T32.brazmascheckin.controllers.UserSetListener;
-import com.CMPUT301W24T32.brazmascheckin.helper.Date;
+
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.helper.EventRecyclerViewAdapter;
 import com.CMPUT301W24T32.brazmascheckin.helper.QRCodeGenerator;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
-import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
-import com.CMPUT301W24T32.brazmascheckin.views.AttendeeViewEventFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
+
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
+
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import com.journeyapps.barcodescanner.BarcodeEncoder;
+
 import com.google.firebase.firestore.QuerySnapshot;
 
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * This class will be the home page for attendee/organizer
@@ -304,7 +289,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
                     public void onImageUploadSuccess(UploadTask.TaskSnapshot taskSnapshot,
                                                      StorageReference imageReference) {
 
-                        // ???? shouldn't do this
+                        // ???? shouldn't do this / find a way around
                         imageReference.getDownloadUrl()
                                 .addOnSuccessListener(uri -> {
                                    String QRCodeURI = uri.toString();
@@ -322,33 +307,13 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
                     }
                 });
 
-                eventController.setEvent(event, new EventSetListener() {
-                    @Override
-                    public void onEventSetSuccess() {
-
-                    }
-
-                    @Override
-                    public void onEventSetFailure(Exception e) {
-
-                    }
-                });
+                eventController.setEvent(event, null);
 
                 userController.getUser(deviceID, new UserGetListener() {
                     @Override
                     public void onUserGetSuccess(User user) {
                         user.createEvent(documentReference.getId());
-                        userController.setUser(user, new UserSetListener() {
-                            @Override
-                            public void onUserSetSuccess() {
-
-                            }
-
-                            @Override
-                            public void onUserSetFailure() {
-
-                            }
-                        });
+                        userController.setUser(user, null);
                     }
 
                     @Override
@@ -357,7 +322,6 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
                     }
                 });
             }
-
             @Override
             public void onEventAddFailure(Exception e) {
 
