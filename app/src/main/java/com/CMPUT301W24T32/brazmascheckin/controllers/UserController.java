@@ -3,10 +3,16 @@ package com.CMPUT301W24T32.brazmascheckin.controllers;
 import android.content.Context;
 
 
+import androidx.annotation.Nullable;
+
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
 
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QuerySnapshot;
 
 /**
  * Controller to manage CRUD interactions between the View and the database.
@@ -53,5 +59,13 @@ public class UserController {
                 .addOnFailureListener(temp -> listener.onUserDeleteFailure());
     }
 
-    //TODO: create snapshotListener
+    public ListenerRegistration addSnapshotListener(SnapshotListener listener) {
+        return usersRef.addSnapshotListener((value, error) -> {
+            if(error != null) {
+                listener.onError(error);
+            }
+            listener.snapshotListenerCallback(value);
+        });
+    }
+
 }

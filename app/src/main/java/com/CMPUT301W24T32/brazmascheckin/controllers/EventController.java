@@ -9,6 +9,7 @@ import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.ListenerRegistration;
 
 public class EventController {
     private CollectionReference eventsRef;
@@ -21,16 +22,8 @@ public class EventController {
 
     public void addEvent(Event event, EventAddListener listener) {
         eventsRef.add(event)
-                .addOnSuccessListener(documentReference -> {
-
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-
-                    }
-                });
-
+                .addOnSuccessListener(listener::onEventAddSuccess)
+                .addOnFailureListener(listener::onEventAddFailure);
     }
 
     /*
@@ -57,7 +50,21 @@ public class EventController {
                 .addOnFailureListener(listener::onEventSetFailure);
     }
 
-    //TODO: create snapshot listener
+    public void deleteEvent(String ID, EventDeleteListener listener) {
+        eventsRef.document(ID).delete()
+                .addOnSuccessListener(unused -> {
+                    listener.onEventDeleteSuccess();;
+                })
+                .addOnFailureListener(listener::onEventDeleteFailure);
+    }
 
+    public ListenerRegistration addSnapshotListener(SnapshotListener listener) {
+        return eventsRef.addSnapshotListener((value, error) -> {
+            if(error != null) {
+                listener.onError(error);
+            }
+            listener.snapshotListenerCallback(value);
+        });
+    }
 
 }

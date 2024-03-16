@@ -28,7 +28,9 @@ import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.helper.Date;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 
 import java.util.ArrayList;
@@ -202,6 +204,8 @@ public class AddEventFragment extends DialogFragment {
                         Log.d("URI", "failure");
                         Log.d("URI", e.toString());
                     });
+
+
         } else {
 //            Toast.makeText(requireContext(), "Unable to" +
 //                    " upload event poster", Toast.LENGTH_SHORT).show();
