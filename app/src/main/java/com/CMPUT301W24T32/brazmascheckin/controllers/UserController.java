@@ -52,4 +52,6 @@ public class UserController {
                 .addOnSuccessListener(temp -> listener.onUserDeleteSuccess())
                 .addOnFailureListener(temp -> listener.onUserDeleteFailure());
     }
+
+    //TODO: create snapshotListener
 }
