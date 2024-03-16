@@ -8,6 +8,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
+import com.CMPUT301W24T32.brazmascheckin.controllers.UserGetListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.UserSetListener;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
@@ -22,7 +25,10 @@ import java.util.ArrayList;
  * It handles the device verification process and redirects users based on their status.
  */
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements UserGetListener, UserSetListener {
+
+    private UserController userController;
+    private String deviceID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,12 +36,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // getting device ID and storing it in a string
-        String deviceID = DeviceID.getDeviceID(this);
+        deviceID = DeviceID.getDeviceID(this);
+        userController = new UserController(this);
 
         // control flow of different types of users
         verifyAdministratorStatus(deviceID);
-        verifyUserStatus(deviceID);
 
+//        verifyUserStatus(deviceID);
+        userController.getUser(deviceID, this);
     }
 
     /**
@@ -58,34 +66,16 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    /**
-     * This method determines if the device belongs to a user, and redirects them accordingly.
-     * @param deviceID the device ID
-     */
-    private void verifyUserStatus(String deviceID) {
-        CollectionReference usersRef = FirestoreDB.getUsersRef();
-        usersRef.document(deviceID).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    Intent intent = new Intent(MainActivity.this, AttendeeOrganizerHome.class);
-                    if(documentSnapshot.exists()) {
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        createUserProfile(deviceID, usersRef, intent);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    // TODO: handle failure
-                });
+
+    @Override
+    public void onUserGetSuccess(User user) {
+        Intent intent = new Intent(MainActivity.this, AttendeeOrganizerHome.class);
+        startActivity(intent);
+        finish();
     }
 
-    /**
-     * This method attempts to create a new user profile
-     * @param deviceID the device ID
-     * @param usersRef the FirestoreDB collection for users
-     * @param intent the Intent object to go to the AttendeeOrganizer homepage
-     */
-    private void createUserProfile(String deviceID, CollectionReference usersRef, Intent intent) {
+    @Override
+    public void onUserGetFailure(Exception e) {
         TextView firstNameEditText = findViewById(R.id.main_firstname_textview);
         TextView lastNameEditText = findViewById(R.id.main_lastname_textview);
         Button submitButton = findViewById(R.id.main_submit_button);
@@ -93,25 +83,31 @@ public class MainActivity extends AppCompatActivity {
         submitButton.setOnClickListener(view -> {
             String firstName = firstNameEditText.getText().toString();
             String lastName = lastNameEditText.getText().toString();
-            //TODO: check if attributes can be empty/null
 
-            User user = new User(
-                    firstName, lastName, new ArrayList<String>(), null, null,
-                    new ArrayList<String>()
-            );
-            user.setFirstName(firstName);
-            user.setLastName(lastName);
-            user.setID(deviceID);
-
-            usersRef.document(deviceID).set(user)
-                    .addOnSuccessListener(documentReference -> {
-                        startActivity(intent);
-                        finish();
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(this, "Unable to create " +
-                                "profile", Toast.LENGTH_SHORT).show();
-                    });
+            if(firstName.isEmpty() || lastName.isEmpty()) {
+                Toast.makeText(this, "Fields cannot be empty", Toast.LENGTH_SHORT).show();
+            } else {
+                User user = new User(
+                        firstName, lastName, new ArrayList<String>(), null, null,
+                        new ArrayList<String>()
+                );
+                user.setFirstName(firstName);
+                user.setLastName(lastName);
+                user.setID(deviceID);
+                userController.setUser(user, this);
+            }
         });
+    }
+
+    @Override
+    public void onUserSetSuccess() {
+        Intent intent = new Intent(MainActivity.this, AttendeeOrganizerHome.class);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void onUserSetFailure() {
+        Toast.makeText(this, "Unable to create profile", Toast.LENGTH_SHORT).show();
     }
 }
