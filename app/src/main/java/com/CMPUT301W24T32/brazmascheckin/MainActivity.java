@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements UserGetListener, 
     public void onUserSetSuccess() {
         Intent intent = new Intent(MainActivity.this, AttendeeOrganizerHome.class);
         startActivity(intent);
+        Toast.makeText(this, "user", Toast.LENGTH_SHORT).show();
         finish();
     }
 

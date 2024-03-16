@@ -17,7 +17,7 @@ public class AdminController {
     public void getAdmin(String ID, AdminGetListener listener) {
         adminsRef.document(ID).get()
                 .addOnSuccessListener(documentSnapshot -> {
-                    if(documentSnapshot != null) {
+                    if(documentSnapshot != null && documentSnapshot.exists()) {
                         listener.onAdminGetSuccess();
                     } else {
                         listener.onAdminGetFailure(null);
