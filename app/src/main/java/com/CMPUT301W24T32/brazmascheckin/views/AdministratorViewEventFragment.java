@@ -25,6 +25,13 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.controllers.AdminController;
+import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
+import com.CMPUT301W24T32.brazmascheckin.controllers.EventDeleteListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
+import com.CMPUT301W24T32.brazmascheckin.controllers.ImageGetListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.google.firebase.firestore.CollectionReference;
@@ -51,6 +58,9 @@ public class AdministratorViewEventFragment extends DialogFragment {
     private CheckBox signedUpCB;
     private ImageView QRCode;
 
+    // controllers
+    private EventController eventController;
+    private ImageController imageController;
     private Button deleteEventBtn;
 
     /**
@@ -78,6 +88,8 @@ public class AdministratorViewEventFragment extends DialogFragment {
         getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.administrator_view_event_fragment_layout,null);
+        eventController = new EventController(getContext());
+        imageController = new ImageController(getContext());
 
         // retrieving from the bundle
         Bundle bundle = getArguments();
@@ -98,32 +110,22 @@ public class AdministratorViewEventFragment extends DialogFragment {
      */
     //TODO: decide what is actually shown to admin from the event details
     private void configureViews(View view, Event e) {
-        eventName = view.findViewById(R.id.view_event_name_tv_admin);
-        eventDescription = view.findViewById(R.id.view_event_description_tv_admin);
-        eventDate = view.findViewById(R.id.view_event_date_tv_admin);
-        eventAnnouncements = view.findViewById(R.id.view_event_announcement_tv1_admin);
-        eventCheckIns = view.findViewById(R.id.view_event_checkins_tv_admin);
-        eventName.setText(e.getName());
-        eventDate.setText(e.getDate().getPrettyDate());
-        eventDescription.setText(e.getDescription());
-        eventCheckIns.setText(String.valueOf(e.helperCount()));
-        eventPoster = view.findViewById(R.id.view_event_poster_iv_admin);
 
-        deleteEventBtn = view.findViewById(R.id.view_event_delete_btn_admin);
+        if (e != null) {
+            eventName = view.findViewById(R.id.view_event_name_tv_admin);
+            eventDescription = view.findViewById(R.id.view_event_description_tv_admin);
+            eventDate = view.findViewById(R.id.view_event_date_tv_admin);
+            eventAnnouncements = view.findViewById(R.id.view_event_announcement_tv1_admin);
+            eventCheckIns = view.findViewById(R.id.view_event_checkins_tv_admin);
+            eventName.setText(e.getName());
+            eventDate.setText(e.getDate().getPrettyDate());
+            eventDescription.setText(e.getDescription());
+            eventCheckIns.setText(String.valueOf(e.helperCount()));
+            eventPoster = view.findViewById(R.id.view_event_poster_iv_admin);
 
-        //checkedInAttendeesBtn = view.findViewById(R.id.view_event_see_checked_in_attendees_btn);
-        //signedUpAttendeesBtn = view.findViewById(R.id.view_event_see_signed_up_attendees_btn);
-
-        /*signedUpCB = view.findViewById(R.id.signed_up_CB);
-        String deviceID = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-        ArrayList<String> signUps = e.getSignUps();
-        if (signUps.contains(deviceID)){
-            signedUpCB.setChecked(true);
-        }*/
-        //QRCode = view.findViewById(R.id.view_event_QR_iv);
-        //displayQRCode(e.getQRCode(), e.getID());
-
-        displayImage(e.getPoster());
+            deleteEventBtn = view.findViewById(R.id.view_event_delete_btn_admin);
+            displayImage(e.getPoster());
+        }
     }
 
     /**
@@ -133,33 +135,27 @@ public class AdministratorViewEventFragment extends DialogFragment {
     //TODO: decide what is the actually shown to the admin from the event details
     private void configureControllers(Event e) {
 
-        String deviceID = Settings.Secure.getString(getContext().getContentResolver(),
-                Settings.Secure.ANDROID_ID);
+        if (e != null) {
+            handleCheckedInNumber();
 
-        CollectionReference eventsRef = FirestoreDB.getEventsRef();
-        DocumentReference eventDoc = eventsRef.document(e.getID());
-        //CollectionReference usersRef = FirestoreDB.getUsersRef();
-        //DocumentReference userDoc = usersRef.document(deviceID);
+            deleteEventBtn.setOnClickListener(view -> {
+                // call the deleteEvent method of EventController
+                eventController.deleteEvent(e.getID(), new EventDeleteListener() {
+                    @Override
+                    public void onEventDeleteSuccess() {
+                        // event is deleted successfully
+                        Toast.makeText(getContext(), "Event deleted successfully", Toast.LENGTH_SHORT).show();
+                        dismiss();
+                    }
 
-
-        // TODO: do we need this for the admin?
-        eventDoc.addSnapshotListener((documentSnapshot, er) -> {
-            Event dbEvent = documentSnapshot.toObject(Event.class);
-            if(dbEvent != null) {
-                int checkIns = dbEvent.helperCount();
-                if(checkIns != -1) {
-                    eventCheckIns.setText(String.valueOf(checkIns));
-                } else {
-                    Toast.makeText(requireContext(), "Error retrieving attendance information",
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        // wants to delete the event
-        deleteEventBtn.setOnClickListener(v -> {
-            deleteEvent(e.getID(), e.getPoster(), e.getQRCode());
-        });
+                    @Override
+                    public void onEventDeleteFailure(Exception e) {
+                        // failed to delete an event
+                        Toast.makeText(getContext(), "Failed to delete event", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            });
+        }
     }
 
     /**
@@ -167,84 +163,47 @@ public class AdministratorViewEventFragment extends DialogFragment {
      * @param posterID the ID of the image in the database
      */
     private void displayImage(String posterID) {
-        if(posterID != null) {
-            StorageReference storage = FirestoreDB.getStorageReference("uploads");
-            StorageReference imageRef = storage.child(posterID);
+        imageController.getEventPoster(posterID, new ImageGetListener() {
+            @Override
+            public void onImageGetSuccess(byte[] bytes) {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                eventPoster.setImageBitmap(bitmap);
+            }
 
-            // TODO: error checking to see child with value posterID exists in storage
-
-            imageRef.getBytes(Long.MAX_VALUE)
-                    .addOnSuccessListener(bytes -> {
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                        eventPoster.setImageBitmap(bitmap);
-                    })
-                    .addOnFailureListener(e -> Toast.makeText(requireContext(), "Unable " +
-                            "to load event poster.", Toast.LENGTH_SHORT).show());
-        } else {
-            Toast.makeText(requireContext(), "Unable to display event poster", Toast.LENGTH_SHORT).show();
-        }
+            @Override
+            public void onImageGetFailure(Exception e) {
+                // Toast
+            }
+        });
     }
 
     /**
-     * This method retrieves the QR code from the database and displays it in the view
-     * DO WE NEED THIS FOR THE ADMIN?
+     * This method retrieves the amount of attendees checked into the event
+     * and displays it in the view.
      */
-    //TODO: do we need this for the admin?
-    private void displayQRCode(String code, String ID) {
-        if(code != null) {
-            StorageReference storage = FirestoreDB.getStorageReference("QRCodes");
-            StorageReference imageRef = storage.child(ID + "-QRCODE");
+    private void handleCheckedInNumber() {
+        eventController.addSnapshotListener(new SnapshotListener<Event>() {
+            @Override
+            public void snapshotListenerCallback(ArrayList<Event> events) {
+                Event event = events.get(0);
+                if(event != null) {
+                    int checkIns = event.helperCount();
+                    if(checkIns != -1) {
+                        eventCheckIns.setText(String.valueOf(checkIns));
+                    } else {
+//                        Toast.makeText(, "", Toast.LENGTH_SHORT).show();
+                    }
 
-            imageRef.getBytes(Long.MAX_VALUE)
-                    .addOnSuccessListener(bytes -> {
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                        QRCode.setImageBitmap(bitmap);
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(requireContext(), "", Toast.LENGTH_SHORT).show();
-                    });
-        }
-    }
+                    ArrayList<String> signUps = event.getSignUps();
+                    int signUpsCount = signUps.size();  // do I need this?
 
-    /**
-     * This method deletes the event.
-     * @param eventID the ID of the event in the database.
-     * @param posterID the ID of the poster in the database.
-     * @param QRCode the ID of the QR Code.
-     */
-    private void deleteEvent(String eventID, String posterID, String QRCode) {
-        // delete the event document from the events collection
-        FirestoreDB.deleteEvent(eventID, posterID, QRCode);
-        // delete the poster image from storage
-        deleteImageFromStorage(posterID);
-        // delete the QR code image from the storage
-        deleteImageFromStorage(QRCode);
+                }
+            }
 
-        dismiss();  // to dismiss the current dialog
+            @Override
+            public void onError(Exception e) {
 
-
-
-    }
-
-    /**
-     * This method deletes the image (poster or QR code) form the database.
-     * @param imageID the ID of the image in the database.
-     */
-    private void deleteImageFromStorage(String imageID) {
-        if (imageID != null) {
-            StorageReference storage = FirestoreDB.getStorageReference("uploads");
-            StorageReference imageRef = storage.child(imageID);
-
-            imageRef.delete()
-                    .addOnSuccessListener(taskSnapshot -> {
-                        // successful
-                        //TODO: have a toast
-                    })
-                    .addOnFailureListener(e -> {
-                        // handle errors
-                        Log.e("DeleteImage", "Error deleting image: " + e.getMessage());
-                        //TODO: have a toast
-                    });
-        }
+            }
+        });
     }
 }
