@@ -20,15 +20,29 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
+/**
+ * Controller responsible for managing interactions with events in the Firestore Database.
+ */
 public class EventController {
     private CollectionReference eventsRef;
     private Context context;
 
+    /**
+     * Constructs a new instance of the Event Controller.
+     *
+     * @param context the context of the view where the controller is instantiated.
+     */
     public EventController(Context context) {
         this.context = context;
         eventsRef = FirestoreDB.getEventsRef();
     }
 
+    /**
+     * Adds a new event to the Firestore Database.
+     *
+     * @param event    the event to be added.
+     * @param listener a listener to handle success and failure callbacks for the operation.
+     */
     public void addEvent(Event event, EventAddListener listener) {
         if(listener != null) {
             eventsRef.add(event)
@@ -43,6 +57,12 @@ public class EventController {
     }
 
 
+    /**
+     * Updates an existing event in the Firestore Database.
+     *
+     * @param event    the updated event.
+     * @param listener a listener to handle success and failure callbacks for the operation.
+     */
     public void setEvent(Event event, EventSetListener listener) {
         String ID = event.getID();
 
@@ -55,6 +75,12 @@ public class EventController {
         }
     }
 
+    /**
+     * Deletes an event from the Firestore Database.
+     *
+     * @param ID       the ID of the event to be deleted.
+     * @param listener a listener to handle success and failure callbacks for the operation.
+     */
     public void deleteEvent(String ID, EventDeleteListener listener) {
         if(listener != null) {
             eventsRef.document(ID).delete()
@@ -67,6 +93,12 @@ public class EventController {
         }
     }
 
+    /**
+     * Retrieves an event from the Firestore Database.
+     *
+     * @param ID       the ID of the event to be retrieved.
+     * @param listener a listener to handle success and failure callbacks for the operation.
+     */
     public void getEvent(String ID, EventGetListener listener) {
         eventsRef.document(ID).get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -84,6 +116,12 @@ public class EventController {
                 .addOnFailureListener(listener::onEventGetFailure);
     }
 
+    /**
+     * Adds a snapshot listener to the events collection in the Firestore Database.
+     *
+     * @param listener a listener to handle snapshot data and errors.
+     * @return the registration object for the listener.
+     */
     public ListenerRegistration addSnapshotListener(SnapshotListener listener) {
         return eventsRef.addSnapshotListener((value, error) -> {
             if(error != null) {
@@ -98,6 +136,13 @@ public class EventController {
         });
     }
 
+    /**
+     * Adds a single document snapshot listener for a specific event in the Firestore Database.
+     *
+     * @param ID       the ID of the event to listen for.
+     * @param listener a listener to handle snapshot data and errors.
+     * @return the registration object for the listener.
+     */
     public ListenerRegistration addSingleSnapshotListener(String ID, SnapshotListener listener) {
         return eventsRef.document(ID).addSnapshotListener((value, error) -> {
             if(error != null) {

@@ -18,18 +18,29 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 
 /**
- * Controller to manage CRUD interactions between the View and the database.
+ * Controller responsible for managing CRUD interactions between the View and the database.
  */
 public class UserController {
     private Context context;
     private CollectionReference usersRef;
 
+    /**
+     * Constructs a new instance of the UserController.
+     *
+     * @param context the context of the view where the controller is instantiated.
+     */
     public UserController(Context context) {
         this.context = context;
         usersRef = FirestoreDB.getUsersRef();
     }
 
 
+    /**
+     * Sets a user in the Firestore Database.
+     *
+     * @param user     the user to be set.
+     * @param listener a listener to handle success and failure callbacks for the operation.
+     */
     public void setUser(User user, UserSetListener listener) {
         String ID = user.getID();
         if(listener != null) {
@@ -41,6 +52,12 @@ public class UserController {
         }
     }
 
+    /**
+     * Retrieves a user from the Firestore Database.
+     *
+     * @param ID       the ID of the user to be retrieved.
+     * @param listener a listener to handle success and failure callbacks for the operation.
+     */
     public void getUser(String ID, UserGetListener listener) {
         usersRef.document(ID).get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -58,6 +75,12 @@ public class UserController {
                 .addOnFailureListener(listener::onUserGetFailure);
     }
 
+    /**
+     * Deletes a user from the Firestore Database.
+     *
+     * @param user     the user to be deleted.
+     * @param listener a listener to handle success and failure callbacks for the operation.
+     */
     public void deleteUser(User user, UserDeleteListener listener) {
         String ID = user.getID();
 
@@ -70,6 +93,12 @@ public class UserController {
         }
     }
 
+    /**
+     * Adds a snapshot listener to the users collection in the Firestore Database.
+     *
+     * @param listener a listener to handle snapshot data and errors.
+     * @return the registration object for the listener.
+     */
     public ListenerRegistration addSnapshotListener(SnapshotListener listener) {
         return usersRef.addSnapshotListener((value, error) -> {
             if(error != null) {

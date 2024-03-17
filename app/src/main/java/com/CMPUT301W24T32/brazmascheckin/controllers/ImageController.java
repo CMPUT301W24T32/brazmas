@@ -14,6 +14,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+/**
+ * Controller responsible for managing image-related operations in Firebase Storage.
+ */
 public class ImageController {
 
     private StorageReference posterReference;
@@ -24,6 +27,11 @@ public class ImageController {
     private static final String QR_CODE_PATH = "qr_codes";
     private static final String PROFILE_PICTURE_PATH = "profile_pictures";
 
+    /**
+     * Constructs a new instance of the Image Controller.
+     *
+     * @param context the context of the view where the controller is instantiated.
+     */
     public ImageController(Context context) {
         this.context = context;
         posterReference = FirestoreDB.getStorageReference(POSTER_PATH);
@@ -31,6 +39,13 @@ public class ImageController {
         profilePictureReference = FirestoreDB.getStorageReference(PROFILE_PICTURE_PATH);
     }
 
+    /**
+     * Uploads an event poster image to Firebase Storage.
+     *
+     * @param fileID   the ID of the file.
+     * @param imageURI the URI of the image file.
+     * @param listener a listener to handle success and failure callbacks for the operation.
+     */
     public void uploadEventPoster(String fileID, Uri imageURI, ImageUploadListener listener) {
         StorageReference fileReference = posterReference.child(fileID);
         fileReference.putFile(imageURI)
@@ -40,6 +55,13 @@ public class ImageController {
                 .addOnFailureListener(listener::onImageUploadFailure);
     }
 
+    /**
+     * Uploads a QR code image to Firebase Storage.
+     *
+     * @param fileID    the ID of the file.
+     * @param imageData the byte array of image data.
+     * @param listener  a listener to handle success and failure callbacks for the operation.
+     */
     public void uploadQRCode(String fileID, byte[] imageData, ImageUploadListener listener) {
         StorageReference fileReference = qrCodeReference.child(fileID);
         fileReference.putBytes(imageData)
@@ -49,6 +71,13 @@ public class ImageController {
                 .addOnFailureListener(listener::onImageUploadFailure);
     }
 
+    /**
+     * Uploads a profile picture image to Firebase Storage.
+     *
+     * @param fileID   the ID of the file.
+     * @param imageURI the URI of the image file.
+     * @param listener a listener to handle success and failure callbacks for the operation.
+     */
     public void uploadProfilePicture(String fileID, Uri imageURI, ImageUploadListener listener) {
         StorageReference fileReference = profilePictureReference.child(fileID);
         fileReference.putFile(imageURI)
@@ -58,6 +87,12 @@ public class ImageController {
                 .addOnFailureListener(listener::onImageUploadFailure);
     }
 
+    /**
+     * Retrieves an event poster image from Firebase Storage.
+     *
+     * @param fileID   the ID of the file.
+     * @param listener a listener to handle success and failure callbacks for the operation.
+     */
     public void getEventPoster(String fileID, ImageGetListener listener) {
         StorageReference imageReference = posterReference.child(fileID);
         imageReference.getBytes(Long.MAX_VALUE)
@@ -65,6 +100,12 @@ public class ImageController {
                 .addOnFailureListener(listener::onImageGetFailure);
     }
 
+    /**
+     * Retrieves a QR code image from Firebase Storage.
+     *
+     * @param fileID   the ID of the file.
+     * @param listener a listener to handle success and failure callbacks for the operation.
+     */
     public void getQRCode(String fileID, ImageGetListener listener) {
         StorageReference imageReference = qrCodeReference.child(fileID);
         imageReference.getBytes(Long.MAX_VALUE)
@@ -72,6 +113,12 @@ public class ImageController {
                 .addOnFailureListener(listener::onImageGetFailure);
     }
 
+    /**
+     * Retrieves a profile picture image from Firebase Storage.
+     *
+     * @param fileID   the ID of the file.
+     * @param listener a listener to handle success and failure callbacks for the operation.
+     */
     public void getProfilePicture(String fileID, ImageGetListener listener) {
         StorageReference imageReference = profilePictureReference.child(fileID);
         imageReference.getBytes(Long.MAX_VALUE)
@@ -79,6 +126,12 @@ public class ImageController {
                 .addOnFailureListener(listener::onImageGetFailure);
     }
 
+    /**
+     * Deletes an event poster image from Firebase Storage.
+     *
+     * @param fileID   the ID of the file.
+     * @param listener a listener to handle success and failure callbacks for the operation.
+     */
     public void deleteEventPoster(String fileID, ImageDeleteListener listener) {
         StorageReference imageReference = posterReference.child(fileID);
         imageReference.delete()
@@ -86,6 +139,12 @@ public class ImageController {
                 .addOnFailureListener(unused -> listener.onImageDeleteFailure());
     }
 
+    /**
+     * Deletes a QR code image from Firebase Storage.
+     *
+     * @param fileID   the ID of the file.
+     * @param listener a listener to handle success and failure callbacks for the operation.
+     */
     public void deleteQRCode(String fileID, ImageDeleteListener listener) {
         StorageReference imageReference = qrCodeReference.child(fileID);
         imageReference.delete()
@@ -93,6 +152,12 @@ public class ImageController {
                 .addOnFailureListener(unused -> listener.onImageDeleteFailure());
     }
 
+    /**
+     * Deletes a profile picture image from Firebase Storage.
+     *
+     * @param fileID   the ID of the file.
+     * @param listener a listener to handle success and failure callbacks for the operation.
+     */
     public void deleteProfilePicture(String fileID, ImageDeleteListener listener) {
         StorageReference imageReference = profilePictureReference.child(fileID);
         imageReference.delete()
