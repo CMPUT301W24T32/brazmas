@@ -9,16 +9,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.CMPUT301W24T32.brazmascheckin.controllers.AdminController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.AdminGetListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.GetFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.UserGetListener;
-import com.CMPUT301W24T32.brazmascheckin.controllers.UserSetListener;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
-import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.CMPUT301W24T32.brazmascheckin.views.AdministratorHome;
 import com.CMPUT301W24T32.brazmascheckin.views.AttendeeOrganizerHome;
-import com.google.firebase.firestore.CollectionReference;
 
 import java.util.ArrayList;
 
@@ -27,8 +23,7 @@ import java.util.ArrayList;
  * It handles the device verification process and redirects users based on their status.
  */
 
-public class MainActivity extends AppCompatActivity implements UserGetListener, UserSetListener,
-        AdminGetListener {
+public class MainActivity extends AppCompatActivity {
 
     private UserController userController;
     private AdminController adminController;
@@ -45,64 +40,51 @@ public class MainActivity extends AppCompatActivity implements UserGetListener, 
         adminController = new AdminController(this);
 
         // control flow of different types of users
-        adminController.getAdmin(deviceID, this);
-        userController.getUser(deviceID, this);
-    }
+        adminController.getAdmin(deviceID, object -> {
+            Intent intent = new Intent(MainActivity.this, AdministratorHome.class);
+            startActivity(intent);
+            finish();
+        }, null);
+        userController.getUser(deviceID, object -> {
+            Intent intent = new Intent(MainActivity.this, AttendeeOrganizerHome.class);
+            startActivity(intent);
+            finish();
+        }, new GetFailureListener() {
+            @Override
+            public void onFailure(Exception e) {
+                TextView firstNameEditText = findViewById(R.id.main_firstname_textview);
+                TextView lastNameEditText = findViewById(R.id.main_lastname_textview);
+                Button submitButton = findViewById(R.id.main_submit_button);
 
-    @Override
-    public void onUserGetSuccess(User user) {
-        Intent intent = new Intent(MainActivity.this, AttendeeOrganizerHome.class);
-        startActivity(intent);
-        finish();
-    }
+                submitButton.setOnClickListener(view -> {
+                    String firstName = firstNameEditText.getText().toString();
+                    String lastName = lastNameEditText.getText().toString();
 
-    @Override
-    public void onUserGetFailure(Exception e) {
-        TextView firstNameEditText = findViewById(R.id.main_firstname_textview);
-        TextView lastNameEditText = findViewById(R.id.main_lastname_textview);
-        Button submitButton = findViewById(R.id.main_submit_button);
+                    if(firstName.isEmpty() || lastName.isEmpty()) {
+                        Toast.makeText(getApplicationContext(), "Fields cannot be empty", Toast.LENGTH_SHORT).show();
+                    } else {
+                        User user = new User(
+                                firstName, lastName, new ArrayList<String>(), null, null,
+                                new ArrayList<String>()
+                        );
+                        user.setFirstName(firstName);
+                        user.setLastName(lastName);
+                        user.setID(deviceID);
+                        userController.setUser(user, () -> {
+                            Intent intent = new Intent(MainActivity.this, AttendeeOrganizerHome.class);
+                            startActivity(intent);
+                            //TODO: verify the context works
+                            Toast.makeText(getApplicationContext(), "user", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }, e1 -> {
+                            Toast.makeText(getApplicationContext(), "Unable to create profile", Toast.LENGTH_SHORT).show();
 
-        submitButton.setOnClickListener(view -> {
-            String firstName = firstNameEditText.getText().toString();
-            String lastName = lastNameEditText.getText().toString();
-
-            if(firstName.isEmpty() || lastName.isEmpty()) {
-                Toast.makeText(this, "Fields cannot be empty", Toast.LENGTH_SHORT).show();
-            } else {
-                User user = new User(
-                        firstName, lastName, new ArrayList<String>(), null, null,
-                        new ArrayList<String>()
-                );
-                user.setFirstName(firstName);
-                user.setLastName(lastName);
-                user.setID(deviceID);
-                userController.setUser(user, this);
+                        });
+                    }
+                });
             }
         });
     }
 
-    @Override
-    public void onUserSetSuccess() {
-        Intent intent = new Intent(MainActivity.this, AttendeeOrganizerHome.class);
-        startActivity(intent);
-        Toast.makeText(this, "user", Toast.LENGTH_SHORT).show();
-        finish();
-    }
 
-    @Override
-    public void onUserSetFailure() {
-        Toast.makeText(this, "Unable to create profile", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onAdminGetSuccess() {
-        Intent intent = new Intent(MainActivity.this, AdministratorHome.class);
-        startActivity(intent);
-        finish();
-    }
-
-    @Override
-    public void onAdminGetFailure(Exception e) {
-
-    }
 }

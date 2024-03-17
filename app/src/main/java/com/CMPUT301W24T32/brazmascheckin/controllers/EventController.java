@@ -60,60 +60,78 @@ public class EventController {
     /**
      * Updates an existing event in the Firestore Database.
      *
-     * @param event    the updated event.
-     * @param listener a listener to handle success and failure callbacks for the operation.
+     * @param event           the updated event.
+     * @param successListener a listener to handle success callbacks for the operation.
+     * @param failureListener a listener to handle failure callbacks for the operation.
      */
-    public void setEvent(Event event, EventSetListener listener) {
+    public void setEvent(Event event, SetSuccessListener successListener,
+                         SetFailureListener failureListener) {
         String ID = event.getID();
 
-        if(listener != null) {
-            eventsRef.document(ID).set(event)
-                    .addOnSuccessListener(temp -> listener.onEventSetSuccess())
-                    .addOnFailureListener(listener::onEventSetFailure);
-        } else {
-            eventsRef.document(ID).set(event);
-        }
+        eventsRef.document(ID).set(event)
+                .addOnSuccessListener(temp -> {
+                   if(successListener != null) {
+                       successListener.onSetSuccess();
+                   }
+                })
+                .addOnFailureListener(e -> {
+                    if(failureListener != null) {
+                        failureListener.onSetFailure(e);
+                    }
+                });
     }
 
     /**
      * Deletes an event from the Firestore Database.
      *
-     * @param ID       the ID of the event to be deleted.
-     * @param listener a listener to handle success and failure callbacks for the operation.
+     * @param ID             the ID of the event to be deleted.
+     * @param successListener a listener to handle success callbacks for the operation.
+     * @param failureListener a listener to handle failure callbacks for the operation.
      */
-    public void deleteEvent(String ID, EventDeleteListener listener) {
-        if(listener != null) {
-            eventsRef.document(ID).delete()
-                    .addOnSuccessListener(unused -> {
-                        listener.onEventDeleteSuccess();;
-                    })
-                    .addOnFailureListener(listener::onEventDeleteFailure);
-        } else {
-            eventsRef.document(ID).delete();
-        }
+    public void deleteEvent(String ID, DeleteSuccessListener successListener,
+                            DeleteFailureListener failureListener) {
+
+
+        eventsRef.document(ID).delete()
+                .addOnSuccessListener(unused -> {
+                    if(successListener != null) {
+                        successListener.onDeleteSuccess();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if(failureListener != null) {
+                        failureListener.onDeleteFailure(e);
+                    }
+                });
     }
 
     /**
      * Retrieves an event from the Firestore Database.
      *
-     * @param ID       the ID of the event to be retrieved.
-     * @param listener a listener to handle success and failure callbacks for the operation.
+     * @param ID             the ID of the event to be retrieved.
+     * @param successListener a listener to handle success callbacks for the operation.
+     * @param failureListener a listener to handle failure callbacks for the operation.
      */
-    public void getEvent(String ID, EventGetListener listener) {
+    public void getEvent(String ID, GetSuccessListener<Event> successListener,
+                         GetFailureListener failureListener) {
         eventsRef.document(ID).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if(documentSnapshot != null) {
                         Event event = documentSnapshot.toObject(Event.class);
-                        if(event != null) {
-                            listener.onEventGetSuccess(event);
-                        } else {
-                            listener.onEventGetFailure(null);
+                        if(event != null && successListener != null) {
+                            successListener.onSuccess(event);
+                        } else if (failureListener != null){
+                            failureListener.onFailure(null);
                         }
-                    } else {
-                        listener.onEventGetFailure(null);
+                    } else if (failureListener != null) {
+                        failureListener.onFailure(null);
                     }
                 })
-                .addOnFailureListener(listener::onEventGetFailure);
+                .addOnFailureListener(e -> {
+                    if(failureListener != null) {
+                        failureListener.onFailure(e);
+                    }
+                });
     }
 
     /**

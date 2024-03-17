@@ -10,9 +10,10 @@ import android.widget.Button;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
+import com.CMPUT301W24T32.brazmascheckin.controllers.GetFailureListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.UserGetListener;
 import com.CMPUT301W24T32.brazmascheckin.helper.AttendeeCheckedInRecyclerViewAdapter;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
@@ -93,19 +94,15 @@ public class CheckedInAttendees extends AppCompatActivity implements
                 HashMap<String, Integer> checkIns = event.getCheckIns();
 
                 for(String id: attendeeIDs) {
-                    userController.getUser(id, new UserGetListener() {
-                        @Override
-                        public void onUserGetSuccess(User user) {
-                            userDataList.add(user);
-                            userCheckIns.add(checkIns.get(id));
-                            attendeeCheckedInRecyclerViewAdapter.notifyDataSetChanged();
-                        }
+                    userController.getUser(id,
+                            user -> {
+                                userDataList.add(user);
+                                userCheckIns.add(checkIns.get(id));
+                                attendeeCheckedInRecyclerViewAdapter.notifyDataSetChanged();
 
-                        @Override
-                        public void onUserGetFailure(Exception e) {
+                            }, e1 -> {
 
-                        }
-                    });
+                            });
                 }
             }
 

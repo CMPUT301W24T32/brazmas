@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -15,7 +14,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,17 +21,13 @@ import androidx.fragment.app.DialogFragment;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.EventGetListener;
-import com.CMPUT301W24T32.brazmascheckin.controllers.EventSetListener;
+
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageGetListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.UserGetListener;
-import com.CMPUT301W24T32.brazmascheckin.controllers.UserSetListener;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
-import com.CMPUT301W24T32.brazmascheckin.models.User;
 
 
 import java.util.ArrayList;
@@ -206,102 +200,41 @@ public class AttendeeViewEventFragment extends DialogFragment {
     }
 
     private void handleChecked(String ID) {
-        eventController.getEvent(ID, new EventGetListener() {
-            @Override
-            public void onEventGetSuccess(Event event) {
-                ArrayList<String> signUps = event.getSignUps();
-                signUps.add(deviceID);
-                eventController.setEvent(event, new EventSetListener() {
-                    @Override
-                    public void onEventSetSuccess() {
-                        // Toast
-                    }
 
-                    @Override
-                    public void onEventSetFailure(Exception e) {
-                        // Toast
-                    }
+        eventController.getEvent(ID, event -> {
+            ArrayList<String> signUps = event.getSignUps();
+            signUps.add(deviceID);
+            eventController.setEvent(event, null, null);
+        }, e -> {
+
                 });
-            }
 
-            @Override
-            public void onEventGetFailure(Exception e) {
 
-            }
-        });
+        userController.getUser(deviceID, user -> {
+            ArrayList<String> signUps = user.getSignedUpEvents();
+            signUps.add(ID);
+            userController.setUser(user, null, null);
+        }, e -> {
 
-        userController.getUser(deviceID, new UserGetListener() {
-            @Override
-            public void onUserGetSuccess(User user) {
-                ArrayList<String> signUps = user.getSignedUpEvents();
-                signUps.add(ID);
-                userController.setUser(user, new UserSetListener() {
-                    @Override
-                    public void onUserSetSuccess() {
-
-                    }
-
-                    @Override
-                    public void onUserSetFailure() {
-
-                    }
-                });
-            }
-
-            @Override
-            public void onUserGetFailure(Exception e) {
-
-            }
         });
     }
 
     private void handleUnChecked(String ID) {
-        eventController.getEvent(ID, new EventGetListener() {
-            @Override
-            public void onEventGetSuccess(Event event) {
-                ArrayList<String> signUps = event.getSignUps();
-                signUps.remove(deviceID);
-                eventController.setEvent(event, new EventSetListener() {
-                    @Override
-                    public void onEventSetSuccess() {
-                        // Toast
-                    }
+        eventController.getEvent(ID, event -> {
+            ArrayList<String> signUps = event.getSignUps();
+            signUps.remove(deviceID);
+            eventController.setEvent(event, null, null);
+        }, e -> {
 
-                    @Override
-                    public void onEventSetFailure(Exception e) {
-                        // Toast
-                    }
-                });
-            }
-
-            @Override
-            public void onEventGetFailure(Exception e) {
-
-            }
         });
 
-        userController.getUser(deviceID, new UserGetListener() {
-            @Override
-            public void onUserGetSuccess(User user) {
-                ArrayList<String> signUps = user.getSignedUpEvents();
-                signUps.remove(ID);
-                userController.setUser(user, new UserSetListener() {
-                    @Override
-                    public void onUserSetSuccess() {
 
-                    }
+        userController.getUser(deviceID, user -> {
+            ArrayList<String> signUps = user.getSignedUpEvents();
+            signUps.remove(ID);
+            userController.setUser(user, null, null);
+        }, e -> {
 
-                    @Override
-                    public void onUserSetFailure() {
-
-                    }
-                });
-            }
-
-            @Override
-            public void onUserGetFailure(Exception e) {
-
-            }
         });
     }
 

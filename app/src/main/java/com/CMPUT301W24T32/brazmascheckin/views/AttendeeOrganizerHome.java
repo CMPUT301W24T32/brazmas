@@ -18,11 +18,12 @@ import android.widget.Toast;
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventAddListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
+import com.CMPUT301W24T32.brazmascheckin.controllers.GetFailureListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageUploadListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.UserGetListener;
 
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.helper.EventRecyclerViewAdapter;
@@ -181,71 +182,57 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
 
     private void handleAttendeeMode() {
         attendingEventsButton.setOnClickListener(view -> {
-            userController.getUser(deviceID, new UserGetListener() {
-                @Override
-                public void onUserGetSuccess(User user) {
-                    ArrayList<String> signedUp = user.getSignedUpEvents();
-                    eventController.addSnapshotListener(new SnapshotListener<Event>() {
-                        @Override
-                        public void snapshotListenerCallback(ArrayList<Event> events) {
-                            eventDataList.clear();
-                            for(Event event: events) {
-                                if(signedUp.contains(event.getID())) {
-                                    eventDataList.add(event);
-                                }
+
+            userController.getUser(deviceID, user -> {
+                ArrayList<String> signedUp = user.getSignedUpEvents();
+                eventController.addSnapshotListener(new SnapshotListener<Event>() {
+                    @Override
+                    public void snapshotListenerCallback(ArrayList<Event> events) {
+                        eventDataList.clear();
+                        for(Event event: events) {
+                            if(signedUp.contains(event.getID())) {
+                                eventDataList.add(event);
                             }
-                            eventRecyclerViewAdapter.notifyDataSetChanged();
                         }
+                        eventRecyclerViewAdapter.notifyDataSetChanged();
+                    }
 
-                        @Override
-                        public void onError(Exception e) {
-                            Toast.makeText(AttendeeOrganizerHome.this, "Unable to connect to the " +
-                                    "database", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                }
+                    @Override
+                    public void onError(Exception e) {
+                        Toast.makeText(AttendeeOrganizerHome.this, "Unable to connect to the " +
+                                "database", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }, e -> Toast.makeText(AttendeeOrganizerHome.this, "Unable to connect to the " +
+                    "database", Toast.LENGTH_LONG).show());
 
-                @Override
-                public void onUserGetFailure(Exception e) {
-                    Toast.makeText(AttendeeOrganizerHome.this, "Unable to connect to the " +
-                            "database", Toast.LENGTH_LONG).show();
-                }
-            });
         });
     }
 
     public void handleOrganizerMode() {
         organizingEventsButton.setOnClickListener(view -> {
-            userController.getUser(deviceID, new UserGetListener() {
-                @Override
-                public void onUserGetSuccess(User user) {
-                    ArrayList<String> organizedEvents = user.getOrganizedEvents();
-                    eventController.addSnapshotListener(new SnapshotListener<Event>() {
-                        @Override
-                        public void snapshotListenerCallback(ArrayList<Event> events) {
-                            eventDataList.clear();
-                            for(Event event : events) {
-                                if(organizedEvents.contains(event.getID())) {
-                                    eventDataList.add(event);
-                                }
+            userController.getUser(deviceID, user -> {
+                ArrayList<String> organizedEvents = user.getOrganizedEvents();
+                eventController.addSnapshotListener(new SnapshotListener<Event>() {
+                    @Override
+                    public void snapshotListenerCallback(ArrayList<Event> events) {
+                        eventDataList.clear();
+                        for(Event event : events) {
+                            if(organizedEvents.contains(event.getID())) {
+                                eventDataList.add(event);
                             }
-                            eventRecyclerViewAdapter.notifyDataSetChanged();
                         }
+                        eventRecyclerViewAdapter.notifyDataSetChanged();
+                    }
 
-                        @Override
-                        public void onError(Exception e) {
-                            Toast.makeText(AttendeeOrganizerHome.this, "Unable to connect to the " +
-                                    "database", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                }
-
-                @Override
-                public void onUserGetFailure(Exception e) {
-                    Toast.makeText(AttendeeOrganizerHome.this, "Unable to connect to the " +
-                            "database", Toast.LENGTH_LONG).show();
-                }
-            });
+                    @Override
+                    public void onError(Exception e) {
+                        Toast.makeText(AttendeeOrganizerHome.this, "Unable to connect to the " +
+                                "database", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }, e -> Toast.makeText(AttendeeOrganizerHome.this, "Unable to connect to the " +
+                    "database", Toast.LENGTH_LONG).show());
         });
 
     }
@@ -273,7 +260,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
                     public void onImageUploadSuccess(Uri uri) {
                         String QRCodeURI = uri.toString();
                         event.setQRCode(fileID); // this is basically useless information
-                        eventController.setEvent(event, null);
+                        eventController.setEvent(event, null, null);
                     }
                     @Override
                     public void onImageUploadFailure(Exception e) {
@@ -284,18 +271,10 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
                 });
 
 
-                userController.getUser(deviceID, new UserGetListener() {
-                    @Override
-                    public void onUserGetSuccess(User user) {
-                        user.createEvent(ID);
-                        userController.setUser(user, null);
-                    }
-
-                    @Override
-                    public void onUserGetFailure(Exception e) {
-
-                    }
-                });
+                userController.getUser(deviceID, user -> {
+                    user.createEvent(ID);
+                    userController.setUser(user, null, null);
+                }, null);
             }
             @Override
             public void onEventAddFailure(Exception e) {
