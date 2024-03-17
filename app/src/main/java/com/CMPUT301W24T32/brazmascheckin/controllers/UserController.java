@@ -12,7 +12,10 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
 
 /**
  * Controller to manage CRUD interactions between the View and the database.
@@ -72,7 +75,12 @@ public class UserController {
             if(error != null) {
                 listener.onError(error);
             }
-            listener.snapshotListenerCallback(value);
+            ArrayList<User> users = new ArrayList<>();
+            for(QueryDocumentSnapshot doc : value) {
+                User user = doc.toObject(User.class);
+                users.add(user);
+            }
+            listener.snapshotListenerCallback(new ArrayList());
         });
     }
 

@@ -5,15 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Activity;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.util.Log;
+
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -34,16 +32,7 @@ import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
-import com.google.firebase.firestore.DocumentReference;
 
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-
-import com.google.firebase.firestore.QuerySnapshot;
-
-
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 /**
@@ -171,12 +160,11 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
     }
 
     private void showAllEvents() {
-        eventController.addSnapshotListener(new SnapshotListener() {
+        eventController.addSnapshotListener(new SnapshotListener<Event>() {
             @Override
-            public void snapshotListenerCallback(QuerySnapshot value) {
+            public void snapshotListenerCallback(ArrayList<Event> events) {
                 eventDataList.clear();
-                for (QueryDocumentSnapshot doc : value) {
-                    Event event = doc.toObject(Event.class);
+                for (Event event : events) {
                     eventDataList.add(event);
                 }
                 eventRecyclerViewAdapter.notifyDataSetChanged();
@@ -197,12 +185,11 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
                 @Override
                 public void onUserGetSuccess(User user) {
                     ArrayList<String> signedUp = user.getSignedUpEvents();
-                    eventController.addSnapshotListener(new SnapshotListener() {
+                    eventController.addSnapshotListener(new SnapshotListener<Event>() {
                         @Override
-                        public void snapshotListenerCallback(QuerySnapshot value) {
+                        public void snapshotListenerCallback(ArrayList<Event> events) {
                             eventDataList.clear();
-                            for(QueryDocumentSnapshot doc : value) {
-                                Event event = doc.toObject(Event.class);
+                            for(Event event: events) {
                                 if(signedUp.contains(event.getID())) {
                                     eventDataList.add(event);
                                 }
@@ -233,12 +220,11 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
                 @Override
                 public void onUserGetSuccess(User user) {
                     ArrayList<String> organizedEvents = user.getOrganizedEvents();
-                    eventController.addSnapshotListener(new SnapshotListener() {
+                    eventController.addSnapshotListener(new SnapshotListener<Event>() {
                         @Override
-                        public void snapshotListenerCallback(QuerySnapshot value) {
+                        public void snapshotListenerCallback(ArrayList<Event> events) {
                             eventDataList.clear();
-                            for(QueryDocumentSnapshot doc : value) {
-                                Event event = doc.toObject(Event.class);
+                            for(Event event : events) {
                                 if(organizedEvents.contains(event.getID())) {
                                     eventDataList.add(event);
                                 }
@@ -273,46 +259,35 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
         event.setOrganizer(deviceID);
         eventController.addEvent(event, new EventAddListener() {
             @Override
-            public void onEventAddSuccess(DocumentReference documentReference) {
-                event.setID(documentReference.getId());
+            public void onEventAddSuccess(String ID) {
+                event.setID(ID);
 
-                // can turn into method in QR Code
-                Bitmap bitmap = QRCodeGenerator.generateQRCode(documentReference.getId());
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-                byte[] imageData = outputStream.toByteArray();
+                // content of the QR Code is the ID of the event!
+                Bitmap bitmap = QRCodeGenerator.generateQRCode(ID);
+                byte[] imageData = QRCodeGenerator.getQRCodeByteArray(bitmap);
 
                 String fileID = event.getID() + "-QRCODE";
 
                 imageController.uploadQRCode(fileID, imageData, new ImageUploadListener() {
                     @Override
-                    public void onImageUploadSuccess(UploadTask.TaskSnapshot taskSnapshot,
-                                                     StorageReference imageReference) {
-
-                        // ???? shouldn't do this / find a way around
-                        imageReference.getDownloadUrl()
-                                .addOnSuccessListener(uri -> {
-                                   String QRCodeURI = uri.toString();
-                                   event.setQRCode(QRCodeURI);
-                                })
-                                .addOnFailureListener(e -> {
-                                    Toast.makeText(AttendeeOrganizerHome.this, "Unable " +
-                                            "to store QR code", Toast.LENGTH_SHORT).show();
-                                });
+                    public void onImageUploadSuccess(Uri uri) {
+                        String QRCodeURI = uri.toString();
+                        event.setQRCode(fileID); // this is basically useless information
+                        eventController.setEvent(event, null);
                     }
                     @Override
                     public void onImageUploadFailure(Exception e) {
                         Toast.makeText(AttendeeOrganizerHome.this, "Unable " +
                                 "to store QR code", Toast.LENGTH_SHORT).show();
+                        // TODO : control flow to break entire sequence
                     }
                 });
 
-                eventController.setEvent(event, null);
 
                 userController.getUser(deviceID, new UserGetListener() {
                     @Override
                     public void onUserGetSuccess(User user) {
-                        user.createEvent(documentReference.getId());
+                        user.createEvent(ID);
                         userController.setUser(user, null);
                     }
 

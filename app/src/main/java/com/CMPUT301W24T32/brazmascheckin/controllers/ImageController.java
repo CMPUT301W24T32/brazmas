@@ -4,10 +4,12 @@ import android.content.Context;
 import android.net.Uri;
 
 
+import androidx.annotation.NonNull;
 
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -32,21 +34,27 @@ public class ImageController {
     public void uploadEventPoster(String fileID, Uri imageURI, ImageUploadListener listener) {
         StorageReference fileReference = posterReference.child(fileID);
         fileReference.putFile(imageURI)
-                .addOnSuccessListener(taskSnapshot -> listener.onImageUploadSuccess(taskSnapshot, fileReference))
+                .addOnSuccessListener(askSnapshot -> fileReference.getDownloadUrl()
+                        .addOnSuccessListener(listener::onImageUploadSuccess)
+                        .addOnFailureListener(listener::onImageUploadFailure))
                 .addOnFailureListener(listener::onImageUploadFailure);
     }
 
     public void uploadQRCode(String fileID, byte[] imageData, ImageUploadListener listener) {
         StorageReference fileReference = qrCodeReference.child(fileID);
         fileReference.putBytes(imageData)
-                .addOnSuccessListener(taskSnapshot -> listener.onImageUploadSuccess(taskSnapshot, fileReference))
+                .addOnSuccessListener(taskSnapshot -> fileReference.getDownloadUrl()
+                        .addOnSuccessListener(listener::onImageUploadSuccess)
+                        .addOnFailureListener(listener::onImageUploadFailure))
                 .addOnFailureListener(listener::onImageUploadFailure);
     }
 
     public void uploadProfilePicture(String fileID, Uri imageURI, ImageUploadListener listener) {
         StorageReference fileReference = profilePictureReference.child(fileID);
         fileReference.putFile(imageURI)
-                .addOnSuccessListener(taskSnapshot -> listener.onImageUploadSuccess(taskSnapshot, fileReference))
+                .addOnSuccessListener(taskSnapshot -> fileReference.getDownloadUrl()
+                        .addOnSuccessListener(listener::onImageUploadSuccess)
+                        .addOnFailureListener(listener::onImageUploadFailure))
                 .addOnFailureListener(listener::onImageUploadFailure);
     }
 

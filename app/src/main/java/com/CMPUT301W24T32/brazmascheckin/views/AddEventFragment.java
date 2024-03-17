@@ -25,14 +25,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
+import com.CMPUT301W24T32.brazmascheckin.controllers.ImageUploadListener;
 import com.CMPUT301W24T32.brazmascheckin.helper.Date;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 
+import java.io.DataOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -50,7 +51,9 @@ public class AddEventFragment extends DialogFragment {
     private EditText editLimit;
     private Button chooseImage;
 
-    private StorageReference storageRef;
+    private ImageController imageController;
+
+
 
 
     /**
@@ -112,7 +115,7 @@ public class AddEventFragment extends DialogFragment {
                 .setTitle("Add an event")
                 .setNegativeButton("Cancel",null)
                 .setPositiveButton("Add", (dialog, which) -> {
-                    retrieveInput();
+                    retrieveInput(getContext());
                 });
 
         //TODO: idk how to refactor this
@@ -128,7 +131,7 @@ public class AddEventFragment extends DialogFragment {
     /**
      * This method retrieves the input from the view and adds the information to the database.
      */
-    private void retrieveInput() {
+    private void retrieveInput(Context context) {
         String title = editName.getText().toString();
         String desc = editDesc.getText().toString();
         String limitText = editLimit.getText().toString();
@@ -147,13 +150,13 @@ public class AddEventFragment extends DialogFragment {
         Date date = new Date(day, month, year);
         HashMap<String, Integer> checkIns = new HashMap<String, Integer>();
         ArrayList<String> signUps = new ArrayList<String>();
-        String posterID = uploadFile();
+        String posterID = uploadFile(context);
         String QRCodeID = "id";
         String shareQRCodeID = "id";
         String id = "1";
 
         if(title.isEmpty() || desc.isEmpty()) {
-            Toast.makeText(getContext(), "Enter all text fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Enter all text fields", Toast.LENGTH_SHORT).show();
         } else {
             listener.addEvent(new Event(id, title, date, desc, checkIns, signUps, limit, posterID, QRCodeID, shareQRCodeID, ""));
         }
@@ -171,7 +174,7 @@ public class AddEventFragment extends DialogFragment {
         editLimit = view.findViewById(R.id.add_event_limit_et);
         chooseImage = view.findViewById(R.id.add_event_choose_image_button);
         imageView = view.findViewById(R.id.add_event_image_view);
-        storageRef = FirestoreDB.getStorageReference("uploads");
+        imageController = new ImageController(getActivity());
         chooseImage.setOnClickListener(view1 -> openFileChooser());
     }
 
@@ -189,23 +192,21 @@ public class AddEventFragment extends DialogFragment {
      * This method uploads an image to the Firebase Storage Database
      * @return ID of the uploaded file
      */
-    private String uploadFile() {
+    private String uploadFile(Context context) {
         String fileID = String.valueOf(System.currentTimeMillis());
 
         if(imageUri != null) {
-            Log.d("URI", "works");
-            StorageReference fileReference = storageRef.child(fileID);
+            imageController.uploadEventPoster(fileID, imageUri, new ImageUploadListener() {
+                @Override
+                public void onImageUploadSuccess(Uri uri) {
+                    Toast.makeText(context, "Image uploaded!", Toast.LENGTH_SHORT).show();
+                }
 
-            fileReference.putFile(imageUri)
-                    .addOnSuccessListener(taskSnapshot ->{
-                        Log.d("URI", "success");
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.d("URI", "failure");
-                        Log.d("URI", e.toString());
-                    });
+                @Override
+                public void onImageUploadFailure(Exception e) {
 
-
+                }
+            });
         } else {
 //            Toast.makeText(requireContext(), "Unable to" +
 //                    " upload event poster", Toast.LENGTH_SHORT).show();
