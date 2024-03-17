@@ -9,12 +9,17 @@ import android.os.Bundle;
 import android.widget.Button;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
+import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
+import com.CMPUT301W24T32.brazmascheckin.controllers.UserGetListener;
 import com.CMPUT301W24T32.brazmascheckin.helper.AttendeeCheckedInRecyclerViewAdapter;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +37,9 @@ public class CheckedInAttendees extends AppCompatActivity implements
     private ArrayList<Integer> userCheckIns;
 
     private AttendeeCheckedInRecyclerViewAdapter attendeeCheckedInRecyclerViewAdapter;
+
+    private EventController eventController;
+    private UserController userController;
 
     /**
      * Called when the activity is created
@@ -70,32 +78,40 @@ public class CheckedInAttendees extends AppCompatActivity implements
      * @param e
      */
     private void configureControllers(Event e) {
-        CollectionReference eventsRef = FirestoreDB.getEventsRef();
-        DocumentReference eventDoc = eventsRef.document(e.getID());
+        userController = new UserController(this);
+        eventController = new EventController(this);
 
-        CollectionReference attendeesRef = FirestoreDB.getUsersRef();
-        eventDoc.addSnapshotListener((value, error) -> {
-            userDataList.clear();
-            userCheckIns.clear();
-            attendeeCheckedInRecyclerViewAdapter.notifyDataSetChanged();
-            Event dbEvent = value.toObject(Event.class);
-            ArrayList<String> attendeeIDs = dbEvent.helperKeys();
-            HashMap<String, Integer> checkIns = dbEvent.getCheckIns();
+        eventController.addSingleSnapshotListener(e.getID(), new SnapshotListener<Event>() {
+            @Override
+            public void snapshotListenerCallback(ArrayList<Event> events) {
+                userDataList.clear();
+                userCheckIns.clear();
+                attendeeCheckedInRecyclerViewAdapter.notifyDataSetChanged();
 
-            for(String id : attendeeIDs) {
-                attendeesRef.document(id).get()
-                        .addOnSuccessListener(documentSnapshot -> {
-                            if(documentSnapshot != null) {
-                                User user = documentSnapshot.toObject(User.class);
-                                if(user != null) {
-                                    userDataList.add(user);
-                                    userCheckIns.add(checkIns.get(id));
-                                    attendeeCheckedInRecyclerViewAdapter.notifyItemInserted(userDataList.size() - 1);
-                                }
-                            }
-                        }).addOnFailureListener(e1 -> {
+                Event event = events.get(0);
+                ArrayList<String> attendeeIDs = event.helperKeys();
+                HashMap<String, Integer> checkIns = event.getCheckIns();
 
-                        });
+                for(String id: attendeeIDs) {
+                    userController.getUser(id, new UserGetListener() {
+                        @Override
+                        public void onUserGetSuccess(User user) {
+                            userDataList.add(user);
+                            userCheckIns.add(checkIns.get(id));
+                            attendeeCheckedInRecyclerViewAdapter.notifyDataSetChanged();
+                        }
+
+                        @Override
+                        public void onUserGetFailure(Exception e) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+
             }
         });
     }

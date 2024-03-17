@@ -136,6 +136,7 @@ public class AttendeeViewEventFragment extends DialogFragment {
         }
         QRCode = view.findViewById(R.id.view_event_QR_iv);
         displayImage(e.getPoster());
+        displayQRCode(e.getQRCode());
     }
 
     /**
@@ -146,6 +147,7 @@ public class AttendeeViewEventFragment extends DialogFragment {
 
 
         handleCheckedInNumber();
+        handleCheckBox(e.getID());
 
 
         checkedInAttendeesBtn.setOnClickListener(view -> {
@@ -198,7 +200,7 @@ public class AttendeeViewEventFragment extends DialogFragment {
             if(isChecked) {
                 handleChecked(ID);
             } else {
-
+                handleUnChecked(ID);
             }
         });
     }
