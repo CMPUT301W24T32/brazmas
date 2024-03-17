@@ -17,11 +17,7 @@ import android.widget.Toast;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.controllers.AddFailureListener;
-import com.CMPUT301W24T32.brazmascheckin.controllers.AddSuccessListener;
-import com.CMPUT301W24T32.brazmascheckin.controllers.EventAddListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.GetFailureListener;
-import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
@@ -30,8 +26,7 @@ import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.helper.EventRecyclerViewAdapter;
 import com.CMPUT301W24T32.brazmascheckin.helper.QRCodeGenerator;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
-import com.CMPUT301W24T32.brazmascheckin.models.User;
-import com.google.android.material.bottomappbar.BottomAppBar;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
@@ -246,35 +241,33 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
     @Override
     public void addEvent(Event event) {
         event.setOrganizer(deviceID);
-        eventController.addEvent(event, new EventAddListener() {
+        eventController.addEvent(event, ID -> {
+            event.setID(ID);
+
+            // content of the QR Code is the ID of the event!
+            Bitmap bitmap = QRCodeGenerator.generateQRCode(ID);
+            byte[] imageData = QRCodeGenerator.getQRCodeByteArray(bitmap);
+
+            String fileID = event.getID() + "-QRCODE";
+
+            imageController.uploadQRCode(fileID, imageData, uri -> {
+                String QRCodeURI = uri.toString();
+                event.setQRCode(fileID); // this is basically useless information
+                eventController.setEvent(event, null, null);
+            }, e -> {
+                Toast.makeText(AttendeeOrganizerHome.this, "Unable " +
+                        "to store QR code", Toast.LENGTH_SHORT).show();
+                // TODO : control flow to break entire sequence
+            });
+
+
+            userController.getUser(deviceID, user -> {
+                user.createEvent(ID);
+                userController.setUser(user, null, null);
+            }, null);
+        }, new AddFailureListener() {
             @Override
-            public void onEventAddSuccess(String ID) {
-                event.setID(ID);
-
-                // content of the QR Code is the ID of the event!
-                Bitmap bitmap = QRCodeGenerator.generateQRCode(ID);
-                byte[] imageData = QRCodeGenerator.getQRCodeByteArray(bitmap);
-
-                String fileID = event.getID() + "-QRCODE";
-
-                imageController.uploadQRCode(fileID, imageData, uri -> {
-                    String QRCodeURI = uri.toString();
-                    event.setQRCode(fileID); // this is basically useless information
-                    eventController.setEvent(event, null, null);
-                }, e -> {
-                    Toast.makeText(AttendeeOrganizerHome.this, "Unable " +
-                            "to store QR code", Toast.LENGTH_SHORT).show();
-                    // TODO : control flow to break entire sequence
-                });
-
-
-                userController.getUser(deviceID, user -> {
-                    user.createEvent(ID);
-                    userController.setUser(user, null, null);
-                }, null);
-            }
-            @Override
-            public void onEventAddFailure(Exception e) {
+            public void onAddFailure(Exception e) {
 
             }
         });

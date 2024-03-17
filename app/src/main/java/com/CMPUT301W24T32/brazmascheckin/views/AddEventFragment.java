@@ -199,12 +199,7 @@ public class AddEventFragment extends DialogFragment {
         if(imageUri != null) {
 
             imageController.uploadImage(ImageController.EVENT_POSTER, fileID, imageUri,
-                    new AddSuccessListener<Uri>() {
-                        @Override
-                        public void onAddSuccess(Uri object) {
-                            Toast.makeText(context, "Image uploaded!", Toast.LENGTH_SHORT).show();
-                        }
-                    }
+                    object -> Toast.makeText(context, "Image uploaded!", Toast.LENGTH_SHORT).show()
                     , e -> {
 
                     });

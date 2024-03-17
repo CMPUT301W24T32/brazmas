@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -20,10 +21,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.controllers.AddFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
 
+import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.ImageGetListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
@@ -140,7 +142,7 @@ public class AttendeeViewEventFragment extends DialogFragment {
     private void configureControllers(Event e, Context context) {
 
 
-        handleCheckedInNumber();
+        handleCheckedInNumber(e.getID());
         handleCheckBox(e.getID());
 
 
@@ -157,8 +159,8 @@ public class AttendeeViewEventFragment extends DialogFragment {
         });
     }
 
-    private void handleCheckedInNumber() {
-        eventController.addSnapshotListener(new SnapshotListener<Event>() {
+    private void handleCheckedInNumber(String ID) {
+        eventController.addSingleSnapshotListener(ID, new SnapshotListener<Event>() {
             @Override
             public void snapshotListenerCallback(ArrayList<Event> events) {
                 Event event = events.get(0);
@@ -173,6 +175,7 @@ public class AttendeeViewEventFragment extends DialogFragment {
                     ArrayList<String> signUps = event.getSignUps();
                     int signUpsCount = signUps.size();
                     int maxSignUps = event.getAttendeeLimit();
+                    Log.d("ATTENDEE", String.valueOf(maxSignUps));
 
                     if((signUpsCount + 1 > maxSignUps) && (!signUps.contains(deviceID))) {
                         signedUpCB.setEnabled(false);
@@ -243,18 +246,15 @@ public class AttendeeViewEventFragment extends DialogFragment {
      * @param posterID the ID of the image in the database
      */
     private void displayImage(String posterID) {
-        imageController.getEventPoster(posterID, new ImageGetListener() {
-            @Override
-            public void onImageGetSuccess(byte[] bytes) {
-                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                eventPoster.setImageBitmap(bitmap);
-            }
+        if(posterID != null && !posterID.isEmpty()) {
+            imageController.getImage(ImageController.EVENT_POSTER, posterID,
+                    bytes -> {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        eventPoster.setImageBitmap(bitmap);
+                    }, e -> {
 
-            @Override
-            public void onImageGetFailure(Exception e) {
-                // Toast
-            }
-        });
+                    });
+        }
     }
 
     /**
@@ -264,17 +264,11 @@ public class AttendeeViewEventFragment extends DialogFragment {
 
     private void displayQRCode(String code) {
 
-        imageController.getQRCode(code, new ImageGetListener() {
-            @Override
-            public void onImageGetSuccess(byte[] bytes) {
-                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                QRCode.setImageBitmap(bitmap);
-            }
+        imageController.getImage(ImageController.QR_CODE, code, bytes -> {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            QRCode.setImageBitmap(bitmap);
+        }, e -> {
 
-            @Override
-            public void onImageGetFailure(Exception e) {
-
-            }
         });
     }
 }

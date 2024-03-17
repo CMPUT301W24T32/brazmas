@@ -28,6 +28,7 @@ public class ImageController {
     private static final String PROFILE_PICTURE_PATH = "profile_pictures";
     public static final String PROFILE_PICTURE = "PROFILE_PICTURE";
     public static final String EVENT_POSTER = "EVENT_POSTER";
+    public static final String QR_CODE ="QR_CODE";
 
     /**
      * Constructs a new instance of the Image Controller.
@@ -70,21 +71,6 @@ public class ImageController {
 
     }
 
-//    /**
-//     * Uploads an event poster image to Firebase Storage.
-//     *
-//     * @param fileID   the ID of the file.
-//     * @param imageURI the URI of the image file.
-//     * @param listener a listener to handle success and failure callbacks for the operation.
-//     */
-//    public void uploadEventPoster(String fileID, Uri imageURI, ImageUploadListener listener) {
-//        StorageReference fileReference = posterReference.child(fileID);
-//        fileReference.putFile(imageURI)
-//                .addOnSuccessListener(askSnapshot -> fileReference.getDownloadUrl()
-//                        .addOnSuccessListener(listener::onImageUploadSuccess)
-//                        .addOnFailureListener(listener::onImageUploadFailure))
-//                .addOnFailureListener(listener::onImageUploadFailure);
-//    }
 
     /**
      * Uploads a QR code image to Firebase Storage.
@@ -116,97 +102,72 @@ public class ImageController {
                 });
     }
 
-//    /**
-//     * Uploads a profile picture image to Firebase Storage.
-//     *
-//     * @param fileID   the ID of the file.
-//     * @param imageURI the URI of the image file.
-//     * @param listener a listener to handle success and failure callbacks for the operation.
-//     */
-//    public void uploadProfilePicture(String fileID, Uri imageURI, ImageUploadListener listener) {
-//        StorageReference fileReference = profilePictureReference.child(fileID);
-//        fileReference.putFile(imageURI)
-//                .addOnSuccessListener(taskSnapshot -> fileReference.getDownloadUrl()
-//                        .addOnSuccessListener(listener::onImageUploadSuccess)
-//                        .addOnFailureListener(listener::onImageUploadFailure))
-//                .addOnFailureListener(listener::onImageUploadFailure);
-//    }
-
     /**
-     * Retrieves an event poster image from Firebase Storage.
+     * Retrieves an image from Firebase Storage based on the specified type and file ID.
      *
-     * @param fileID   the ID of the file.
-     * @param listener a listener to handle success and failure callbacks for the operation.
+     * @param TYPE            the type of image to retrieve (e.g., EVENT_POSTER, PROFILE_PICTURE, QR_CODE).
+     * @param fileID          the ID of the file.
+     * @param successListener a listener to handle success callbacks for the operation.
+     * @param failureListener a listener to handle failure callbacks for the operation.
      */
-    public void getEventPoster(String fileID, ImageGetListener listener) {
-        StorageReference imageReference = posterReference.child(fileID);
+    public void getImage(String TYPE, String fileID, GetSuccessListener<byte[]> successListener,
+                         AddFailureListener failureListener) {
+        StorageReference imageReference;
+        if(TYPE.equals(EVENT_POSTER)) {
+            imageReference = posterReference.child(fileID);
+        } else if (TYPE.equals(PROFILE_PICTURE)) {
+            imageReference = profilePictureReference.child(fileID);
+        } else if (TYPE.equals(QR_CODE)) {
+            imageReference = qrCodeReference.child(fileID);
+        } else {
+            imageReference = null;
+            return;
+        }
         imageReference.getBytes(Long.MAX_VALUE)
-                .addOnSuccessListener(listener::onImageGetSuccess)
-                .addOnFailureListener(listener::onImageGetFailure);
+                .addOnSuccessListener(bytes -> {
+                    if(successListener != null) {
+                        successListener.onSuccess(bytes);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if(failureListener != null) {
+                        failureListener.onAddFailure(e);
+                    }
+                });
     }
 
     /**
-     * Retrieves a QR code image from Firebase Storage.
+     * Deletes an image from Firebase Storage based on the specified type and file ID.
      *
-     * @param fileID   the ID of the file.
-     * @param listener a listener to handle success and failure callbacks for the operation.
+     * @param TYPE            the type of image to delete (e.g., EVENT_POSTER, PROFILE_PICTURE, QR_CODE).
+     * @param fileID          the ID of the file.
+     * @param successListener a listener to handle success callbacks for the operation.
+     * @param failureListener a listener to handle failure callbacks for the operation.
      */
-    public void getQRCode(String fileID, ImageGetListener listener) {
-        StorageReference imageReference = qrCodeReference.child(fileID);
-        imageReference.getBytes(Long.MAX_VALUE)
-                .addOnSuccessListener(listener::onImageGetSuccess)
-                .addOnFailureListener(listener::onImageGetFailure);
-    }
+    public void deleteImage(String TYPE, String fileID, DeleteSuccessListener successListener,
+                            DeleteFailureListener failureListener) {
+        StorageReference imageReference;
+        if(TYPE.equals(EVENT_POSTER)) {
+            imageReference = posterReference.child(fileID);
+        } else if (TYPE.equals(PROFILE_PICTURE)) {
+            imageReference = profilePictureReference.child(fileID);
+        } else if (TYPE.equals(QR_CODE)) {
+            imageReference = qrCodeReference.child(fileID);
+        } else {
+            imageReference = null;
+            return;
+        }
 
-    /**
-     * Retrieves a profile picture image from Firebase Storage.
-     *
-     * @param fileID   the ID of the file.
-     * @param listener a listener to handle success and failure callbacks for the operation.
-     */
-    public void getProfilePicture(String fileID, ImageGetListener listener) {
-        StorageReference imageReference = profilePictureReference.child(fileID);
-        imageReference.getBytes(Long.MAX_VALUE)
-                .addOnSuccessListener(listener::onImageGetSuccess)
-                .addOnFailureListener(listener::onImageGetFailure);
-    }
-
-    /**
-     * Deletes an event poster image from Firebase Storage.
-     *
-     * @param fileID   the ID of the file.
-     * @param listener a listener to handle success and failure callbacks for the operation.
-     */
-    public void deleteEventPoster(String fileID, ImageDeleteListener listener) {
-        StorageReference imageReference = posterReference.child(fileID);
         imageReference.delete()
-                .addOnSuccessListener(unused -> listener.onImageDeleteSuccess())
-                .addOnFailureListener(unused -> listener.onImageDeleteFailure());
-    }
-
-    /**
-     * Deletes a QR code image from Firebase Storage.
-     *
-     * @param fileID   the ID of the file.
-     * @param listener a listener to handle success and failure callbacks for the operation.
-     */
-    public void deleteQRCode(String fileID, ImageDeleteListener listener) {
-        StorageReference imageReference = qrCodeReference.child(fileID);
-        imageReference.delete()
-                .addOnSuccessListener(unused -> listener.onImageDeleteSuccess())
-                .addOnFailureListener(unused -> listener.onImageDeleteFailure());
-    }
-
-    /**
-     * Deletes a profile picture image from Firebase Storage.
-     *
-     * @param fileID   the ID of the file.
-     * @param listener a listener to handle success and failure callbacks for the operation.
-     */
-    public void deleteProfilePicture(String fileID, ImageDeleteListener listener) {
-        StorageReference imageReference = profilePictureReference.child(fileID);
-        imageReference.delete()
-                .addOnSuccessListener(unused -> listener.onImageDeleteSuccess())
-                .addOnFailureListener(unused -> listener.onImageDeleteFailure());
+                .addOnSuccessListener(unused -> {
+                    if(successListener != null) {
+                        successListener.onDeleteSuccess();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if(failureListener != null) {
+                        failureListener.onDeleteFailure(e);
+                    }
+                });
     }
 }

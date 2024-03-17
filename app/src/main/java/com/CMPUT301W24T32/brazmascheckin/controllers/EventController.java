@@ -4,6 +4,7 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
@@ -38,22 +39,30 @@ public class EventController {
     }
 
     /**
-     * Adds a new event to the Firestore Database.
+     * Adds an event to the Firestore Database.
      *
-     * @param event    the event to be added.
-     * @param listener a listener to handle success and failure callbacks for the operation.
+     * @param event           the event to be added.
+     * @param successListener a listener to handle success callbacks for the operation.
+     * @param failureListener a listener to handle failure callbacks for the operation.
      */
-    public void addEvent(Event event, EventAddListener listener) {
-        if(listener != null) {
-            eventsRef.add(event)
-                    .addOnSuccessListener(documentReference -> {
+    public void addEvent(Event event, AddSuccessListener<String> successListener,
+                         AddFailureListener failureListener) {
+        eventsRef.add(event)
+                .addOnSuccessListener(documentReference -> {
+                    if(documentReference != null) {
                         String ID = documentReference.getId();
-                        listener.onEventAddSuccess(ID);
-                    })
-                    .addOnFailureListener(listener::onEventAddFailure);
-        } else {
-            eventsRef.add(event);
-        }
+                        if(successListener != null) {
+                            successListener.onAddSuccess(ID);
+                        }
+                    } else if (failureListener != null) {
+                        failureListener.onAddFailure(null);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if(failureListener != null) {
+                        failureListener.onAddFailure(e);
+                    }
+                });
     }
 
 
