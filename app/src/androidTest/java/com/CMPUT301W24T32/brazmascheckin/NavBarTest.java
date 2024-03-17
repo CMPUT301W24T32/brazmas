@@ -21,36 +21,50 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+/**
+ * Tests to see if navigation controller can switch from event(main page for users) to other activities
+ */
 @RunWith(AndroidJUnit4.class)
 public class NavBarTest {
+
+
 
         @Rule
         public ActivityScenarioRule<AttendeeOrganizerHome> mActivityScenarioRule =
                 new ActivityScenarioRule<AttendeeOrganizerHome>(AttendeeOrganizerHome.class);
 
+        /**
+        * Tests to see if navigation controller can switch from event(main page for users) to announcement
+        */
         @Test
-        public void clickAnnouncmentNavTest() {
+        public void clickAnnouncementNavTest() {
             Intents.init();
             Espresso.onView(ViewMatchers.withId(R.id.bottom_announcement)).perform(ViewActions.click());
             intended(hasComponent(AnnouncementActivity.class.getName()));
             Intents.release();
 
-    }
-    @Test
-    public void clickProfileNavTest() {
-        Intents.init();
-        Espresso.onView(ViewMatchers.withId(R.id.bottom_profile)).perform(ViewActions.click());
-        intended(hasComponent(ProfileActivity.class.getName()));
-        Intents.release();
+        }
+        /**
+        * Tests to see if navigation controller can switch from event(main page for users) to profule
+        */
+        @Test
+        public void clickProfileNavTest() {
+            Intents.init();
+            Espresso.onView(ViewMatchers.withId(R.id.bottom_profile)).perform(ViewActions.click());
+            intended(hasComponent(ProfileActivity.class.getName()));
+            Intents.release();
 
-    }
-    @Test
-    public void clickCameraNavTest() {
-        Intents.init();
-        Espresso.onView(ViewMatchers.withId(R.id.bottom_camera)).perform(ViewActions.click());
-        intended(hasComponent(CameraActivity.class.getName()));
-        Intents.release();
+        }
+        /**
+        * Tests to see if navigation controller can switch from event(main page for users) to camera
+        */
+        @Test
+        public void clickCameraNavTest() {
+            Intents.init();
+            Espresso.onView(ViewMatchers.withId(R.id.bottom_camera)).perform(ViewActions.click());
+            intended(hasComponent(CameraActivity.class.getName()));
+            Intents.release();
 
-    }
+        }
 }
 
