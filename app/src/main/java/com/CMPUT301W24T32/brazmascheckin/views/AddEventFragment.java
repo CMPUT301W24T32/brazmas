@@ -25,8 +25,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.controllers.AddFailureListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.AddSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.ImageUploadListener;
 import com.CMPUT301W24T32.brazmascheckin.helper.Date;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
@@ -196,17 +197,17 @@ public class AddEventFragment extends DialogFragment {
         String fileID = String.valueOf(System.currentTimeMillis());
 
         if(imageUri != null) {
-            imageController.uploadEventPoster(fileID, imageUri, new ImageUploadListener() {
-                @Override
-                public void onImageUploadSuccess(Uri uri) {
-                    Toast.makeText(context, "Image uploaded!", Toast.LENGTH_SHORT).show();
-                }
 
-                @Override
-                public void onImageUploadFailure(Exception e) {
+            imageController.uploadImage(ImageController.EVENT_POSTER, fileID, imageUri,
+                    new AddSuccessListener<Uri>() {
+                        @Override
+                        public void onAddSuccess(Uri object) {
+                            Toast.makeText(context, "Image uploaded!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    , e -> {
 
-                }
-            });
+                    });
         } else {
 //            Toast.makeText(requireContext(), "Unable to" +
 //                    " upload event poster", Toast.LENGTH_SHORT).show();

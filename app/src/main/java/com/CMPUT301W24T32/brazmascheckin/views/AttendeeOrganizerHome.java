@@ -16,12 +16,13 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.controllers.AddFailureListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.AddSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventAddListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.GetFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.ImageUploadListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 
@@ -30,6 +31,7 @@ import com.CMPUT301W24T32.brazmascheckin.helper.EventRecyclerViewAdapter;
 import com.CMPUT301W24T32.brazmascheckin.helper.QRCodeGenerator;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
+import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
@@ -255,19 +257,14 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
 
                 String fileID = event.getID() + "-QRCODE";
 
-                imageController.uploadQRCode(fileID, imageData, new ImageUploadListener() {
-                    @Override
-                    public void onImageUploadSuccess(Uri uri) {
-                        String QRCodeURI = uri.toString();
-                        event.setQRCode(fileID); // this is basically useless information
-                        eventController.setEvent(event, null, null);
-                    }
-                    @Override
-                    public void onImageUploadFailure(Exception e) {
-                        Toast.makeText(AttendeeOrganizerHome.this, "Unable " +
-                                "to store QR code", Toast.LENGTH_SHORT).show();
-                        // TODO : control flow to break entire sequence
-                    }
+                imageController.uploadQRCode(fileID, imageData, uri -> {
+                    String QRCodeURI = uri.toString();
+                    event.setQRCode(fileID); // this is basically useless information
+                    eventController.setEvent(event, null, null);
+                }, e -> {
+                    Toast.makeText(AttendeeOrganizerHome.this, "Unable " +
+                            "to store QR code", Toast.LENGTH_SHORT).show();
+                    // TODO : control flow to break entire sequence
                 });
 
 
