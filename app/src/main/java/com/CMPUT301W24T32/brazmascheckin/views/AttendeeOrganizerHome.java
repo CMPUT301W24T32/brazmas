@@ -1,37 +1,25 @@
 package com.CMPUT301W24T32.brazmascheckin.views;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Bundle;
-
-import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.Toast;
-
 import com.CMPUT301W24T32.brazmascheckin.R;
-import com.CMPUT301W24T32.brazmascheckin.controllers.EventAddListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.ImageUploadListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.UserGetListener;
-
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.helper.EventRecyclerViewAdapter;
-import com.CMPUT301W24T32.brazmascheckin.helper.QRCodeGenerator;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
-import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-
 
 import java.util.ArrayList;
 
@@ -39,7 +27,7 @@ import java.util.ArrayList;
  * This class will be the home page for attendee/organizer
  */
 
-public class AttendeeOrganizerHome extends AppCompatActivity implements AddEventFragment.AddEventDialogListener {
+public class AttendeeOrganizerHome extends AppCompatActivity {
     private ArrayList<Event> eventDataList;
     private EventRecyclerViewAdapter eventRecyclerViewAdapter;
 
@@ -155,7 +143,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
         });
 
         addButton.setOnClickListener(v -> {
-            new AddEventFragment().show(getSupportFragmentManager(), "Add Event");
+            startActivity(new Intent(AttendeeOrganizerHome.this, AddEvent.class));
         });
     }
 
@@ -181,126 +169,58 @@ public class AttendeeOrganizerHome extends AppCompatActivity implements AddEvent
 
     private void handleAttendeeMode() {
         attendingEventsButton.setOnClickListener(view -> {
-            userController.getUser(deviceID, new UserGetListener() {
-                @Override
-                public void onUserGetSuccess(User user) {
-                    ArrayList<String> signedUp = user.getSignedUpEvents();
-                    eventController.addSnapshotListener(new SnapshotListener<Event>() {
-                        @Override
-                        public void snapshotListenerCallback(ArrayList<Event> events) {
-                            eventDataList.clear();
-                            for(Event event: events) {
-                                if(signedUp.contains(event.getID())) {
-                                    eventDataList.add(event);
-                                }
+
+            userController.getUser(deviceID, user -> {
+                ArrayList<String> signedUp = user.getSignedUpEvents();
+                eventController.addSnapshotListener(new SnapshotListener<Event>() {
+                    @Override
+                    public void snapshotListenerCallback(ArrayList<Event> events) {
+                        eventDataList.clear();
+                        for(Event event: events) {
+                            if(signedUp.contains(event.getID())) {
+                                eventDataList.add(event);
                             }
-                            eventRecyclerViewAdapter.notifyDataSetChanged();
                         }
+                        eventRecyclerViewAdapter.notifyDataSetChanged();
+                    }
 
-                        @Override
-                        public void onError(Exception e) {
-                            Toast.makeText(AttendeeOrganizerHome.this, "Unable to connect to the " +
-                                    "database", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                }
+                    @Override
+                    public void onError(Exception e) {
+                        Toast.makeText(AttendeeOrganizerHome.this, "Unable to connect to the " +
+                                "database", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }, e -> Toast.makeText(AttendeeOrganizerHome.this, "Unable to connect to the " +
+                    "database", Toast.LENGTH_LONG).show());
 
-                @Override
-                public void onUserGetFailure(Exception e) {
-                    Toast.makeText(AttendeeOrganizerHome.this, "Unable to connect to the " +
-                            "database", Toast.LENGTH_LONG).show();
-                }
-            });
         });
     }
 
     public void handleOrganizerMode() {
         organizingEventsButton.setOnClickListener(view -> {
-            userController.getUser(deviceID, new UserGetListener() {
-                @Override
-                public void onUserGetSuccess(User user) {
-                    ArrayList<String> organizedEvents = user.getOrganizedEvents();
-                    eventController.addSnapshotListener(new SnapshotListener<Event>() {
-                        @Override
-                        public void snapshotListenerCallback(ArrayList<Event> events) {
-                            eventDataList.clear();
-                            for(Event event : events) {
-                                if(organizedEvents.contains(event.getID())) {
-                                    eventDataList.add(event);
-                                }
+            userController.getUser(deviceID, user -> {
+                ArrayList<String> organizedEvents = user.getOrganizedEvents();
+                eventController.addSnapshotListener(new SnapshotListener<Event>() {
+                    @Override
+                    public void snapshotListenerCallback(ArrayList<Event> events) {
+                        eventDataList.clear();
+                        for(Event event : events) {
+                            if(organizedEvents.contains(event.getID())) {
+                                eventDataList.add(event);
                             }
-                            eventRecyclerViewAdapter.notifyDataSetChanged();
                         }
-
-                        @Override
-                        public void onError(Exception e) {
-                            Toast.makeText(AttendeeOrganizerHome.this, "Unable to connect to the " +
-                                    "database", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                }
-
-                @Override
-                public void onUserGetFailure(Exception e) {
-                    Toast.makeText(AttendeeOrganizerHome.this, "Unable to connect to the " +
-                            "database", Toast.LENGTH_LONG).show();
-                }
-            });
-        });
-
-    }
-
-    /**
-     * This method adds an event to the database along with a generated QR code.
-     * @param event
-     */
-    @Override
-    public void addEvent(Event event) {
-        event.setOrganizer(deviceID);
-        eventController.addEvent(event, new EventAddListener() {
-            @Override
-            public void onEventAddSuccess(String ID) {
-                event.setID(ID);
-
-                // content of the QR Code is the ID of the event!
-                Bitmap bitmap = QRCodeGenerator.generateQRCode(ID);
-                byte[] imageData = QRCodeGenerator.getQRCodeByteArray(bitmap);
-
-                String fileID = event.getID() + "-QRCODE";
-
-                imageController.uploadQRCode(fileID, imageData, new ImageUploadListener() {
-                    @Override
-                    public void onImageUploadSuccess(Uri uri) {
-                        String QRCodeURI = uri.toString();
-                        event.setQRCode(fileID); // this is basically useless information
-                        eventController.setEvent(event, null);
+                        eventRecyclerViewAdapter.notifyDataSetChanged();
                     }
+
                     @Override
-                    public void onImageUploadFailure(Exception e) {
-                        Toast.makeText(AttendeeOrganizerHome.this, "Unable " +
-                                "to store QR code", Toast.LENGTH_SHORT).show();
-                        // TODO : control flow to break entire sequence
+                    public void onError(Exception e) {
+                        Toast.makeText(AttendeeOrganizerHome.this, "Unable to connect to the " +
+                                "database", Toast.LENGTH_LONG).show();
                     }
                 });
-
-
-                userController.getUser(deviceID, new UserGetListener() {
-                    @Override
-                    public void onUserGetSuccess(User user) {
-                        user.createEvent(ID);
-                        userController.setUser(user, null);
-                    }
-
-                    @Override
-                    public void onUserGetFailure(Exception e) {
-
-                    }
-                });
-            }
-            @Override
-            public void onEventAddFailure(Exception e) {
-
-            }
+            }, e -> Toast.makeText(AttendeeOrganizerHome.this, "Unable to connect to the " +
+                    "database", Toast.LENGTH_LONG).show());
         });
+
     }
 }

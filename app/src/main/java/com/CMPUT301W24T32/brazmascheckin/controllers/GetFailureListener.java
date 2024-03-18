@@ -1,10 +1,9 @@
 package com.CMPUT301W24T32.brazmascheckin.controllers;
 
+/**
+ * Listener interface for handling the failure of retrieving objects from the database.
+ */
 public interface GetFailureListener {
-    /**
-     * Listener interface for handling the failure of retrieving objects from the database.
-     */
-    public interface FailureListener {
 
         /**
          * Called when an error occurs during object retrieval.
@@ -12,5 +11,5 @@ public interface GetFailureListener {
          * @param e the exception representing the error.
          */
         void onFailure(Exception e);
-    }
+
 }

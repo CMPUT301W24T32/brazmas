@@ -38,59 +38,78 @@ public class UserController {
     /**
      * Sets a user in the Firestore Database.
      *
-     * @param user     the user to be set.
-     * @param listener a listener to handle success and failure callbacks for the operation.
+     * @param user            the user object to be set.
+     * @param successListener a listener to handle success callbacks for the operation.
+     * @param failureListener a listener to handle failure callbacks for the operation.
      */
-    public void setUser(User user, UserSetListener listener) {
+    public void setUser(User user, SetSuccessListener successListener,
+                        SetFailureListener failureListener) {
         String ID = user.getID();
-        if(listener != null) {
-            usersRef.document(ID).set(user)
-                    .addOnSuccessListener(temp -> listener.onUserSetSuccess())
-                    .addOnFailureListener(temp -> listener.onUserSetFailure());
-        } else {
-            usersRef.document(ID).set(user);
-        }
+        usersRef.document(ID).set(user)
+                .addOnSuccessListener(temp -> {
+                    if(successListener != null) {
+                        successListener.onSetSuccess();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if(failureListener != null) {
+                        failureListener.onSetFailure(e);
+                    }
+                });
     }
 
     /**
      * Retrieves a user from the Firestore Database.
      *
-     * @param ID       the ID of the user to be retrieved.
-     * @param listener a listener to handle success and failure callbacks for the operation.
+     * @param ID             the ID of the user to be retrieved.
+     * @param successListener a listener to handle success callbacks for the operation.
+     * @param failureListener a listener to handle failure callbacks for the operation.
      */
-    public void getUser(String ID, UserGetListener listener) {
+    public void getUser(String ID, GetSuccessListener<User> successListener,
+                        GetFailureListener failureListener) {
         usersRef.document(ID).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if(documentSnapshot != null) {
                         User user = documentSnapshot.toObject(User.class);
-                        if(user != null) {
-                            listener.onUserGetSuccess(user);
-                        } else {
-                            listener.onUserGetFailure(null);
+                        if(user != null && successListener != null) {
+                            successListener.onSuccess(user);
+                        } else if (failureListener != null) {
+                            failureListener.onFailure(null);
                         }
-                    } else {
-                        listener.onUserGetFailure(null);
+                    } else if (failureListener != null) {
+                        failureListener.onFailure(null);
                     }
                 })
-                .addOnFailureListener(listener::onUserGetFailure);
+                .addOnFailureListener(e -> {
+                    if(failureListener != null) {
+                        failureListener.onFailure(e);
+                    }
+                });
     }
 
     /**
      * Deletes a user from the Firestore Database.
      *
-     * @param user     the user to be deleted.
-     * @param listener a listener to handle success and failure callbacks for the operation.
+     * @param user            the user to be deleted.
+     * @param successListener a listener to handle success callbacks for the operation.
+     * @param failureListener a listener to handle failure callbacks for the operation.
      */
-    public void deleteUser(User user, UserDeleteListener listener) {
+    public void deleteUser(User user, DeleteSuccessListener successListener,
+                           DeleteFailureListener failureListener) {
         String ID = user.getID();
 
-        if(listener != null) {
-            usersRef.document(ID).delete()
-                    .addOnSuccessListener(temp -> listener.onUserDeleteSuccess())
-                    .addOnFailureListener(temp -> listener.onUserDeleteFailure());
-        } else {
-            usersRef.document(ID).delete();
-        }
+
+        usersRef.document(ID).delete()
+                .addOnSuccessListener(temp -> {
+                    if(successListener != null) {
+                        successListener.onDeleteSuccess();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if(failureListener != null) {
+                        failureListener.onDeleteFailure(e);
+                    }
+                });
     }
 
     /**

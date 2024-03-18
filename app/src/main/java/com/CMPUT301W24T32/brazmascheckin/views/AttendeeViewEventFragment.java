@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -15,25 +15,21 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.controllers.AddFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.EventGetListener;
-import com.CMPUT301W24T32.brazmascheckin.controllers.EventSetListener;
+
+import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.ImageGetListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.UserGetListener;
-import com.CMPUT301W24T32.brazmascheckin.controllers.UserSetListener;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
-import com.CMPUT301W24T32.brazmascheckin.models.User;
 
 
 import java.util.ArrayList;
@@ -146,7 +142,7 @@ public class AttendeeViewEventFragment extends DialogFragment {
     private void configureControllers(Event e, Context context) {
 
 
-        handleCheckedInNumber();
+        handleCheckedInNumber(e.getID());
         handleCheckBox(e.getID());
 
 
@@ -163,8 +159,8 @@ public class AttendeeViewEventFragment extends DialogFragment {
         });
     }
 
-    private void handleCheckedInNumber() {
-        eventController.addSnapshotListener(new SnapshotListener<Event>() {
+    private void handleCheckedInNumber(String ID) {
+        eventController.addSingleSnapshotListener(ID, new SnapshotListener<Event>() {
             @Override
             public void snapshotListenerCallback(ArrayList<Event> events) {
                 Event event = events.get(0);
@@ -179,6 +175,7 @@ public class AttendeeViewEventFragment extends DialogFragment {
                     ArrayList<String> signUps = event.getSignUps();
                     int signUpsCount = signUps.size();
                     int maxSignUps = event.getAttendeeLimit();
+                    Log.d("ATTENDEE", String.valueOf(maxSignUps));
 
                     if((signUpsCount + 1 > maxSignUps) && (!signUps.contains(deviceID))) {
                         signedUpCB.setEnabled(false);
@@ -206,102 +203,41 @@ public class AttendeeViewEventFragment extends DialogFragment {
     }
 
     private void handleChecked(String ID) {
-        eventController.getEvent(ID, new EventGetListener() {
-            @Override
-            public void onEventGetSuccess(Event event) {
-                ArrayList<String> signUps = event.getSignUps();
-                signUps.add(deviceID);
-                eventController.setEvent(event, new EventSetListener() {
-                    @Override
-                    public void onEventSetSuccess() {
-                        // Toast
-                    }
 
-                    @Override
-                    public void onEventSetFailure(Exception e) {
-                        // Toast
-                    }
+        eventController.getEvent(ID, event -> {
+            ArrayList<String> signUps = event.getSignUps();
+            signUps.add(deviceID);
+            eventController.setEvent(event, null, null);
+        }, e -> {
+
                 });
-            }
 
-            @Override
-            public void onEventGetFailure(Exception e) {
 
-            }
-        });
+        userController.getUser(deviceID, user -> {
+            ArrayList<String> signUps = user.getSignedUpEvents();
+            signUps.add(ID);
+            userController.setUser(user, null, null);
+        }, e -> {
 
-        userController.getUser(deviceID, new UserGetListener() {
-            @Override
-            public void onUserGetSuccess(User user) {
-                ArrayList<String> signUps = user.getSignedUpEvents();
-                signUps.add(ID);
-                userController.setUser(user, new UserSetListener() {
-                    @Override
-                    public void onUserSetSuccess() {
-
-                    }
-
-                    @Override
-                    public void onUserSetFailure() {
-
-                    }
-                });
-            }
-
-            @Override
-            public void onUserGetFailure(Exception e) {
-
-            }
         });
     }
 
     private void handleUnChecked(String ID) {
-        eventController.getEvent(ID, new EventGetListener() {
-            @Override
-            public void onEventGetSuccess(Event event) {
-                ArrayList<String> signUps = event.getSignUps();
-                signUps.remove(deviceID);
-                eventController.setEvent(event, new EventSetListener() {
-                    @Override
-                    public void onEventSetSuccess() {
-                        // Toast
-                    }
+        eventController.getEvent(ID, event -> {
+            ArrayList<String> signUps = event.getSignUps();
+            signUps.remove(deviceID);
+            eventController.setEvent(event, null, null);
+        }, e -> {
 
-                    @Override
-                    public void onEventSetFailure(Exception e) {
-                        // Toast
-                    }
-                });
-            }
-
-            @Override
-            public void onEventGetFailure(Exception e) {
-
-            }
         });
 
-        userController.getUser(deviceID, new UserGetListener() {
-            @Override
-            public void onUserGetSuccess(User user) {
-                ArrayList<String> signUps = user.getSignedUpEvents();
-                signUps.remove(ID);
-                userController.setUser(user, new UserSetListener() {
-                    @Override
-                    public void onUserSetSuccess() {
 
-                    }
+        userController.getUser(deviceID, user -> {
+            ArrayList<String> signUps = user.getSignedUpEvents();
+            signUps.remove(ID);
+            userController.setUser(user, null, null);
+        }, e -> {
 
-                    @Override
-                    public void onUserSetFailure() {
-
-                    }
-                });
-            }
-
-            @Override
-            public void onUserGetFailure(Exception e) {
-
-            }
         });
     }
 
@@ -310,18 +246,15 @@ public class AttendeeViewEventFragment extends DialogFragment {
      * @param posterID the ID of the image in the database
      */
     private void displayImage(String posterID) {
-        imageController.getEventPoster(posterID, new ImageGetListener() {
-            @Override
-            public void onImageGetSuccess(byte[] bytes) {
-                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                eventPoster.setImageBitmap(bitmap);
-            }
+        if(posterID != null && !posterID.isEmpty()) {
+            imageController.getImage(ImageController.EVENT_POSTER, posterID,
+                    bytes -> {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        eventPoster.setImageBitmap(bitmap);
+                    }, e -> {
 
-            @Override
-            public void onImageGetFailure(Exception e) {
-                // Toast
-            }
-        });
+                    });
+        }
     }
 
     /**
@@ -331,17 +264,11 @@ public class AttendeeViewEventFragment extends DialogFragment {
 
     private void displayQRCode(String code) {
 
-        imageController.getQRCode(code, new ImageGetListener() {
-            @Override
-            public void onImageGetSuccess(byte[] bytes) {
-                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                QRCode.setImageBitmap(bitmap);
-            }
+        imageController.getImage(ImageController.QR_CODE, code, bytes -> {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            QRCode.setImageBitmap(bitmap);
+        }, e -> {
 
-            @Override
-            public void onImageGetFailure(Exception e) {
-
-            }
         });
     }
 }

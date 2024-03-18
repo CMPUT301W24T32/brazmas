@@ -10,9 +10,10 @@ import android.widget.Toast;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
+import com.CMPUT301W24T32.brazmascheckin.controllers.GetFailureListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.UserGetListener;
 import com.CMPUT301W24T32.brazmascheckin.helper.AttendeeSignedUpRecyclerViewAdapter;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
@@ -80,17 +81,11 @@ public class SignedUpAttendees extends AppCompatActivity {
 
 
                 for(String id: attendeeIDs) {
-                    userController.getUser(id, new UserGetListener() {
-                        @Override
-                        public void onUserGetSuccess(User user) {
-                            userDataList.add(user);
-                            attendeeSignedUpRecyclerViewAdapter.notifyDataSetChanged();
-                        }
+                    userController.getUser(id, user -> {
+                        userDataList.add(user);
+                        attendeeSignedUpRecyclerViewAdapter.notifyDataSetChanged();
+                    }, e1 -> {
 
-                        @Override
-                        public void onUserGetFailure(Exception e) {
-
-                        }
                     });
                 }
             }
