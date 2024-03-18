@@ -6,8 +6,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
+import com.CMPUT301W24T32.brazmascheckin.controllers.GetFailureListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.AttendeeSignedUpRecyclerViewAdapter;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
@@ -16,6 +22,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Activity to display signed-up attendees
@@ -25,6 +32,8 @@ public class SignedUpAttendees extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ArrayList<User> userDataList;
     private AttendeeSignedUpRecyclerViewAdapter attendeeSignedUpRecyclerViewAdapter;
+    private EventController eventController;
+    private UserController userController;
 
     /**
      * Called when the activity is created
@@ -59,30 +68,31 @@ public class SignedUpAttendees extends AppCompatActivity {
      * @param e an event
      */
     private void configureControllers(Event e) {
-        CollectionReference eventsRef = FirestoreDB.getEventsRef();
-        DocumentReference eventDoc = eventsRef.document(e.getID());
+        eventController = new EventController(this);
+        userController = new UserController(this);
+        eventController.addSingleSnapshotListener(e.getID(), new SnapshotListener<Event>() {
+            @Override
+            public void snapshotListenerCallback(ArrayList<Event> events) {
+                userDataList.clear();
+                attendeeSignedUpRecyclerViewAdapter.notifyDataSetChanged();
 
-        CollectionReference attendeesRef = FirestoreDB.getUsersRef();
-        eventDoc.addSnapshotListener((value, error) -> {
-            userDataList.clear();
-            attendeeSignedUpRecyclerViewAdapter.notifyDataSetChanged();
-            assert value != null;
-            Event dbEvent = value.toObject(Event.class);
-            assert dbEvent != null;
-            ArrayList<String> attendeeIDs = dbEvent.getSignUps();
+                Event event = events.get(0);
+                ArrayList<String> attendeeIDs = event.getSignUps();
 
-            for(String id: attendeeIDs) {
-                attendeesRef.document(id).get()
-                        .addOnSuccessListener(documentSnapshot -> {
-                            if(documentSnapshot != null) {
-                                User user = documentSnapshot.toObject(User.class);
-                                if(user != null) {
-                                    userDataList.add(user);
-//                                    attendeeSignedUpRecyclerViewAdapter.notifyDataSetChanged();
-                                    attendeeSignedUpRecyclerViewAdapter.notifyItemInserted(userDataList.size() - 1);
-                                }
-                            }
-                        });
+
+                for(String id: attendeeIDs) {
+                    userController.getUser(id, user -> {
+                        userDataList.add(user);
+                        attendeeSignedUpRecyclerViewAdapter.notifyDataSetChanged();
+                    }, e1 -> {
+
+                    });
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+
             }
         });
     }

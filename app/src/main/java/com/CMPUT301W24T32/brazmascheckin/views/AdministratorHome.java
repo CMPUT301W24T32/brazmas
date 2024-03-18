@@ -14,7 +14,12 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.controllers.AdminController;
+import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
+import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
+import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
 import com.CMPUT301W24T32.brazmascheckin.helper.Date;
+import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.helper.EventRecyclerViewAdapter;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
@@ -36,12 +41,13 @@ public class AdministratorHome extends AppCompatActivity {
 
     private RecyclerView eventRecyclerView;
 
-    private CollectionReference eventsRef;
+    private EventController eventController;
 
     /**
-     * Called when activity is created.
-     * @param savedInstanceState is the previous information if it creates
-     *
+     * This method initializes the attendee/organizer home activity.
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,38 +56,30 @@ public class AdministratorHome extends AppCompatActivity {
 
         configureViews();
         configureControllers();
+
+        //TODO: need to add the navigation bar
     }
 
     /**
-     * This method initializes the views, adapters, and models required for this activity.
+     * This method initializes the views, adapters, and models required for the activity.
      */
     private void configureViews() {
         eventDataList = new ArrayList<>();
+
         eventRecyclerViewAdapter = new EventRecyclerViewAdapter(this, eventDataList);
         eventRecyclerView = findViewById(R.id.all_events_rv_admin);
         eventRecyclerView.setAdapter(eventRecyclerViewAdapter);
         eventRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        eventsRef = FirestoreDB.getEventsRef();
+
     }
 
     /**
      * This method defines the controllers for the views of the activity.
      */
     private void configureControllers() {
-        eventsRef.addSnapshotListener((value, error) -> {
-            if (error != null) {
-                Toast.makeText(this, "Unable to connect to the database", Toast.LENGTH_LONG).show();
-            }
-            if (value != null) {
-                eventDataList.clear();
-                for (QueryDocumentSnapshot doc : value) {
-                    Event event = doc.toObject(Event.class);
-                    eventDataList.add(event);
-                }
-                eventRecyclerViewAdapter.notifyDataSetChanged();
-                Log.d("Firestore", "Number of events: " + eventDataList.size());
-            }
-        });
+        eventController = new EventController(this);
+
+        showAllEvents();
 
         // to access event details by clicking single event
         eventRecyclerViewAdapter.setOnItemClickListener(position -> {
@@ -91,5 +89,23 @@ public class AdministratorHome extends AppCompatActivity {
         });
     }
 
-    //TODO: implement a long click action for event clicked then delete?
+    private void showAllEvents() {
+        eventController.addSnapshotListener(new SnapshotListener<Event>() {
+            @Override
+            public void snapshotListenerCallback(ArrayList<Event> events) {
+                eventDataList.clear();
+                for (Event event : events) {
+                    eventDataList.add(event);
+                }
+                eventRecyclerViewAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Toast.makeText(AdministratorHome.this, "Unable to connect to the " + "database", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    //TODO: implement a long click action for event clicked then delete or swipe?
 }
