@@ -52,6 +52,13 @@
                 android:textColorHint="#9C27B0" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <Spinner
+            android:id="@+id/orphaned_qr_code_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"/>
+
         <Button
             android:id="@+id/button"
             android:layout_width="match_parent"

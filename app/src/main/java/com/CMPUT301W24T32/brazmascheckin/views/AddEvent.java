@@ -11,12 +11,14 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
@@ -26,11 +28,13 @@ import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.Date;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
+import com.CMPUT301W24T32.brazmascheckin.helper.OrphanedQRCodeFinder;
 import com.CMPUT301W24T32.brazmascheckin.helper.QRCodeGenerator;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class AddEvent extends Activity {
 
@@ -45,6 +49,9 @@ public class AddEvent extends Activity {
     private Button chooseImage;
     private Button addButton;
     private String deviceID;
+    private Spinner qrCodeSpinner;
+    private List<String> orphanedQRCodeFileIDs;
+    private AutoCompleteTextView autoCompleteTextView;
 
     // Controllers
     private ImageController imageController;
@@ -57,17 +64,21 @@ public class AddEvent extends Activity {
         setContentView(R.layout.add_event);
 
         // Configuring views and controllers
+        qrCodeChoice();
         configureViews();
         configureControllers();
+    }
 
-        // Setup autocomplete dropdown for QR code options
+    /**
+     * Setup autocomplete dropdown for QR code options
+     */
+    private void qrCodeChoice() {
         String[] options = {"Generate new QR code", "Use existing QR code"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, options);
-        AutoCompleteTextView autoCompleteTextView = findViewById(R.id.autoCompleteTextView);
+        autoCompleteTextView = findViewById(R.id.autoCompleteTextView);
         autoCompleteTextView.setText(options[0]);
         autoCompleteTextView.setAdapter(adapter);
     }
-
     /**
      * method to configure views
      */
@@ -81,8 +92,20 @@ public class AddEvent extends Activity {
         addButton = findViewById(R.id.add_event_button);
         deviceID = DeviceID.getDeviceID(this);
         chooseImage.setOnClickListener(view -> openFileChooser());
+        qrCodeSpinner = findViewById(R.id.orphaned_qr_code_spinner);
+
     }
 
+    private void populateOrphanedQRCodeSpinner() {
+        OrphanedQRCodeFinder qrCodeFinder = new OrphanedQRCodeFinder(imageController, eventController);
+        orphanedQRCodeFileIDs = qrCodeFinder.findAndProcessOrphanedQRCodes();
+
+        // Populate dropdown with orphaned QR codes
+        ArrayAdapter<String> qrCodeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, orphanedQRCodeFileIDs);
+        qrCodeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        qrCodeSpinner.setAdapter(qrCodeAdapter);
+        qrCodeSpinner.setVisibility(View.VISIBLE);
+    }
     /**
      * method to configure controllers
      */
@@ -157,7 +180,12 @@ public class AddEvent extends Activity {
             Toast.makeText(this, "Enter all text fields", Toast.LENGTH_SHORT).show();
         } else {
             Event event = new Event(id, title, date, desc, checkIns, signUps, limit, posterID, QRCodeID, shareQRCodeID, "");
-            addEvent(event);
+            String selectedOption = autoCompleteTextView.getText().toString();
+            boolean generateNewQRCode = selectedOption.equals("Generate new QR code");
+            if (generateNewQRCode) {
+                populateOrphanedQRCodeSpinner();
+            }
+            addEvent(event, generateNewQRCode);
         }
     }
 
@@ -182,8 +210,42 @@ public class AddEvent extends Activity {
      * This method adds an event to the database along with a generated QR code.
      * @param event The event to be added.
      */
-    public void addEvent(Event event) {
+    public void addEvent(Event event, boolean generateNewQRCode) {
         event.setOrganizer(deviceID);
+
+        //choice
+        if (generateNewQRCode) {
+            // Generate new QR code and add event
+            generateAndAddQRCode(event);
+        } else {
+            // Use existing QR code and add event
+            useExistingQRCode(event);
+        }
+
+    }
+
+    private void useExistingQRCode(Event event) {
+        eventController.addEvent(event, ID -> {
+            event.setID(ID);
+            String selectQRCodeFileID = (String) qrCodeSpinner.getSelectedItem();
+            event.setQRCode(selectQRCodeFileID);
+            String newID = selectQRCodeFileID.substring(0,selectQRCodeFileID.indexOf('-'));
+            event.setID(newID);
+            // Update user information and finish activity
+            userController.getUser(deviceID, user -> {
+                user.createEvent(ID);
+                userController.setUser(user, null, null);
+            }, null);
+            finish();
+        }, new AddFailureListener() {
+            @Override
+            public void onAddFailure(Exception e) {
+                // Handle failure
+            }
+        });
+    }
+
+    private void generateAndAddQRCode(Event event) {
         eventController.addEvent(event, ID -> {
             event.setID(ID);
 
