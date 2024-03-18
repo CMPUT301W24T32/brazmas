@@ -15,3 +15,10 @@ Link: https://chat.mistral.ai/
 Date: 2024-03-07
 
 Use: Creating unit testing
+
+
+Link: https://chat.openai.com/
+
+Date: 2024-03-16
+
+Use: Created comments for "controllers" package

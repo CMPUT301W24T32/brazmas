@@ -14,13 +14,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
+import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
-import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
@@ -34,6 +31,8 @@ public class CameraActivity extends AppCompatActivity {
 
     // Scan button
     Button btn_scan;
+
+    private EventController eventController;
     /**
      *This method initializes the Camera activity.
      * @param savedInstanceState If the activity is being re-initialized after
@@ -45,6 +44,7 @@ public class CameraActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_camera);
+        eventController = new EventController(this);
 
         // Initialize scan button
         btn_scan = findViewById(R.id.qr_code_scan_btn);
@@ -101,34 +101,22 @@ public class CameraActivity extends AppCompatActivity {
     ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
         AlertDialog.Builder builder = new AlertDialog.Builder(CameraActivity.this);
 
-        // Reference to the "events" collection in Firestore
-        CollectionReference eventsRef = FirestoreDB.getEventsRef();
-
         // Get the scanned QR code content (event ID)
         String eventID = result.getContents();
 
-        // Reference to the specific event document
-        DocumentReference eventDoc = eventsRef.document(eventID);
-
-        // Retrieve the event document
-        eventDoc.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        eventController.getEvent(eventID, new GetSuccessListener<Event>() {
             @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                // Convert the document to an Event object
-                currentEvent = documentSnapshot.toObject(Event.class);
-
-                // Get the device ID (unique identifier)
+            public void onSuccess(Event object) {
                 String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
                 // Perform check-in for the current device
-                currentEvent.checkIn(deviceID);
-
+                object.checkIn(deviceID);
                 // Update the event document in Firestore
-                eventDoc.set(currentEvent);
+                eventController.setEvent(object, null, null);
 
                 // Display a success message
                 builder.setTitle("Successfully checked in!");
-                builder.setMessage(currentEvent.getName());
+                builder.setMessage(object.getName());
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -136,6 +124,7 @@ public class CameraActivity extends AppCompatActivity {
                     }
                 }).show();
             }
+        }, e -> {
         });
     });
 }

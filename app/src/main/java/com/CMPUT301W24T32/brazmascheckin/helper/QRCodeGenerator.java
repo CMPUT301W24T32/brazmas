@@ -8,6 +8,8 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
+import java.io.ByteArrayOutputStream;
+
 /**
  * This class provides utility methods for QR code generation
  */
@@ -26,5 +28,11 @@ public class QRCodeGenerator {
         } catch(WriterException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static byte[] getQRCodeByteArray(Bitmap bitmap) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+        return outputStream.toByteArray();
     }
 }
