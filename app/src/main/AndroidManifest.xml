@@ -23,6 +23,9 @@
             android:name=".views.SignedUpAttendees"
             android:exported="false" />
         <activity
+            android:name=".views.AddEvent"
+            android:exported="false" />
+        <activity
             android:name=".views.CheckedInAttendees"
             android:exported="false" />
         <activity
