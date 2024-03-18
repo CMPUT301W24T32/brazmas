@@ -26,11 +26,19 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.controllers.AddFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.AdminController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.EventDeleteListener;
+
+import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteFailureListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteSuccessListener;
+
+import com.CMPUT301W24T32.brazmascheckin.controllers.GetFailureListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
+
+
+
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.ImageGetListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
@@ -141,17 +149,17 @@ public class AdministratorViewEventFragment extends DialogFragment {
 
             deleteEventBtn.setOnClickListener(view -> {
                 // call the deleteEvent method of EventController
-                eventController.deleteEvent(e.getID(), new EventDeleteListener() {
+                eventController.deleteEvent(e.getID(), new DeleteSuccessListener() {
                     @Override
-                    public void onEventDeleteSuccess() {
+                    public void onDeleteSuccess() {
                         // event is deleted successfully
                         Toast.makeText(getContext(), "Event deleted successfully", Toast.LENGTH_SHORT).show();
                         dismiss();
                     }
-
+                }, new DeleteFailureListener() {
                     @Override
-                    public void onEventDeleteFailure(Exception e) {
-                        // failed to delete an event
+                    public void onDeleteFailure(Exception e) {
+                        // failed to delete event
                         Toast.makeText(getContext(), "Failed to delete event", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -164,18 +172,22 @@ public class AdministratorViewEventFragment extends DialogFragment {
      * @param posterID the ID of the image in the database
      */
     private void displayImage(String posterID) {
-        imageController.getEventPoster(posterID, new ImageGetListener() {
+
+        imageController.getImage(ImageController.EVENT_POSTER, posterID, new GetSuccessListener<byte[]>() {
             @Override
-            public void onImageGetSuccess(byte[] bytes) {
+            public void onSuccess(byte[] bytes) {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 eventPoster.setImageBitmap(bitmap);
             }
-
+        }, new AddFailureListener() {
             @Override
-            public void onImageGetFailure(Exception e) {
-                // Toast
+            public void onAddFailure(Exception e) {
+                // handle failure
+                Toast.makeText(getContext(), "Unable to upload poster", Toast.LENGTH_SHORT).show();
+
             }
         });
+
     }
 
     /**
