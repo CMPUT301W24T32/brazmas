@@ -43,6 +43,9 @@
         <activity
             android:name=".views.AttendeeOrganizerHome"
             android:exported="false" />
+        <activity
+            android:name=".views.EditProfileActivity"
+            android:exported="false" />
         <activity android:name=".views.CaptureAct"
             android:screenOrientation="portrait"
             android:stateNotNeeded="true"

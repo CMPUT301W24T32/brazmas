@@ -1,10 +1,12 @@
 package com.CMPUT301W24T32.brazmascheckin.views;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
@@ -20,9 +23,11 @@ import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.storage.StorageReference;
 
 /**
  * Profile activity made for testing navigation
@@ -35,13 +40,15 @@ public class ProfileActivity extends AppCompatActivity {
     private CollectionReference usersRef;
     private DocumentReference userDoc;
     private Uri imageUri;
-    private Button changeProfileBtn;
-    private final int IMG_REQ = 200;
+    private Button EditProfileBtn;
+    private StorageReference storageRef;
+
     /**
-     *This method initializes the Profile activity.
+     * This method initializes the Profile activity.
+     *
      * @param savedInstanceState If the activity is being re-initialized after
-     * previously being shut down then this Bundle contains the data it most
-     * recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,22 +71,22 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 int id = menuItem.getItemId();
-                if (id == (R.id.bottom_announcement)){
+                if (id == (R.id.bottom_announcement)) {
                     startActivity(new Intent(getApplicationContext(), AnnouncementActivity.class));
-                    overridePendingTransition(0,0);
+                    overridePendingTransition(0, 0);
                     return true;
                 }
-                if (id == (R.id.bottom_camera)){
+                if (id == (R.id.bottom_camera)) {
                     startActivity(new Intent(getApplicationContext(), CameraActivity.class));
-                    overridePendingTransition(0,0);
+                    overridePendingTransition(0, 0);
                     return true;
                 }
-                if (id == (R.id.bottom_profile)){
+                if (id == (R.id.bottom_profile)) {
                     return true;
                 }
-                if (id == (R.id.bottom_event)){
+                if (id == (R.id.bottom_event)) {
                     startActivity(new Intent(getApplicationContext(), AttendeeOrganizerHome.class));
-                    overridePendingTransition(0,0);
+                    overridePendingTransition(0, 0);
                     return true;
                 }
                 return false;
@@ -91,20 +98,21 @@ public class ProfileActivity extends AppCompatActivity {
     /**
      * configures the views for profile activity
      */
-    public void configureViews(){
+    public void configureViews() {
         profilePicture = findViewById(R.id.profile_picture);
         userName = findViewById(R.id.name_tv);
-        changeProfileBtn = findViewById(R.id.change_profile_picture_btn);
         usersRef = FirestoreDB.getUsersRef();
+        EditProfileBtn = findViewById(R.id.edit_profile_btn);
         String deviceID = DeviceID.getDeviceID(this);
         userDoc = usersRef.document(deviceID);
+        storageRef = FirestoreDB.getStorageReference("uploads");
 
     }
 
     /**
      * configure controllers for profile activity
      */
-    public void configureControllers(){
+    public void configureControllers() {
         userDoc.get().addOnSuccessListener(documentSnapshot -> {
             User user = documentSnapshot.toObject(User.class);
             String firstName = user.getFirstName();
@@ -112,15 +120,13 @@ public class ProfileActivity extends AppCompatActivity {
             String fullName = firstName + " " + lastName;
             userName.setText(fullName);
         });
-        }
 
-    /**
-     * This method opens the device storage to retrieve a file.
-     */
-    private void openFileChooser(){
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, IMG_REQ);
+        EditProfileBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), EditProfileActivity.class));
+            }
+        });
     }
 }
+
