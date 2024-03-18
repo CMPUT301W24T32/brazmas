@@ -19,6 +19,7 @@ import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanIntentResult;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 /**
@@ -99,6 +100,10 @@ public class CameraActivity extends AppCompatActivity {
 
     // Activity result launcher for QR code scanning
     ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
+        handleScanResult(result);
+    });
+
+    private void handleScanResult(ScanIntentResult result) {
         AlertDialog.Builder builder = new AlertDialog.Builder(CameraActivity.this);
 
         // Get the scanned QR code content (event ID)
@@ -126,5 +131,5 @@ public class CameraActivity extends AppCompatActivity {
             }
         }, e -> {
         });
-    });
+    }
 }

@@ -3,16 +3,11 @@ package com.CMPUT301W24T32.brazmascheckin.controllers;
 import android.content.Context;
 import android.net.Uri;
 
-
-import androidx.annotation.NonNull;
-
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
-
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Controller responsible for managing image-related operations in Firebase Storage.
@@ -169,5 +164,20 @@ public class ImageController {
                         failureListener.onDeleteFailure(e);
                     }
                 });
+    }
+
+    public List<String> getAllQRCodeFileIDs() {
+        final List<String> qrCodeFileIDs = new ArrayList<>();
+
+        qrCodeReference.listAll().addOnSuccessListener(listResult -> {
+            for (StorageReference item : listResult.getItems()) {
+                String fileID = item.getName();
+                qrCodeFileIDs.add(fileID);
+            }
+        }).addOnFailureListener(e -> {
+            // Handle failure
+        });
+
+        return qrCodeFileIDs;
     }
 }
