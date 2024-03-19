@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.SurfaceControl;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -28,6 +29,7 @@ import com.CMPUT301W24T32.brazmascheckin.controllers.AddFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
+import com.CMPUT301W24T32.brazmascheckin.controllers.SetSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.Date;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
@@ -198,13 +200,6 @@ public class AddEvent extends Activity {
             Event event = new Event(id, title, date, desc, checkIns, signUps, limit, posterID, QRCodeID, shareQRCodeID, "");
             String selectedOption = autoCompleteTextView.getText().toString();
             boolean generateNewQRCode = selectedOption.equals("Generate new QR code");
-//            Log.d("tag1", "retrieveInput bool: "+ generateNewQRCode);
-//            if (!generateNewQRCode) {
-//                Log.d("tag3", "retrieveInput: ");
-//                populateOrphanedQRCodeSpinner();
-//            } else {
-//                addEvent(event, generateNewQRCode);
-//            }
             addEvent(event, generateNewQRCode);
         }
     }
@@ -245,27 +240,16 @@ public class AddEvent extends Activity {
     }
 
     private void useExistingQRCode(Event event) {
-        eventController.addEvent(event, ID -> {
-            event.setID(ID);
-            String selectQRCodeFileID = (String) qrCodeSpinner.getSelectedItem();
-            event.setQRCode(selectQRCodeFileID);
-            String newID = selectQRCodeFileID.substring(0,selectQRCodeFileID.indexOf('-'));
-            event.setID(newID);
-            Log.d("log4", "added event: " + ID);
-            // Update user information and finish activity
-            userController.getUser(deviceID, user -> {
-                user.createEvent(ID);
-                userController.setUser(user, null, null);
-                eventController.setEvent(event, null, null);
+        String selectQRCodeFileID = (String) qrCodeSpinner.getSelectedItem();
+        String newID = selectQRCodeFileID.substring(0, selectQRCodeFileID.indexOf('-'));
+        event.setID(newID);
+        event.setQRCode(selectQRCodeFileID);
 
-            }, null);
-            finish();
-        }, new AddFailureListener() {
-            @Override
-            public void onAddFailure(Exception e) {
-                // Handle failure
-            }
-        });
+        eventController.setEvent(event, () -> userController.getUser(deviceID, user -> {
+            user.createEvent(newID);
+            userController.setUser(user, null ,null);
+        }, null), null);
+        finish();
     }
 
     private void generateAndAddQRCode(Event event) {

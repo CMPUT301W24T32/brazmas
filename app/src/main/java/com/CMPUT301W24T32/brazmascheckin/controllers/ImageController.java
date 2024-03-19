@@ -175,12 +175,10 @@ public class ImageController {
                 String fileID = item.getName();
                 qrCodeFileIDs.add(fileID);
             }
-            Log.d("log4", "on image success in actual controller");
             if (listener != null) {
                 listener.onSuccess(qrCodeFileIDs);
             }
         }).addOnFailureListener(e -> {
-            Log.d("log4", "on image failure");
         });
     }
 }

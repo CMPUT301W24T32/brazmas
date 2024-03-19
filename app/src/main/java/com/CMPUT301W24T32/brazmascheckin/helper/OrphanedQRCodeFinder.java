@@ -23,9 +23,7 @@ public class OrphanedQRCodeFinder {
 
         //get all QR code id's from Firebase storage
         imageController.getAllQRCodeFileIDs(allQRCodeFileIDs -> {
-            Log.d("log4", "in image controller success");
             eventController.getAllEventQRCodeIDs(eventQRCodeIDs -> {
-                Log.d("log4", "in event controller success");
                 processOrphanedQRCodes(allQRCodeFileIDs, eventQRCodeIDs, successListener);
             });
         });
