@@ -31,7 +31,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 
 /**
- * This class will be the home page for organizer.
+ * This class will be the home page for admin.
  * This is where the admin will browse events.
  */
 public class AdministratorHome extends AppCompatActivity {
@@ -44,7 +44,7 @@ public class AdministratorHome extends AppCompatActivity {
     private EventController eventController;
 
     /**
-     * This method initializes the attendee/organizer home activity.
+     * This method initializes the admin home activity.
      * @param savedInstanceState If the activity is being re-initialized after
      *     previously being shut down then this Bundle contains the data it most
      *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
