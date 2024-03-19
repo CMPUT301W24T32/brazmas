@@ -166,7 +166,7 @@ public class ImageController {
                 });
     }
 
-    public List<String> getAllQRCodeFileIDs() {
+    public void getAllQRCodeFileIDs(GetSuccessListener<List<String>> listener) {
         final List<String> qrCodeFileIDs = new ArrayList<>();
 
         qrCodeReference.listAll().addOnSuccessListener(listResult -> {
@@ -174,10 +174,11 @@ public class ImageController {
                 String fileID = item.getName();
                 qrCodeFileIDs.add(fileID);
             }
+            if (listener != null) {
+                listener.onSuccess(qrCodeFileIDs);
+            }
         }).addOnFailureListener(e -> {
             // Handle failure
         });
-
-        return qrCodeFileIDs;
     }
 }

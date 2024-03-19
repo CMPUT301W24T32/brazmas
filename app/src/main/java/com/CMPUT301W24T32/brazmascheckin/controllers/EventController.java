@@ -174,7 +174,7 @@ public class EventController {
         });
     }
 
-    public List<String> getAllEventQRCodeIDs() {
+    public void getAllEventQRCodeIDs(GetSuccessListener<List<String>> listener) {
         final List<String> qrCodeIDs = new ArrayList<>();
 
         eventsRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
@@ -187,9 +187,11 @@ public class EventController {
                     }
                 }
             }
+            if (listener != null) {
+                listener.onSuccess(qrCodeIDs);
+            }
         }).addOnFailureListener(e -> {
             // Handle failure
         });
-        return qrCodeIDs;
     }
 }
