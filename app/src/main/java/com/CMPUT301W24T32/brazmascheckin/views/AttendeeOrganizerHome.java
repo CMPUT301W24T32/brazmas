@@ -3,6 +3,7 @@ package com.CMPUT301W24T32.brazmascheckin.views;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -109,7 +110,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
         eventRecyclerView.setAdapter(eventRecyclerViewAdapter);
         eventRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         addButton = findViewById(R.id.user_home_add_event_btn);
-
+        addButton.setVisibility(View.INVISIBLE);
         allEventsButton = findViewById(R.id.user_home_all_btn);
         attendingEventsButton = findViewById(R.id.user_home_attending_btn);
         organizingEventsButton = findViewById(R.id.user_home_organizing_btn);
@@ -151,6 +152,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
         eventController.addSnapshotListener(new SnapshotListener<Event>() {
             @Override
             public void snapshotListenerCallback(ArrayList<Event> events) {
+                addButton.setVisibility(View.INVISIBLE);
                 eventDataList.clear();
                 for (Event event : events) {
                     eventDataList.add(event);
@@ -169,6 +171,8 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
 
     private void handleAttendeeMode() {
         attendingEventsButton.setOnClickListener(view -> {
+
+            addButton.setVisibility(View.INVISIBLE);
 
             userController.getUser(deviceID, user -> {
                 ArrayList<String> signedUp = user.getSignedUpEvents();
@@ -198,6 +202,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
 
     public void handleOrganizerMode() {
         organizingEventsButton.setOnClickListener(view -> {
+            addButton.setVisibility(View.VISIBLE);
             userController.getUser(deviceID, user -> {
                 ArrayList<String> organizedEvents = user.getOrganizedEvents();
                 eventController.addSnapshotListener(new SnapshotListener<Event>() {

@@ -133,6 +133,18 @@ public class AttendeeViewEventFragment extends DialogFragment {
         QRCode = view.findViewById(R.id.view_event_QR_iv);
         displayImage(e.getPoster());
         displayQRCode(e.getQRCode());
+
+
+        checkedInAttendeesBtn.setVisibility(View.INVISIBLE);
+        signedUpAttendeesBtn.setVisibility(View.INVISIBLE);
+        // allows only organzier to check signed up and checked in
+        userController.getUser(deviceID, user -> {
+                    ArrayList<String> organizedEvents = user.getOrganizedEvents();
+                    if (organizedEvents.contains(e.getID())){
+                        checkedInAttendeesBtn.setVisibility(View.VISIBLE);
+                        signedUpAttendeesBtn.setVisibility(View.VISIBLE);
+                    }
+                    },null);
     }
 
     /**
