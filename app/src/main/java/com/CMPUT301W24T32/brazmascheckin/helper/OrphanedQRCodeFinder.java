@@ -1,5 +1,7 @@
 package com.CMPUT301W24T32.brazmascheckin.helper;
 
+import android.util.Log;
+
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
@@ -20,18 +22,13 @@ public class OrphanedQRCodeFinder {
     public void findAndProcessOrphanedQRCodes(GetSuccessListener<List<String>> successListener) {
 
         //get all QR code id's from Firebase storage
-        imageController.getAllQRCodeFileIDs(new GetSuccessListener<List<String>>() {
-            @Override
-            public void onSuccess(List<String> allQRCodeFileIDs) {
-                eventController.getAllEventQRCodeIDs(new GetSuccessListener<List<String>>() {
-
-                    @Override
-                    public void onSuccess(List<String> eventQRCodeIDs) {
-                        processOrphanedQRCodes(allQRCodeFileIDs, eventQRCodeIDs, successListener);
-                    }
-                });
-            }
-        } );
+        imageController.getAllQRCodeFileIDs(allQRCodeFileIDs -> {
+            Log.d("log4", "in image controller success");
+            eventController.getAllEventQRCodeIDs(eventQRCodeIDs -> {
+                Log.d("log4", "in event controller success");
+                processOrphanedQRCodes(allQRCodeFileIDs, eventQRCodeIDs, successListener);
+            });
+        });
     }
 
     private void processOrphanedQRCodes(List<String> allQRCodeFileIDs, List<String> eventQRCodeIDs,
@@ -42,6 +39,8 @@ public class OrphanedQRCodeFinder {
                 orphanedQRCodeFileIDs.add(qrCodeFileID);
             }
         }
-        successListener.onSuccess(orphanedQRCodeFileIDs);
+        if(successListener != null) {
+            successListener.onSuccess(orphanedQRCodeFileIDs);
+        }
     }
 }

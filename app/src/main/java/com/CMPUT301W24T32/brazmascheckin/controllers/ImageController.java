@@ -2,6 +2,7 @@ package com.CMPUT301W24T32.brazmascheckin.controllers;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.google.firebase.storage.StorageReference;
@@ -167,18 +168,19 @@ public class ImageController {
     }
 
     public void getAllQRCodeFileIDs(GetSuccessListener<List<String>> listener) {
-        final List<String> qrCodeFileIDs = new ArrayList<>();
 
         qrCodeReference.listAll().addOnSuccessListener(listResult -> {
+            List<String> qrCodeFileIDs = new ArrayList<>();
             for (StorageReference item : listResult.getItems()) {
                 String fileID = item.getName();
                 qrCodeFileIDs.add(fileID);
             }
+            Log.d("log4", "on image success in actual controller");
             if (listener != null) {
                 listener.onSuccess(qrCodeFileIDs);
             }
         }).addOnFailureListener(e -> {
-            // Handle failure
+            Log.d("log4", "on image failure");
         });
     }
 }

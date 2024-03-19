@@ -175,9 +175,9 @@ public class EventController {
     }
 
     public void getAllEventQRCodeIDs(GetSuccessListener<List<String>> listener) {
-        final List<String> qrCodeIDs = new ArrayList<>();
 
         eventsRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            List<String> qrCodeIDs = new ArrayList<>();
             for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                 Event event = documentSnapshot.toObject(Event.class);
                 if (event != null) {

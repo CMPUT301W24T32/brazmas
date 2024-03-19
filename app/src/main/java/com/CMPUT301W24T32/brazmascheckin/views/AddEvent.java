@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -69,6 +70,7 @@ public class AddEvent extends Activity {
         qrCodeChoice();
         configureViews();
         configureControllers();
+        populateOrphanedQRCodeSpinner();
     }
 
     /**
@@ -95,22 +97,20 @@ public class AddEvent extends Activity {
         deviceID = DeviceID.getDeviceID(this);
         chooseImage.setOnClickListener(view -> openFileChooser());
         qrCodeSpinner = findViewById(R.id.orphaned_qr_code_spinner);
-
     }
 
     private void populateOrphanedQRCodeSpinner() {
+        Log.d("log4", "in populate orphaned");
         OrphanedQRCodeFinder qrCodeFinder = new OrphanedQRCodeFinder(imageController, eventController);
-        qrCodeFinder.findAndProcessOrphanedQRCodes(new GetSuccessListener<List<String>>() {
-            @Override
-            public void onSuccess(List<String> orphanedQRCodeFileIDs) {
-                // Populate dropdown with orphaned QR codes
-                ArrayAdapter<String> qrCodeAdapter = new ArrayAdapter<>(AddEvent.this, android.R.layout.simple_spinner_item);
-                qrCodeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                qrCodeAdapter.addAll(orphanedQRCodeFileIDs);
-                qrCodeSpinner.setAdapter(qrCodeAdapter);
-                Log.d("log4", "populateOrphanedQRCodeSpinner: "+orphanedQRCodeFileIDs.size());
-                qrCodeSpinner.setVisibility(View.VISIBLE);
-            }
+        qrCodeFinder.findAndProcessOrphanedQRCodes(orphanedQRCodeFileIDs -> {
+            Log.d("log4", "in success");
+            // Populate dropdown with orphaned QR codes
+            ArrayAdapter<String> qrCodeAdapter = new ArrayAdapter<>(AddEvent.this, android.R.layout.simple_spinner_item);
+            qrCodeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            qrCodeAdapter.addAll(orphanedQRCodeFileIDs);
+            qrCodeSpinner.setAdapter(qrCodeAdapter);
+            Log.d("log4", "populateOrphanedQRCodeSpinner: "+orphanedQRCodeFileIDs.size());
+//            qrCodeSpinner.setVisibility(View.VISIBLE);
         });
     }
     /**
@@ -122,6 +122,14 @@ public class AddEvent extends Activity {
         userController = new UserController(this);
         addButton.setOnClickListener(v -> {
             retrieveInput(this);
+        });
+
+        autoCompleteTextView.setOnItemClickListener((adapterView, view, i, l) -> {
+            if(i == 0) {
+                qrCodeSpinner.setVisibility(View.GONE);
+            } else {
+                qrCodeSpinner.setVisibility(View.VISIBLE);
+            }
         });
     }
 
@@ -183,17 +191,20 @@ public class AddEvent extends Activity {
         String QRCodeID = "id";
         String shareQRCodeID = "id";
         String id = "1";
+
         if (title.isEmpty() || desc.isEmpty()) {
             Toast.makeText(this, "Enter all text fields", Toast.LENGTH_SHORT).show();
         } else {
             Event event = new Event(id, title, date, desc, checkIns, signUps, limit, posterID, QRCodeID, shareQRCodeID, "");
             String selectedOption = autoCompleteTextView.getText().toString();
             boolean generateNewQRCode = selectedOption.equals("Generate new QR code");
-            Log.d("tag1", "retrieveInput: "+generateNewQRCode);
-            if (!generateNewQRCode) {
-                Log.d("tag3", "retrieveInput: ");
-                populateOrphanedQRCodeSpinner();
-            }
+//            Log.d("tag1", "retrieveInput bool: "+ generateNewQRCode);
+//            if (!generateNewQRCode) {
+//                Log.d("tag3", "retrieveInput: ");
+//                populateOrphanedQRCodeSpinner();
+//            } else {
+//                addEvent(event, generateNewQRCode);
+//            }
             addEvent(event, generateNewQRCode);
         }
     }
@@ -240,10 +251,13 @@ public class AddEvent extends Activity {
             event.setQRCode(selectQRCodeFileID);
             String newID = selectQRCodeFileID.substring(0,selectQRCodeFileID.indexOf('-'));
             event.setID(newID);
+            Log.d("log4", "added event: " + ID);
             // Update user information and finish activity
             userController.getUser(deviceID, user -> {
                 user.createEvent(ID);
                 userController.setUser(user, null, null);
+                eventController.setEvent(event, null, null);
+
             }, null);
             finish();
         }, new AddFailureListener() {
