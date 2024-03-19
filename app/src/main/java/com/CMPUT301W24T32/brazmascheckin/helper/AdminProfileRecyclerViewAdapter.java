@@ -1,2 +1,93 @@
-package com.CMPUT301W24T32.brazmascheckin.helper;public class AdminProfileRecyclerViewAdapter {
+package com.CMPUT301W24T32.brazmascheckin.helper;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.models.User;
+
+import java.util.ArrayList;
+
+/**
+ * This class is the adapter for the RecyclerView of user profiles.
+ * This class is responsible for populating the recycler view with user profile information.
+ */
+public class AdminProfileRecyclerViewAdapter extends RecyclerView.Adapter<AdminProfileRecyclerViewAdapter.AdminProfileViewHolder> {
+
+    private ArrayList<User> users;
+    private Context context;
+
+    /**
+     * This method constructs a new AdminProfileRecyclerViewAdapter.
+     * @param context the context in which the adapter is being used.
+     * @param users the list of all users.
+     */
+    public AdminProfileRecyclerViewAdapter(Context context, ArrayList<User> users) {
+        this.context = context;
+        this.users = users;
+    }
+
+    /**
+     * This method is used when a recycler view requires a view holder to represent data.
+     * @param parent the ViewGroup into which the new View will be added after it is bound to an adapter position.
+     * @param viewType the view type of the new View.
+     * @return
+     */
+    @NonNull
+    @Override
+    public AdminProfileViewHolder onCreateViewHolder(@NonNull ViewGroup parent,int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.administrator_view_profile, parent, false);
+        return new AdminProfileViewHolder(view);
+    }
+
+    /**
+     * This method displays an items at a specific position in the Recycler View.
+     * @param holder the ViewHolder which needs to be updated to include contents of item at the given position.
+     * @param position the position of the item within the adapter's data set.
+     */
+    @Override
+    public void onBindViewHolder(@NonNull AdminProfileViewHolder holder, int position) {
+        User user = users.get(position);
+        holder.bind(user);
+    }
+
+    /**
+     * This method returns the number of items in the data set held by the adapter.
+     * @return The total number of items in this adapter.
+     */
+    @Override
+    public int getItemCount() {
+        return users.size();
+    }
+
+    /**
+     * This ViewHolder class holds data about an user and their profile.
+     */
+    public class AdminProfileViewHolder extends RecyclerView.ViewHolder {
+        private TextView name;
+
+        /**
+         * This method constructs a AdminProfileViewHolder.
+         * @param itemView the view that represents the user.
+         */
+        public AdminProfileViewHolder(@NonNull View itemView) {
+            super(itemView);
+            name = itemView.findViewById(R.id.admin_view_profile_name_tv);
+        }
+
+        /**
+         * This method binds the information to the view.
+         * @param user the user information.
+         */
+        public void bind(User user) {
+            String firstLastName = user.getFirstName() + user.getLastName();
+            name.setText(firstLastName);
+        }
+    }
 }
