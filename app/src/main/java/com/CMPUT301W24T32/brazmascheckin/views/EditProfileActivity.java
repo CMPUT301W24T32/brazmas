@@ -9,12 +9,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
@@ -23,7 +25,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.storage.StorageReference;
-
+/**
+ * Activity for users to edit pfp and name
+ */
 public class EditProfileActivity extends AppCompatActivity {
     private ImageView profilePicture;
     private FloatingActionButton changeProfileBtn;
@@ -33,11 +37,17 @@ public class EditProfileActivity extends AppCompatActivity {
     private StorageReference storageRef;
     private Uri imageUri;
     private final int IMG_REQ = 300;
-    private DocumentReference userDoc;
-    private CollectionReference usersRef;
     private UserController userController;
+    private ImageController imageController;
     private String deviceID;
 
+    /**
+     * This method initializes the EditProfileActivity
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +58,9 @@ public class EditProfileActivity extends AppCompatActivity {
 
 
     }
-
+    /**
+     * configures the views for edit profile activity
+     */
     public void configureViews() {
         profilePicture = findViewById(R.id.profile_picture_edit);
         firstName = findViewById(R.id.first_name_et);
@@ -56,22 +68,27 @@ public class EditProfileActivity extends AppCompatActivity {
         changeProfileBtn = findViewById(R.id.change_profile_picture_btn);
         storageRef = FirestoreDB.getStorageReference("uploads");
         deviceID = DeviceID.getDeviceID(this);
-        usersRef = FirestoreDB.getUsersRef();
-        userDoc = usersRef.document(deviceID);
         doneBtn = findViewById(R.id.done_btn);
         changeProfileBtn.setOnClickListener(view1 -> openFileChooser());
     }
 
+    /**
+     * configure controllers for edit profile activity
+     */
+
     public void configureControllers() {
         userController = new UserController(this);
+        imageController = new ImageController(this);
 
-        userDoc.get().addOnSuccessListener(documentSnapshot -> {
-            User user = documentSnapshot.toObject(User.class);
+
+        userController.getUser(deviceID, user ->{
             String firstNameS = user.getFirstName();
             String lastNameS = user.getLastName();
             firstName.setText(firstNameS);
             lastName.setText(lastNameS);
-        });
+        },null);
+
+
         doneBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,6 +97,10 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
     }
+
+    /**
+     * gets the input on done button clicked and sets the values changed into the user
+     */
     public void getInput(){
         String firstNameS = String.valueOf(firstName.getText());
         String lastNameS = String.valueOf(lastName.getText());
@@ -88,7 +109,9 @@ public class EditProfileActivity extends AppCompatActivity {
         userController.getUser(deviceID,user -> {
             user.setFirstName(firstNameS);
             user.setLastName(lastNameS);
-            user.setProfilePicture(posterID);
+            if (posterID != null) {
+                user.setProfilePicture(posterID);
+            }
             userController.setUser(user,null,null);
         },null);
     }
@@ -112,26 +135,26 @@ public class EditProfileActivity extends AppCompatActivity {
         String fileID = String.valueOf(System.currentTimeMillis());
 
         if (imageUri != null) {
-            Log.d("URI", "works");
-            StorageReference fileReference = storageRef.child(fileID);
-
-            fileReference.putFile(imageUri)
-                    .addOnSuccessListener(taskSnapshot -> {
-                        Log.d("URI", "success");
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.d("URI", "failure");
-                        Log.d("URI", e.toString());
+            imageController.uploadImage(ImageController.PROFILE_PICTURE, fileID, imageUri,
+                    object -> Toast.makeText(this, "Image uploaded!", Toast.LENGTH_SHORT).show(), e -> {
                     });
         } else {
-//            Toast.makeText(requireContext(), "Unable to" +
-//                    " upload event poster", Toast.LENGTH_SHORT).show();
             fileID = null;
         }
         return fileID;
     }
 
-
+    /**
+     * method to retrieve imageUri
+     * @param requestCode The integer request code originally supplied to
+     *                    startActivityForResult(), allowing you to identify who this
+     *                    result came from.
+     * @param resultCode The integer result code returned by the child activity
+     *                   through its setResult().
+     * @param data An Intent, which can return result data to the caller
+     *               (various data can be attached to Intent "extras").
+     *
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
