@@ -21,6 +21,7 @@ import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.helper.EventRecyclerViewAdapter;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -33,7 +34,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
     private EventRecyclerViewAdapter eventRecyclerViewAdapter;
 
     private RecyclerView eventRecyclerView;
-    private Button addButton;
+    private FloatingActionButton addButton;
 
     private Button allEventsButton;
     private Button attendingEventsButton;

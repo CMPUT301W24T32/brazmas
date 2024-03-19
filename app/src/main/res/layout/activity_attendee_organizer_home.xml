@@ -10,32 +10,20 @@
     <!-- Text input -->
     <EditText
         android:id="@+id/user_home_edit_sb"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="14"
-        android:hint="search"
-        android:layout_marginTop="8dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:layout_toStartOf="@+id/user_home_add_event_btn"
-        android:layout_toLeftOf="@+id/user_home_add_event_btn"
-        android:layout_marginEnd="2dp"
-        android:layout_marginRight="2dp"
-        android:layout_marginBottom="2dp"
-        android:layout_alignParentTop="true"/>
-
-    <!-- Add button -->
-    <Button
-        android:id="@+id/user_home_add_event_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="+"
-        android:layout_gravity="right"
-        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="2dp"
-        android:layout_marginRight="2dp"/>
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="0dp"
+        android:layout_marginBottom="2dp"
+        android:ems="14"
+        android:hint="search" />
+
 
     <!-- Three buttons below -->
     <LinearLayout
@@ -102,5 +90,17 @@
         app:itemIconTint="@drawable/item_selector"
         app:itemRippleColor="@android:color/transparent"
         app:labelVisibilityMode="unlabeled"/>
+
+    <!-- Add button -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/user_home_add_event_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/user_home_bnv"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        app:srcCompat="@android:drawable/ic_input_add" />
 
 </RelativeLayout>
