@@ -1,6 +1,7 @@
 package com.CMPUT301W24T32.brazmascheckin.helper;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +35,7 @@ public class AdminProfileRecyclerViewAdapter extends RecyclerView.Adapter<AdminP
     }
 
     /**
-     * This method is used when a recycler view requires a view holder to represent data.
+     * This method is used when a recycler view requires a view holder to represent an item.
      * @param parent the ViewGroup into which the new View will be added after it is bound to an adapter position.
      * @param viewType the view type of the new View.
      * @return
@@ -63,7 +64,7 @@ public class AdminProfileRecyclerViewAdapter extends RecyclerView.Adapter<AdminP
      */
     @Override
     public int getItemCount() {
-        return users.size();
+        return users != null ? users.size() : 0;
     }
 
     /**
@@ -86,7 +87,8 @@ public class AdminProfileRecyclerViewAdapter extends RecyclerView.Adapter<AdminP
          * @param user the user information.
          */
         public void bind(User user) {
-            String firstLastName = user.getFirstName() + user.getLastName();
+            Log.d("AdminProfileAdapter", "Binding user: " + user.getFirstName() + " " + user.getLastName());
+            String firstLastName = user.getFirstName() + " " + user.getLastName();
             name.setText(firstLastName);
         }
     }
