@@ -88,7 +88,18 @@ public class AdminProfileRecyclerViewAdapter extends RecyclerView.Adapter<AdminP
          */
         public void bind(User user) {
             Log.d("AdminProfileAdapter", "Binding user: " + user.getFirstName() + " " + user.getLastName());
-            String firstLastName = user.getFirstName() + " " + user.getLastName();
+
+            String firstName = user.getFirstName();
+            String lastName = user.getLastName();
+
+            if (firstName == null) {
+                firstName = "John";
+            }
+            if (lastName == null) {
+                lastName = "Doe";
+            }
+
+            String firstLastName = firstName + " " + lastName;
             name.setText(firstLastName);
         }
     }
