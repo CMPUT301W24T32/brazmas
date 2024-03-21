@@ -1,10 +1,13 @@
 package com.CMPUT301W24T32.brazmascheckin.views;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -19,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.app.ActivityCompat;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.controllers.GetFailureListener;
@@ -48,6 +52,9 @@ public class ProfileActivity extends AppCompatActivity {
     private String deviceID;
     private UserController userController;
     private ImageController imageController;
+    private static final int PERMISSION_FINE_COARSE_LOCATION = 99;
+
+
 
     /**
      * This method initializes the Profile activity.
@@ -151,18 +158,15 @@ public class ProfileActivity extends AppCompatActivity {
     private void locationSwitch() {
         geoLocationSwitch.setOnClickListener(view -> {
             if(geoLocationSwitch.isChecked()) {
-                userController.getUser(deviceID, user -> {
-                    user.setGeoLocationEnabled(true);
-                    userController.setUser(user, () -> Toast.makeText(ProfileActivity.this, "Geolocation enabled", Toast.LENGTH_SHORT).show(),
-                            e -> {
-                                Toast.makeText(ProfileActivity.this, "Unable to enable geolocation", Toast.LENGTH_SHORT).show();
-                                geoLocationSwitch.setChecked(false);
-                                user.setGeoLocationEnabled(false);
-                            });
-                }, e -> {
-                    Toast.makeText(ProfileActivity.this, "Unable to enable geolocation", Toast.LENGTH_SHORT).show();
-                    geoLocationSwitch.setChecked(false);
-                });
+                if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    enableLocation();
+                } else {
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                                    Manifest.permission.ACCESS_COARSE_LOCATION},
+                            PERMISSION_FINE_COARSE_LOCATION);
+                }
             } else {
                 userController.getUser(deviceID, user -> {
                     user.setGeoLocationEnabled(false);
@@ -181,6 +185,25 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     /**
+     * Enables geolocation for the user if the necessary location permission is granted.
+     * If the permission is not granted, requests it from the user.
+     */
+    private void enableLocation() {
+        userController.getUser(deviceID, user -> {
+            user.setGeoLocationEnabled(true);
+            userController.setUser(user, () -> Toast.makeText(ProfileActivity.this, "Geolocation enabled", Toast.LENGTH_SHORT).show(),
+                    e -> {
+                        Toast.makeText(ProfileActivity.this, "Unable to enable geolocation", Toast.LENGTH_SHORT).show();
+                        geoLocationSwitch.setChecked(false);
+                        user.setGeoLocationEnabled(false);
+                    });
+        }, e -> {
+            Toast.makeText(ProfileActivity.this, "Unable to enable geolocation", Toast.LENGTH_SHORT).show();
+            geoLocationSwitch.setChecked(false);
+        });
+    }
+
+    /**
      * This method retrieves the poster image from the database and displays it in the view.
      * @param posterID the ID of the image in the database
      */
@@ -192,5 +215,21 @@ public class ProfileActivity extends AppCompatActivity {
             }, null);
         }
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if(requestCode == PERMISSION_FINE_COARSE_LOCATION) {
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                enableLocation();
+            } else {
+                Toast.makeText(this, "No permission", Toast.LENGTH_SHORT).show();
+                geoLocationSwitch.setChecked(false);
+            }
+        }
+    }
+
+
 }
 
