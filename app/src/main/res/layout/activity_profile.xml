@@ -55,10 +55,32 @@
         android:id="@+id/edit_profile_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/bottomNavigationView"
+        android:layout_above="@id/profile_geolocation_ll"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
         android:text="Edit Profile" />
 
+    <LinearLayout
+        android:id="@+id/profile_geolocation_ll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_above="@id/bottomNavigationView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        >
 
+        <TextView
+            android:id="@+id/profile_geolocation_label_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Geolocation: "
+            />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/profile_geolocation_sw"
+            />
+    </LinearLayout>
 </RelativeLayout>

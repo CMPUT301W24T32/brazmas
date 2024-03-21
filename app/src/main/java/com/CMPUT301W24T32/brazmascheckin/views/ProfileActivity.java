@@ -18,9 +18,14 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.controllers.GetFailureListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
+import com.CMPUT301W24T32.brazmascheckin.controllers.SetFailureListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.SetSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
@@ -28,10 +33,7 @@ import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.storage.StorageReference;
+
 
 /**
  * Profile activity
@@ -42,7 +44,7 @@ public class ProfileActivity extends AppCompatActivity {
     private ImageView profilePicture;
     private TextView userName;
     private Button EditProfileBtn;
-    private StorageReference storageRef;
+    private SwitchCompat geoLocationSwitch;
     private String deviceID;
     private UserController userController;
     private ImageController imageController;
@@ -107,8 +109,8 @@ public class ProfileActivity extends AppCompatActivity {
         profilePicture = findViewById(R.id.profile_picture);
         userName = findViewById(R.id.name_tv);
         EditProfileBtn = findViewById(R.id.edit_profile_btn);
+        geoLocationSwitch = findViewById(R.id.profile_geolocation_sw);
         deviceID = DeviceID.getDeviceID(this);
-        storageRef = FirestoreDB.getStorageReference("uploads");
 
 
     }
@@ -133,6 +135,47 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), EditProfileActivity.class));
+            }
+        });
+
+        locationSwitch();
+        
+
+    }
+
+    /**
+     * Handles the toggle action for enabling or disabling geolocation for the user.
+     * When the switch state changes, this method retrieves the user's data and updates
+     * the geolocation setting accordingly.
+     */
+    private void locationSwitch() {
+        geoLocationSwitch.setOnClickListener(view -> {
+            if(geoLocationSwitch.isChecked()) {
+                userController.getUser(deviceID, user -> {
+                    user.setGeoLocationEnabled(true);
+                    userController.setUser(user, () -> Toast.makeText(ProfileActivity.this, "Geolocation enabled", Toast.LENGTH_SHORT).show(),
+                            e -> {
+                                Toast.makeText(ProfileActivity.this, "Unable to enable geolocation", Toast.LENGTH_SHORT).show();
+                                geoLocationSwitch.setChecked(false);
+                                user.setGeoLocationEnabled(false);
+                            });
+                }, e -> {
+                    Toast.makeText(ProfileActivity.this, "Unable to enable geolocation", Toast.LENGTH_SHORT).show();
+                    geoLocationSwitch.setChecked(false);
+                });
+            } else {
+                userController.getUser(deviceID, user -> {
+                    user.setGeoLocationEnabled(false);
+                    userController.setUser(user, () -> Toast.makeText(this, "Geolocation disabled", Toast.LENGTH_SHORT).show(),
+                            e -> {
+                                Toast.makeText(this, "Unable to disable geolocation", Toast.LENGTH_SHORT).show();
+                                geoLocationSwitch.setChecked(true);
+                                user.setGeoLocationEnabled(true);
+                            });
+                }, e -> {
+                    Toast.makeText(ProfileActivity.this, "Unable to disable geolocation", Toast.LENGTH_SHORT).show();
+                    geoLocationSwitch.setChecked(true);
+                });
             }
         });
     }
