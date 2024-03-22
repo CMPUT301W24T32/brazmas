@@ -1,5 +1,7 @@
 package com.CMPUT301W24T32.brazmascheckin.helper;
 
+
+//TODO: remove class if unneeded
 /**
  * Represents a pair consisting of a user ID and their check-in location.
  */

@@ -19,6 +19,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.SwitchCompat;
+
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.controllers.AddFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
@@ -26,6 +28,7 @@ import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.Date;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
+import com.CMPUT301W24T32.brazmascheckin.helper.Location;
 import com.CMPUT301W24T32.brazmascheckin.helper.QRCodeGenerator;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 
@@ -44,6 +47,7 @@ public class AddEvent extends Activity {
     private EditText editLimit;
     private Button chooseImage;
     private Button addButton;
+    private SwitchCompat geoLocationSwitch;
     private String deviceID;
 
     // Controllers
@@ -79,6 +83,7 @@ public class AddEvent extends Activity {
         chooseImage = findViewById(R.id.add_event_choose_image_button);
         imageView = findViewById(R.id.add_event_image_view);
         addButton = findViewById(R.id.add_event_button);
+        geoLocationSwitch = findViewById(R.id.add_event_geolocation_sw);
         deviceID = DeviceID.getDeviceID(this);
         chooseImage.setOnClickListener(view -> openFileChooser());
     }
@@ -150,13 +155,19 @@ public class AddEvent extends Activity {
         HashMap<String, Integer> checkIns = new HashMap<>();
         ArrayList<String> signUps = new ArrayList<>();
         String posterID = uploadFile();
+        boolean geoLocationEnabled = geoLocationSwitch.isChecked();
+
+        //TODO: remove these placeholders
         String QRCodeID = "id";
         String shareQRCodeID = "id";
         String id = "1";
         if (title.isEmpty() || desc.isEmpty()) {
             Toast.makeText(this, "Enter all text fields", Toast.LENGTH_SHORT).show();
         } else {
-            Event event = new Event(id, title, date, desc, checkIns, signUps, limit, posterID, QRCodeID, shareQRCodeID, "");
+            Event event = new Event(id, title, date, desc, checkIns, signUps, limit, posterID, QRCodeID, shareQRCodeID, "",
+                    geoLocationEnabled,
+                    null,
+                    new HashMap<String, Location>());
             addEvent(event);
         }
     }
@@ -214,4 +225,6 @@ public class AddEvent extends Activity {
             }
         });
     }
+
+    //TODO: add switch for geolocation verification
 }
