@@ -165,12 +165,11 @@
                 android:id="@+id/view_event_delete_btn_admin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="144dp"
+                android:layout_marginBottom="20dp"
                 android:gravity="center"
                 android:text="Delete Event"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/view_event_see_attendees_btn_admin" />
+                app:layout_constraintBottom_toTopOf="@+id/view_event_poster_text_tv_admin"
+                tools:layout_editor_absoluteX="141dp" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

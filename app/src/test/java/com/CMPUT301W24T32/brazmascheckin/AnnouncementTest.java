@@ -62,6 +62,10 @@ public class AnnouncementTest {
         announcement.setEventID("event2");
         assertEquals("event2", announcement.getEventID());
     }
+<<<<<<< HEAD
 
 }
 
+=======
+}
+>>>>>>> 6aebefeebe2b292917579543177f84fce783a8cc

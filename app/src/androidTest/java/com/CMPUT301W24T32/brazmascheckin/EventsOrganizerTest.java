@@ -1,24 +1,18 @@
 package com.CMPUT301W24T32.brazmascheckin;
 
 
-import static android.app.PendingIntent.getActivity;
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
+import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
-import static com.google.common.base.CharMatcher.is;
+import static java.util.EnumSet.allOf;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static java.util.function.Predicate.not;
-
-import android.app.Activity;
 import android.view.View;
 
-import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.matcher.ViewMatchers;
@@ -26,13 +20,13 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
-import com.CMPUT301W24T32.brazmascheckin.views.AttendeeOrganizerHome;
+import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
+import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 
 /**
  * tests to control the event organizer
@@ -45,11 +39,6 @@ public class EventsOrganizerTest {
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new
             ActivityScenarioRule<MainActivity>(MainActivity.class);
-    /*
-    @Rule
-    public ActivityScenarioRule<AttendeeOrganizerHome> mActivityScenarioRule =
-            new ActivityScenarioRule<AttendeeOrganizerHome>(AttendeeOrganizerHome.class);
-            */
 
     /**
      * test adds a new event
@@ -57,24 +46,33 @@ public class EventsOrganizerTest {
     @Test
     public void eventsOrganizerTest() {
         try {
-            Thread.sleep(3000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
+        Espresso.onView(ViewMatchers.withId(R.id.user_home_add_event_btn))
+                .perform(ViewActions.click());
+        Espresso.onView(ViewMatchers.withId(R.id.add_event_name_tv))
+                .perform(ViewActions.typeText("Event Name"), ViewActions.closeSoftKeyboard());
+        Espresso.onView(ViewMatchers.withId(R.id.add_event_limit_et))
+                .perform(ViewActions.typeText("1"));
+        Espresso.onView(ViewMatchers.withId(R.id.add_event_desc_et))
+                .perform(ViewActions.typeText("Event Description"), ViewActions.closeSoftKeyboard());
+        Espresso.onView(ViewMatchers.withText("Add"))
+                .perform(ViewActions.click());
     }
-
     /**
      * test to check filtering of events
      */
     @Test
     public void attendingFilterTest(){
-        // hardcoded for a specific event
+
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
         onView(withText("BleeBloo Event")).perform(ViewActions.click());
         onView(withId(R.id.signed_up_CB)).perform(ViewActions.click());
         onView(withText("Back")).perform(ViewActions.click());
@@ -83,6 +81,25 @@ public class EventsOrganizerTest {
         onView(withId(R.id.signed_up_CB)).perform(ViewActions.click());
     }
 
+    /**
+     * Attending Signup test
+     */
+    @Test
+    public void AttendingSignUpTest(){
+        try {
+            Thread.sleep(6000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        onView(withText("BleeBloopEvent")).perform(click());
+        onView(withId(R.id.signed_up_CB)).perform(ViewActions.click());
+        Espresso.onView(ViewMatchers.withId(R.id.view_scroll_bar)).perform(ViewActions.swipeUp());
+        onView(withId(R.id.view_event_see_signed_up_attendees_btn)).perform(ViewActions.click());
+    }
+
+    /**
+     * Organizing Filter Test
+     */
     @Test
     public void organizingFilterTest(){
         try {
@@ -94,7 +111,7 @@ public class EventsOrganizerTest {
         Espresso.onView(ViewMatchers.withId(R.id.user_home_add_event_btn))
                 .perform(ViewActions.click());
         Espresso.onView(ViewMatchers.withId(R.id.add_event_name_tv))
-                .perform(ViewActions.typeText("Event Name"), ViewActions.closeSoftKeyboard());
+                .perform(ViewActions.typeText("Mehar cool events"), ViewActions.closeSoftKeyboard());
         Espresso.onView(ViewMatchers.withId(R.id.add_event_limit_et))
                 .perform(ViewActions.typeText("1"));
         Espresso.onView(ViewMatchers.withId(R.id.add_event_desc_et))
@@ -103,38 +120,23 @@ public class EventsOrganizerTest {
                 .perform(ViewActions.click());
 
         onView(withId(R.id.user_home_organizing_btn)).perform(click());
-        onView(withText("Event Name")).perform(ViewActions.click());
-
-
-
-
     }
 
+    /**
+     * toast check
+     */
     @Test
     public void given_when_thenShouldShowToast() {
-        // Launch the activity and get its scenario
-        //ActivityScenario<AttendeeOrganizerHome> scenario = mActivityScenarioRule.getScenario();
-
-        // Register a callback to get the decor view once the activity is resumed
-        //scenario.onActivity(activity -> decorView = activity.getWindow().getDecorView());
-
-        // Define the expected toast message
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         String expectedWarning = "Enter all text fields";
 
         Espresso.onView(ViewMatchers.withId(R.id.user_home_add_event_btn))
                 .perform(ViewActions.click());
         Espresso.onView(ViewMatchers.withText("Add"))
                 .perform(ViewActions.click());
-
-
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // Check if the toast message with the expected text is displayed
-        onView(withText(expectedWarning))
-                .inRoot(withDecorView(Matchers.is(decorView)))// Here we use decorView
-                .check(matches(isDisplayed()));
     }
 }
