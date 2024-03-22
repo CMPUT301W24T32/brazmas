@@ -1,6 +1,8 @@
 package com.CMPUT301W24T32.brazmascheckin.models;
 
-import java.util.Date;
+import java.io.Serializable;
+
+import com.CMPUT301W24T32.brazmascheckin.helper.Date;
 
 /**
  * Represents an announcement related to a specific event.
@@ -8,7 +10,7 @@ import java.util.Date;
  * description, date, and associated event ID. It also provides methods for sending
  * notifications related to the announcement.
  */
-public class Announcement {
+public class Announcement implements Serializable {
 
     private String name;
     private String description;
