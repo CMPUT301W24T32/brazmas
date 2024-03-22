@@ -2,7 +2,6 @@ package com.CMPUT301W24T32.brazmascheckin.controllers;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.google.firebase.storage.StorageReference;
@@ -181,4 +180,5 @@ public class ImageController {
         }).addOnFailureListener(e -> {
         });
     }
+
 }

@@ -11,10 +11,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.SurfaceControl;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -27,14 +24,13 @@ import android.widget.Toast;
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.controllers.AddFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.SetSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.Date;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.helper.OrphanedQRCodeFinder;
 import com.CMPUT301W24T32.brazmascheckin.helper.QRCodeGenerator;
+import com.CMPUT301W24T32.brazmascheckin.helper.QRCodeSpinnerAdapter;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 
 import java.util.ArrayList;
@@ -102,17 +98,15 @@ public class AddEvent extends Activity {
     }
 
     private void populateOrphanedQRCodeSpinner() {
-        Log.d("log4", "in populate orphaned");
         OrphanedQRCodeFinder qrCodeFinder = new OrphanedQRCodeFinder(imageController, eventController);
-        qrCodeFinder.findAndProcessOrphanedQRCodes(orphanedQRCodeFileIDs -> {
-            Log.d("log4", "in success");
+        qrCodeFinder.findAndProcessOrphanedQRCodes(orphanedQRCodeImages -> {
             // Populate dropdown with orphaned QR codes
-            ArrayAdapter<String> qrCodeAdapter = new ArrayAdapter<>(AddEvent.this, android.R.layout.simple_spinner_item);
+
+            QRCodeSpinnerAdapter qrCodeAdapter = new QRCodeSpinnerAdapter(AddEvent.this, orphanedQRCodeImages);
             qrCodeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            qrCodeAdapter.addAll(orphanedQRCodeFileIDs);
+            qrCodeAdapter.addAll(orphanedQRCodeImages);
             qrCodeSpinner.setAdapter(qrCodeAdapter);
-            Log.d("log4", "populateOrphanedQRCodeSpinner: "+orphanedQRCodeFileIDs.size());
-//            qrCodeSpinner.setVisibility(View.VISIBLE);
+            qrCodeSpinner.setVisibility(View.VISIBLE);
         });
     }
     /**
