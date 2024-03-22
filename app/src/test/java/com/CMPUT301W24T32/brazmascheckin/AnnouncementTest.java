@@ -4,9 +4,10 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import com.CMPUT301W24T32.brazmascheckin.helper.Date;
 import com.CMPUT301W24T32.brazmascheckin.models.Announcement;
 
-import java.util.Date;
+
 
 public class AnnouncementTest {
     private Announcement announcement;
@@ -62,10 +63,4 @@ public class AnnouncementTest {
         announcement.setEventID("event2");
         assertEquals("event2", announcement.getEventID());
     }
-<<<<<<< HEAD
-
 }
-
-=======
-}
->>>>>>> 6aebefeebe2b292917579543177f84fce783a8cc
