@@ -95,11 +95,13 @@ public class AddEvent extends AppCompatActivity {
         imageView = findViewById(R.id.add_event_image_view);
         addButton = findViewById(R.id.add_event_button);
         geoLocationSwitch = findViewById(R.id.add_event_geolocation_sw);
-        geoLocationLinearLayout = findViewById(R.id.add_event_choose_geolocation_ll);
+        geoLocationLinearLayout = findViewById(R.id.add_event_geolocation_display_ll);
         chooseLocation = findViewById(R.id.add_event_choose_location_btn);
         addEventLocationTextView = findViewById(R.id.add_event_location_tv);
         deviceID = DeviceID.getDeviceID(this);
         chooseImage.setOnClickListener(view -> openFileChooser());
+
+        datePicker.setCalendarViewShown(false);
     }
 
     /**
@@ -116,8 +118,10 @@ public class AddEvent extends AppCompatActivity {
         geoLocationSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
             if(b) {
                 geoLocationLinearLayout.setVisibility(View.VISIBLE);
+                chooseLocation.setVisibility(View.VISIBLE);
             } else {
                 geoLocationLinearLayout.setVisibility(View.GONE);
+                chooseLocation.setVisibility(View.GONE);
             }
         });
 

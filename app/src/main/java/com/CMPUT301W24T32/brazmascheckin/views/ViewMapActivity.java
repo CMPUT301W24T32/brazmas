@@ -77,6 +77,10 @@ public class ViewMapActivity extends AppCompatActivity {
         mapView.invalidate();
     }
 
+    /**
+     * Configures the activity by initializing the map view, setting its properties,
+     * and initializing necessary controllers and UI elements.
+     */
     private void configureActivity() {
         mapView = (MapView) findViewById(R.id.map);
         mapView.setTileSource(TileSourceFactory.MAPNIK);
@@ -90,6 +94,11 @@ public class ViewMapActivity extends AppCompatActivity {
         mapController.setZoom(3);
     }
 
+    /**
+     * Displays markers for the event location and checked-in attendees on the map.
+     * @param event The event for which markers are to be displayed.
+     * @param locations A HashMap containing the locations of the checked-in attendees.
+     */
     private void displayCheckedInAttendees(Event event, HashMap<String, Location> locations) {
         // event location
         Bitmap bitmap = Bitmap.createBitmap(50, 50, Bitmap.Config.ARGB_8888);
@@ -133,6 +142,11 @@ public class ViewMapActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Allows the user to choose a location on the map by tapping. Once a location is chosen,
+     * a marker is placed on the map to represent the chosen location.
+     * If the user confirms the chosen location, the result is returned to the calling activity.
+     */
     private void chooseLocation() {
         Marker marker = new Marker(mapView);
         marker.setTitle("Event Location");
