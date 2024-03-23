@@ -78,6 +78,7 @@
             />
 
         <LinearLayout
+            android:id="@+id/add_event_geolocation_ll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -94,6 +95,37 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/add_event_choose_geolocation_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Location: "
+                android:layout_marginEnd="5dp"
+                />
+
+            <TextView
+                android:id="@+id/add_event_location_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Location"
+                />
+
+            <Button
+                android:id="@+id/add_event_choose_location_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Choose Location"
+                />
+
         </LinearLayout>
 
 

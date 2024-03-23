@@ -62,13 +62,15 @@ public class ViewMapActivity extends AppCompatActivity {
         int mode = i.getIntExtra(EXTRA_MODE, -1);
 
         switch(mode) {
-            case 1:
+            case VIEW_ATTENDEES:
                 chooseLocationBtn.setVisibility(View.GONE);
                 HashMap<String, Location> locations = (HashMap<String, Location>) i.getSerializableExtra(EXTRA_LOCATION_PAIRS);
                 Event event = (Event) i.getSerializableExtra(EXTRA_EVENT);
                 displayCheckedInAttendees(event, locations);
                 break;
-            case 2:
+            case CHOOSE_LOCATION:
+                chooseLocationBtn.setVisibility(View.VISIBLE);
+                chooseLocation();
                 break;
         }
 
@@ -96,8 +98,9 @@ public class ViewMapActivity extends AppCompatActivity {
         paint.setColor(Color.RED);
         canvas.drawCircle(25, 25, 25, paint);
 
+        Location location = event.getEventLocation();
         Marker marker = new Marker(mapView);
-        GeoPoint point = new GeoPoint(53, -113);
+        GeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
         marker.setPosition(point);
         marker.setIcon(new BitmapDrawable(getResources(), bitmap));
         marker.setTitle(event.getName());

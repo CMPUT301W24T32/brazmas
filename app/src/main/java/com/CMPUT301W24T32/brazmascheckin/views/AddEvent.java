@@ -11,14 +11,21 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
@@ -35,7 +42,7 @@ import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class AddEvent extends Activity {
+public class AddEvent extends AppCompatActivity {
 
     // Views
     private ImageView imageView;
@@ -48,12 +55,16 @@ public class AddEvent extends Activity {
     private Button chooseImage;
     private Button addButton;
     private SwitchCompat geoLocationSwitch;
+    private LinearLayout geoLocationLinearLayout;
+    private TextView addEventLocationTextView;
+    private Button chooseLocation;
     private String deviceID;
 
     // Controllers
     private ImageController imageController;
     private EventController eventController;
     private UserController userController;
+    private Location location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +95,9 @@ public class AddEvent extends Activity {
         imageView = findViewById(R.id.add_event_image_view);
         addButton = findViewById(R.id.add_event_button);
         geoLocationSwitch = findViewById(R.id.add_event_geolocation_sw);
+        geoLocationLinearLayout = findViewById(R.id.add_event_choose_geolocation_ll);
+        chooseLocation = findViewById(R.id.add_event_choose_location_btn);
+        addEventLocationTextView = findViewById(R.id.add_event_location_tv);
         deviceID = DeviceID.getDeviceID(this);
         chooseImage.setOnClickListener(view -> openFileChooser());
     }
@@ -98,7 +112,42 @@ public class AddEvent extends Activity {
         addButton.setOnClickListener(v -> {
             retrieveInput(this);
         });
+
+        geoLocationSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
+            if(b) {
+                geoLocationLinearLayout.setVisibility(View.VISIBLE);
+            } else {
+                geoLocationLinearLayout.setVisibility(View.GONE);
+            }
+        });
+
+        chooseLocation.setOnClickListener(view -> {
+            Intent intent = new Intent(AddEvent.this, ViewMapActivity.class);
+            intent.putExtra(ViewMapActivity.EXTRA_MODE, ViewMapActivity.CHOOSE_LOCATION);
+            viewMapLauncher.launch(intent);
+        });
+
     }
+
+    private ActivityResultLauncher<Intent> viewMapLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    if(data != null) {
+                        int mode = data.getIntExtra(ViewMapActivity.EXTRA_MODE, -1);
+                        if(mode == ViewMapActivity.CHOOSE_LOCATION) {
+                            location = (Location) data.getSerializableExtra(ViewMapActivity.RESULT_LOCATION);
+                            addEventLocationTextView.setText(
+                                    location.getLatitude() + " " + location.getLongitude()
+                            );
+                        } else {
+                            // TODO: error handling
+                        }
+                    }
+                }
+            }
+    );
 
     /**
      * Method to open file chooser for image selection
@@ -156,17 +205,21 @@ public class AddEvent extends Activity {
         ArrayList<String> signUps = new ArrayList<>();
         String posterID = uploadFile();
         boolean geoLocationEnabled = geoLocationSwitch.isChecked();
+        if(!geoLocationEnabled) {
+            location = null;
+        }
 
         //TODO: remove these placeholders
         String QRCodeID = "id";
         String shareQRCodeID = "id";
         String id = "1";
+        // TODO: add check to see if location is null even if geolocation enabled
         if (title.isEmpty() || desc.isEmpty()) {
             Toast.makeText(this, "Enter all text fields", Toast.LENGTH_SHORT).show();
         } else {
             Event event = new Event(id, title, date, desc, checkIns, signUps, limit, posterID, QRCodeID, shareQRCodeID, "",
                     geoLocationEnabled,
-                    null,
+                    location,
                     new HashMap<String, Location>());
             addEvent(event);
         }

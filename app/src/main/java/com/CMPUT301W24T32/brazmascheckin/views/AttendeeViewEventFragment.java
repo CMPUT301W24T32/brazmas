@@ -164,6 +164,7 @@ public class AttendeeViewEventFragment extends DialogFragment {
             Intent intent = new Intent(getActivity(), ViewMapActivity.class);
             intent.putExtra(ViewMapActivity.EXTRA_LOCATION_PAIRS, e.getUserLocationPairs());
             intent.putExtra(ViewMapActivity.EXTRA_EVENT, e);
+            intent.putExtra(ViewMapActivity.EXTRA_MODE, ViewMapActivity.VIEW_ATTENDEES);
             startActivity(intent);
         });
     }
