@@ -1,48 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".views.CheckedInAttendees"
-    android:orientation="vertical">
+    tools:context=".views.ViewAttendeesActivity">
+
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/checked_in_attendees_attendees_rv"
+        android:id="@+id/view_attendees_attendee_rv"
         />
+
     <LinearLayout
+        android:id="@+id/view_attendees_organizer_action_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/view_attendees_attendee_rv"
         android:orientation="horizontal"
+        android:layout_centerHorizontal="true"
         >
         <Button
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:id="@+id/checked_in_attendees_share_btn"
-            android:text="Share"
-            android:layout_margin="10dp"
-            />
-        <Button
-            android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:id="@+id/checked_in_attendees_map_btn"
-            android:text="Map"
-            android:layout_margin="10dp"
-            />
-        <Button
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:id="@+id/checked_in_attendees_notification_btn"
-            android:text="Notify"
+            android:id="@+id/view_attendees_map_btn"
+            android:text="@string/map"
             android:layout_margin="10dp"
             />
 
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/view_attendees_share_btn"
+            android:text="@string/share"
+            android:layout_margin="10dp"
+            />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/view_attendees_notify_btn"
+            android:text="@string/notify"
+            android:layout_margin="10dp"
+            />
 
     </LinearLayout>
 
-
-</LinearLayout>
+</RelativeLayout>
