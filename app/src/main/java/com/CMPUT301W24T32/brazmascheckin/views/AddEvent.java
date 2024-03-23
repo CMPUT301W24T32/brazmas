@@ -117,14 +117,13 @@ public class AddEvent extends Activity {
                     listOfEventIDs.add(fileID);
                     listOfBitmaps.add(bitmap);
                     qrCodeAdapter.notifyDataSetChanged();
-                    //qrCodeAdapter.add(bitmap);
                     Log.d("tag1", "count of qrcode adapter "+qrCodeAdapter.getCount());
                     qrCodeSpinner.setAdapter(qrCodeAdapter);
-                    qrCodeSpinner.setVisibility(View.VISIBLE);
                 }, e -> {
                     Log.e("failure", "processOrphanesQRCodes: " + e.getMessage());
                 });
             }
+            qrCodeSpinner.setVisibility(View.VISIBLE);
         });
     }
     /**
