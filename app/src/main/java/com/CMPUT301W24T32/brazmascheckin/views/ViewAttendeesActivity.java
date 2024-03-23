@@ -96,10 +96,10 @@ public class ViewAttendeesActivity extends AppCompatActivity {
                 HashMap<String, Integer> checkIns = null;
                 if(mode == CHECK_IN_MODE) {
                     userCheckIns.clear();
-                    attendeeIDs = event.helperKeys();
+                    attendeeIDs = dbEvent.helperKeys();
                     checkIns = dbEvent.getCheckIns();
                 } else if (mode == SIGN_UP_MODE) {
-                    attendeeIDs = event.getSignUps();
+                    attendeeIDs = dbEvent.getSignUps();
                 }
                 userDataList.clear();
                 recyclerViewAdapter.notifyDataSetChanged();
@@ -118,7 +118,6 @@ public class ViewAttendeesActivity extends AppCompatActivity {
                                 id, Toast.LENGTH_SHORT).show();
                     });
                 }
-
             }
             @Override
             public void onError(Exception e) {
@@ -126,5 +125,9 @@ public class ViewAttendeesActivity extends AppCompatActivity {
                         "details for event " + event.getID(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void populateRecyclerView(Event event) {
+
     }
 }
