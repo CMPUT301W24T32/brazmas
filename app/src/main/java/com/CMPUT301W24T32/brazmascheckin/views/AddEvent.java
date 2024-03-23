@@ -9,8 +9,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -58,6 +60,7 @@ public class AddEvent extends Activity {
     private ImageController imageController;
     private EventController eventController;
     private UserController userController;
+    private QRCodeSpinnerAdapter qrCodeAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +68,7 @@ public class AddEvent extends Activity {
         setContentView(R.layout.add_event);
 
         // Configuring views and controllers
+        qrCodeAdapter = new QRCodeSpinnerAdapter(this, new ArrayList<>(), new ArrayList<>());
         qrCodeChoice();
         configureViews();
         configureControllers();
@@ -95,18 +99,22 @@ public class AddEvent extends Activity {
         deviceID = DeviceID.getDeviceID(this);
         chooseImage.setOnClickListener(view -> openFileChooser());
         qrCodeSpinner = findViewById(R.id.orphaned_qr_code_spinner);
+
     }
 
     private void populateOrphanedQRCodeSpinner() {
         OrphanedQRCodeFinder qrCodeFinder = new OrphanedQRCodeFinder(imageController, eventController);
-        qrCodeFinder.findAndProcessOrphanedQRCodes(orphanedQRCodeImages -> {
-            // Populate dropdown with orphaned QR codes
-
-            QRCodeSpinnerAdapter qrCodeAdapter = new QRCodeSpinnerAdapter(AddEvent.this, orphanedQRCodeImages);
-            qrCodeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            qrCodeAdapter.addAll(orphanedQRCodeImages);
-            qrCodeSpinner.setAdapter(qrCodeAdapter);
-            qrCodeSpinner.setVisibility(View.VISIBLE);
+        qrCodeFinder.findAndProcessOrphanedQRCodes(orphanedQRCodeFileIDs -> {
+            for (String fileID : orphanedQRCodeFileIDs) {
+                imageController.getImage("QR_CODE", fileID, bytes -> {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    qrCodeAdapter.add(bitmap, fileID);
+                    qrCodeSpinner.setAdapter(qrCodeAdapter);
+                    qrCodeSpinner.setVisibility(View.VISIBLE);
+                }, e -> {
+                    Log.e("failure", "processOrphanesQRCodes: " + e.getMessage());
+                });
+            }
         });
     }
     /**
