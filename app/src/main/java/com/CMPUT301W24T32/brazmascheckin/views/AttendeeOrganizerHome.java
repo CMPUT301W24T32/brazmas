@@ -1,6 +1,7 @@
 package com.CMPUT301W24T32.brazmascheckin.views;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,6 +45,8 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
     private UserController userController;
     private ImageController imageController;
     private String deviceID;
+    private final String lightGrey = "#B2B4B6";
+    private final String lightPink = "#FDB0C0";
 
 
 
@@ -153,6 +156,11 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
         eventController.addSnapshotListener(new SnapshotListener<Event>() {
             @Override
             public void snapshotListenerCallback(ArrayList<Event> events) {
+
+                attendingEventsButton.setBackgroundColor(Color.parseColor(lightGrey));
+                organizingEventsButton.setBackgroundColor(Color.parseColor(lightGrey));
+                allEventsButton.setBackgroundColor(Color.parseColor(lightPink));
+
                 addButton.setVisibility(View.INVISIBLE);
                 eventDataList.clear();
                 for (Event event : events) {
@@ -172,6 +180,10 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
 
     private void handleAttendeeMode() {
         attendingEventsButton.setOnClickListener(view -> {
+
+            attendingEventsButton.setBackgroundColor(Color.parseColor(lightPink));
+            organizingEventsButton.setBackgroundColor(Color.parseColor(lightGrey));
+            allEventsButton.setBackgroundColor(Color.parseColor(lightGrey));
 
             addButton.setVisibility(View.INVISIBLE);
 
@@ -203,7 +215,13 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
 
     public void handleOrganizerMode() {
         organizingEventsButton.setOnClickListener(view -> {
+
+            attendingEventsButton.setBackgroundColor(Color.parseColor(lightGrey));
+            organizingEventsButton.setBackgroundColor(Color.parseColor(lightPink));
+            allEventsButton.setBackgroundColor(Color.parseColor(lightGrey));
+
             addButton.setVisibility(View.VISIBLE);
+
             userController.getUser(deviceID, user -> {
                 ArrayList<String> organizedEvents = user.getOrganizedEvents();
                 eventController.addSnapshotListener(new SnapshotListener<Event>() {
