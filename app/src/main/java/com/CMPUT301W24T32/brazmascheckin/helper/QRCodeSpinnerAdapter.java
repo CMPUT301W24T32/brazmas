@@ -63,23 +63,5 @@ public class QRCodeSpinnerAdapter extends ArrayAdapter<String> {
     public View getView(int position, View convertView, ViewGroup parent) {
         return getCustomView(position, convertView, parent);
     }
-    /*public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View row = inflater.inflate(R.layout.drop_down_item,parent,false);
-        ImageView qrcodeImage = row.findViewById(R.id.img);
-        TextView qrcodeID = row.findViewById(R.id.text);
-        qrcodeImage.setImageBitmap(qrcodeImageList.get(position));
-        qrcodeID.setText(qrcodeIDList.get(position));
-        return row;
-    }*/
 
-    /*@Override
-    public void add(Bitmap image) {
-        qrcodeImageList.add(image);
-        //qrcodeIDList.add(eventID);
-        // Assuming qrcodeIDList is always of the same size as qrcodeImageList
-        // and corresponding IDs are added in the same order as images
-        qrcodeIDList.add(String.valueOf(qrcodeImageList.size() - 1)); // Add a dummy ID for now
-        notifyDataSetChanged(); // Notify the adapter that the data set has changed
-    }*/
 }

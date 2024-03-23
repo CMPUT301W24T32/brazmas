@@ -1,15 +1,10 @@
 package com.CMPUT301W24T32.brazmascheckin;
 
 
-import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.scrollTo;
-import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-
-import static java.util.EnumSet.allOf;
 
 import android.view.View;
 
@@ -20,13 +15,9 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
-import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
-
-import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 
 /**
  * tests to control the event organizer
@@ -74,11 +65,11 @@ public class EventsOrganizerTest {
         }
 
         onView(withText("BleeBloo Event")).perform(ViewActions.click());
-        onView(withId(R.id.signed_up_CB)).perform(ViewActions.click());
+        onView(withId(R.id.view_event_signed_up_cb)).perform(ViewActions.click());
         onView(withText("Back")).perform(ViewActions.click());
         onView(withId(R.id.user_home_attending_btn)).perform(click());
         onView(withText("BleeBloo Event")).perform(ViewActions.click());
-        onView(withId(R.id.signed_up_CB)).perform(ViewActions.click());
+        onView(withId(R.id.view_event_signed_up_cb)).perform(ViewActions.click());
     }
 
     /**
@@ -92,7 +83,7 @@ public class EventsOrganizerTest {
             e.printStackTrace();
         }
         onView(withText("BleeBloopEvent")).perform(click());
-        onView(withId(R.id.signed_up_CB)).perform(ViewActions.click());
+        onView(withId(R.id.view_event_signed_up_cb)).perform(ViewActions.click());
         Espresso.onView(ViewMatchers.withId(R.id.view_scroll_bar)).perform(ViewActions.swipeUp());
         onView(withId(R.id.view_event_see_signed_up_attendees_btn)).perform(ViewActions.click());
     }

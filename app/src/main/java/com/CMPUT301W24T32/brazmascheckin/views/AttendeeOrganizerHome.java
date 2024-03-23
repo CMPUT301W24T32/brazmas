@@ -138,12 +138,12 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
         // to access event details by clicking single event
         eventRecyclerViewAdapter.setOnItemClickListener(position -> {
             Event clickedEvent = eventDataList.get(position);
-            AttendeeViewEventFragment fragment = AttendeeViewEventFragment.sendEvent(clickedEvent);
+            ViewEventFragment fragment = ViewEventFragment.sendEvent(clickedEvent, 0);
             fragment.show(getSupportFragmentManager(), "Display Event");
         });
 
         addButton.setOnClickListener(v -> {
-            startActivity(new Intent(AttendeeOrganizerHome.this, AddEvent.class));
+            startActivity(new Intent(AttendeeOrganizerHome.this, AddEventActivity.class));
         });
     }
 

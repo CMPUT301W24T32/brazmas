@@ -17,6 +17,8 @@ public class User {
     private String profilePicture;
     private ArrayList<String> organizedEvents;
 
+    private boolean geoLocationEnabled = false;
+
 
 
 
@@ -27,15 +29,17 @@ public class User {
      * @param signedUpEvents Events the user has signed up for
      * @param profilePicture Reference to the image
      * @param organizedEvents List of events the user is organizing
+     * @param geoLocationEnabled If geolocation is enabled
      */
     public User(String firstName, String lastName, ArrayList<String> signedUpEvents, String ID,
-                String profilePicture, ArrayList<String> organizedEvents) {
+                String profilePicture, ArrayList<String> organizedEvents, boolean geoLocationEnabled) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.signedUpEvents = signedUpEvents;
         this.ID = ID;
         this.profilePicture = profilePicture;
         this.organizedEvents = organizedEvents;
+        this.geoLocationEnabled = geoLocationEnabled;
     }
 
     /**
@@ -44,13 +48,15 @@ public class User {
      * @param firstName First name of user
      * @param lastName Last name of user
      * @param signedUpEvents Events the user has signed up for
+     * @param geoLocationEnabled If geolocation is enabled
      */
     public User(String ID, String firstName, String lastName, ArrayList<String>
-                    signedUpEvents) {
+                    signedUpEvents, boolean geoLocationEnabled) {
         this.ID = ID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.signedUpEvents = signedUpEvents;
+        this.geoLocationEnabled = geoLocationEnabled;
     }
 
     /**
@@ -207,6 +213,14 @@ public class User {
             return new ArrayList<>();
         }
 
+    }
+
+    public boolean isGeoLocationEnabled() {
+        return geoLocationEnabled;
+    }
+
+    public void setGeoLocationEnabled(boolean geoLocationEnabled) {
+        this.geoLocationEnabled = geoLocationEnabled;
     }
 
     // TODO: public void setProfilePicture(Image picture)

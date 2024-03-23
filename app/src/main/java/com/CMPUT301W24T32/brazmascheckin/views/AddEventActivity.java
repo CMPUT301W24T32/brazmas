@@ -21,25 +21,35 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.controllers.AddFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
+import com.CMPUT301W24T32.brazmascheckin.controllers.SetFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.Date;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.helper.OrphanedQRCodeFinder;
+import com.CMPUT301W24T32.brazmascheckin.helper.Location;
 import com.CMPUT301W24T32.brazmascheckin.helper.QRCodeGenerator;
 import com.CMPUT301W24T32.brazmascheckin.helper.QRCodeSpinnerAdapter;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
-public class AddEvent extends Activity {
+public class AddEventActivity extends AppCompatActivity {
 
     // Views
     private ImageView imageView;
@@ -51,10 +61,13 @@ public class AddEvent extends Activity {
     private EditText editLimit;
     private Button chooseImage;
     private Button addButton;
+    private SwitchCompat geoLocationSwitch;
+    private LinearLayout geoLocationLinearLayout;
+    private TextView addEventLocationTextView;
+    private Button chooseLocation;
     private String deviceID;
     private Spinner qrCodeSpinner;
     private List<String> orphanedQRCodeFileIDs;
-    private AutoCompleteTextView autoCompleteTextView;
 
     // Controllers
     private ImageController imageController;
@@ -64,17 +77,22 @@ public class AddEvent extends Activity {
     private ArrayList<Bitmap> listOfBitmaps;
     private ArrayList<String> listOfEventIDs;
 
+    private Location location;
+    private AutoCompleteTextView autoCompleteTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_event);
+
+        setContentView(R.layout.activity_add_event);
         listOfBitmaps = new ArrayList<>();
         listOfEventIDs = new ArrayList<>();
+        setContentView(R.layout.activity_add_event);
+
         // Configuring views and controllers
         qrCodeAdapter = new QRCodeSpinnerAdapter(this, listOfBitmaps, listOfEventIDs);
-        qrCodeChoice();
         configureViews();
+        qrCodeChoice();
         configureControllers();
         populateOrphanedQRCodeSpinner();
     }
@@ -85,7 +103,9 @@ public class AddEvent extends Activity {
     private void qrCodeChoice() {
         String[] options = {"Generate new QR code", "Use existing QR code"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, options);
-        autoCompleteTextView = findViewById(R.id.autoCompleteTextView);
+
+
+
         autoCompleteTextView.setText(options[0]);
         autoCompleteTextView.setAdapter(adapter);
     }
@@ -100,9 +120,18 @@ public class AddEvent extends Activity {
         chooseImage = findViewById(R.id.add_event_choose_image_button);
         imageView = findViewById(R.id.add_event_image_view);
         addButton = findViewById(R.id.add_event_button);
+        geoLocationSwitch = findViewById(R.id.add_event_geolocation_sw);
+        geoLocationLinearLayout = findViewById(R.id.add_event_geolocation_display_ll);
+        chooseLocation = findViewById(R.id.add_event_choose_location_btn);
+        addEventLocationTextView = findViewById(R.id.add_event_location_tv);
         deviceID = DeviceID.getDeviceID(this);
         chooseImage.setOnClickListener(view -> openFileChooser());
         qrCodeSpinner = findViewById(R.id.orphaned_qr_code_spinner);
+        autoCompleteTextView = findViewById(R.id.add_event_select_qr_code_actv);
+
+        // prevent choosing date in the past
+        Calendar calendar = Calendar.getInstance();
+        datePicker.setMinDate(calendar.getTimeInMillis());
 
     }
 
@@ -144,7 +173,45 @@ public class AddEvent extends Activity {
                 qrCodeSpinner.setVisibility(View.VISIBLE);
             }
         });
-    }
+
+        geoLocationSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
+            if(b) {
+                geoLocationLinearLayout.setVisibility(View.VISIBLE);
+                chooseLocation.setVisibility(View.VISIBLE);
+            } else {
+                geoLocationLinearLayout.setVisibility(View.GONE);
+                chooseLocation.setVisibility(View.GONE);
+            }
+        });
+
+        chooseLocation.setOnClickListener(view -> {
+            Intent intent = new Intent(AddEventActivity.this, ViewMapActivity.class);
+            intent.putExtra(ViewMapActivity.EXTRA_MODE, ViewMapActivity.CHOOSE_LOCATION);
+            intent.putExtra(ViewMapActivity.EXTRA_PREV_LOCATION, location);
+            viewMapLauncher.launch(intent);
+        });
+
+   }
+
+    private ActivityResultLauncher<Intent> viewMapLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    if(data != null) {
+                        int mode = data.getIntExtra(ViewMapActivity.EXTRA_MODE, -1);
+                        if(mode == ViewMapActivity.CHOOSE_LOCATION) {
+                            location = (Location) data.getSerializableExtra(ViewMapActivity.RESULT_LOCATION);
+                            addEventLocationTextView.setText(
+                                    location.getLatitude() + " " + location.getLongitude()
+                            );
+                        } else {
+                            // TODO: error handling
+                        }
+                    }
+                }
+            }
+    );
 
     /**
      * Method to open file chooser for image selection
@@ -187,7 +254,7 @@ public class AddEvent extends Activity {
         String desc = editDesc.getText().toString();
         String limitText = editLimit.getText().toString();
         int limit = 0;
-        if (!limitText.isEmpty() && limitText != null) {
+        if (!limitText.isEmpty()) {
             limit = Integer.parseInt(limitText);
             if (limit < 0) {
                 limit = 0;
@@ -201,19 +268,31 @@ public class AddEvent extends Activity {
         HashMap<String, Integer> checkIns = new HashMap<>();
         ArrayList<String> signUps = new ArrayList<>();
         String posterID = uploadFile();
-        String QRCodeID = "id";
+        boolean geoLocationEnabled = geoLocationSwitch.isChecked();
+
         String shareQRCodeID = "id";
-        String id = "1";
 
         if (title.isEmpty() || desc.isEmpty()) {
             Toast.makeText(this, "Enter all text fields", Toast.LENGTH_SHORT).show();
+        } if (geoLocationEnabled && location == null) {
+            Toast.makeText(context, "Location enabled: Choose Location", Toast.LENGTH_SHORT).show();
         } else {
-            Event event = new Event(id, title, date, desc, checkIns, signUps, limit, posterID, QRCodeID, shareQRCodeID, "");
             String selectedOption = autoCompleteTextView.getText().toString();
             boolean generateNewQRCode = selectedOption.equals("Generate new QR code");
+
+            if(!geoLocationEnabled) {
+                location = null;
+            }
+
+            Event event = new Event("", title, date,
+                    desc, checkIns, signUps,
+                    limit, posterID, "",
+                    shareQRCodeID, "",
+                    geoLocationEnabled, location, new HashMap<>());
             addEvent(event, generateNewQRCode);
         }
     }
+
 
     /**
      * Method to upload selected image file
@@ -276,7 +355,7 @@ public class AddEvent extends Activity {
             imageController.uploadQRCode(fileID, imageData, uri -> {
                 String QRCodeURI = uri.toString();
                 event.setQRCode(fileID);
-                eventController.setEvent(event, null, null);
+                eventController.setEvent(event, null, e -> Toast.makeText(AddEventActivity.this, "no qr", Toast.LENGTH_SHORT).show());
             }, e -> {
                 Toast.makeText(this, "Unable to store QR code", Toast.LENGTH_SHORT).show();
             });
