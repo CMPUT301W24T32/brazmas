@@ -1,10 +1,13 @@
 package com.CMPUT301W24T32.brazmascheckin.views;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -18,9 +21,15 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.app.ActivityCompat;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.controllers.GetFailureListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
+import com.CMPUT301W24T32.brazmascheckin.controllers.SetFailureListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.SetSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
@@ -28,10 +37,7 @@ import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.storage.StorageReference;
+
 
 /**
  * Profile activity
@@ -42,10 +48,13 @@ public class ProfileActivity extends AppCompatActivity {
     private ImageView profilePicture;
     private TextView userName;
     private Button EditProfileBtn;
-    private StorageReference storageRef;
+    private SwitchCompat geoLocationSwitch;
     private String deviceID;
     private UserController userController;
     private ImageController imageController;
+    private static final int PERMISSION_FINE_COARSE_LOCATION = 99;
+
+
 
     /**
      * This method initializes the Profile activity.
@@ -107,8 +116,8 @@ public class ProfileActivity extends AppCompatActivity {
         profilePicture = findViewById(R.id.profile_picture);
         userName = findViewById(R.id.name_tv);
         EditProfileBtn = findViewById(R.id.edit_profile_btn);
+        geoLocationSwitch = findViewById(R.id.profile_geolocation_sw);
         deviceID = DeviceID.getDeviceID(this);
-        storageRef = FirestoreDB.getStorageReference("uploads");
 
 
     }
@@ -135,6 +144,63 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), EditProfileActivity.class));
             }
         });
+
+        locationSwitch();
+        
+
+    }
+
+    /**
+     * Handles the toggle action for enabling or disabling geolocation for the user.
+     * When the switch state changes, this method retrieves the user's data and updates
+     * the geolocation setting accordingly.
+     */
+    private void locationSwitch() {
+        geoLocationSwitch.setOnClickListener(view -> {
+            if(geoLocationSwitch.isChecked()) {
+                if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    enableLocation();
+                } else {
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                                    Manifest.permission.ACCESS_COARSE_LOCATION},
+                            PERMISSION_FINE_COARSE_LOCATION);
+                }
+            } else {
+                userController.getUser(deviceID, user -> {
+                    user.setGeoLocationEnabled(false);
+                    userController.setUser(user, () -> Toast.makeText(this, "Geolocation disabled", Toast.LENGTH_SHORT).show(),
+                            e -> {
+                                Toast.makeText(this, "Unable to disable geolocation", Toast.LENGTH_SHORT).show();
+                                geoLocationSwitch.setChecked(true);
+                                user.setGeoLocationEnabled(true);
+                            });
+                }, e -> {
+                    Toast.makeText(ProfileActivity.this, "Unable to disable geolocation", Toast.LENGTH_SHORT).show();
+                    geoLocationSwitch.setChecked(true);
+                });
+            }
+        });
+    }
+
+    /**
+     * Enables geolocation for the user if the necessary location permission is granted.
+     * If the permission is not granted, requests it from the user.
+     */
+    private void enableLocation() {
+        userController.getUser(deviceID, user -> {
+            user.setGeoLocationEnabled(true);
+            userController.setUser(user, () -> Toast.makeText(ProfileActivity.this, "Geolocation enabled", Toast.LENGTH_SHORT).show(),
+                    e -> {
+                        Toast.makeText(ProfileActivity.this, "Unable to enable geolocation", Toast.LENGTH_SHORT).show();
+                        geoLocationSwitch.setChecked(false);
+                        user.setGeoLocationEnabled(false);
+                    });
+        }, e -> {
+            Toast.makeText(ProfileActivity.this, "Unable to enable geolocation", Toast.LENGTH_SHORT).show();
+            geoLocationSwitch.setChecked(false);
+        });
     }
 
     /**
@@ -149,5 +215,21 @@ public class ProfileActivity extends AppCompatActivity {
             }, null);
         }
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if(requestCode == PERMISSION_FINE_COARSE_LOCATION) {
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                enableLocation();
+            } else {
+                Toast.makeText(this, "No permission", Toast.LENGTH_SHORT).show();
+                geoLocationSwitch.setChecked(false);
+            }
+        }
+    }
+
+
 }
 

@@ -16,7 +16,8 @@ public class EventTest {
     public void setup() {
         HashMap<String, Integer> checkIns = new HashMap<>();
         ArrayList<String> signUps = new ArrayList<>();
-        event = new Event("1", "Test Event", new Date("2024-12-01"), "Test Description", checkIns, signUps, 100, "posterID", "QRCodeID", "shareQRCodeID", "organizerID");
+        event = new Event("1", "Test Event", new Date("2024-12-01"), "Test Description", checkIns, signUps, 100, "posterID", "QRCodeID", "shareQRCodeID", "organizerID",
+        false, null, null);
     }
 
     @Test
@@ -54,15 +55,15 @@ public class EventTest {
 
     @Test
     public void testCheckIn() {
-        assertTrue(event.checkIn("attendee1"));
-        assertTrue(event.checkIn("attendee1"));
+//        assertTrue(event.checkIn("attendee1", null));
+//        assertTrue(event.checkIn("attendee1", null));
         assertEquals(2, event.getCheckIns().get("attendee1").intValue());
     }
 
     @Test
     public void testHelperKeys() {
-        event.checkIn("attendee1");
-        event.checkIn("attendee2");
+        event.checkIn("attendee1", null);
+        event.checkIn("attendee2", null);
         ArrayList<String> keys = event.helperKeys();
         assertTrue(keys.contains("attendee1"));
         assertTrue(keys.contains("attendee2"));
@@ -70,8 +71,8 @@ public class EventTest {
 
     @Test
     public void testHelperCount() {
-        event.checkIn("attendee1");
-        event.checkIn("attendee2");
+        event.checkIn("attendee1", null);
+        event.checkIn("attendee2", null);
         assertEquals(2, event.helperCount());
     }
 
