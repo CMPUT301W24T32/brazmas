@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -40,9 +39,10 @@ import com.CMPUT301W24T32.brazmascheckin.helper.QRCodeGenerator;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
-public class AddEvent extends AppCompatActivity {
+public class AddEventActivity extends AppCompatActivity {
 
     // Views
     private ImageView imageView;
@@ -69,7 +69,7 @@ public class AddEvent extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_event);
+        setContentView(R.layout.activity_add_event);
 
         // Configuring views and controllers
         configureViews();
@@ -78,7 +78,7 @@ public class AddEvent extends AppCompatActivity {
         // Setup autocomplete dropdown for QR code options
         String[] options = {"Generate new QR code", "Use existing QR code"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, options);
-        AutoCompleteTextView autoCompleteTextView = findViewById(R.id.autoCompleteTextView);
+        AutoCompleteTextView autoCompleteTextView = findViewById(R.id.add_event_select_qr_code_actv);
         autoCompleteTextView.setText(options[0]);
         autoCompleteTextView.setAdapter(adapter);
     }
@@ -101,7 +101,9 @@ public class AddEvent extends AppCompatActivity {
         deviceID = DeviceID.getDeviceID(this);
         chooseImage.setOnClickListener(view -> openFileChooser());
 
-        datePicker.setCalendarViewShown(false);
+        // prevent choosing date in the past
+        Calendar calendar = Calendar.getInstance();
+        datePicker.setMinDate(calendar.getTimeInMillis());
     }
 
     /**
@@ -126,7 +128,7 @@ public class AddEvent extends AppCompatActivity {
         });
 
         chooseLocation.setOnClickListener(view -> {
-            Intent intent = new Intent(AddEvent.this, ViewMapActivity.class);
+            Intent intent = new Intent(AddEventActivity.this, ViewMapActivity.class);
             intent.putExtra(ViewMapActivity.EXTRA_MODE, ViewMapActivity.CHOOSE_LOCATION);
             viewMapLauncher.launch(intent);
         });
@@ -209,25 +211,29 @@ public class AddEvent extends AppCompatActivity {
         ArrayList<String> signUps = new ArrayList<>();
         String posterID = uploadFile();
         boolean geoLocationEnabled = geoLocationSwitch.isChecked();
-        if(!geoLocationEnabled) {
-            location = null;
-        }
 
-        //TODO: remove these placeholders
-        String QRCodeID = "id";
         String shareQRCodeID = "id";
-        String id = "1";
+
         // TODO: add check to see if location is null even if geolocation enabled
         if (title.isEmpty() || desc.isEmpty()) {
             Toast.makeText(this, "Enter all text fields", Toast.LENGTH_SHORT).show();
+        } if (geoLocationEnabled && location == null) {
+            Toast.makeText(context, "Location enabled: Choose Location", Toast.LENGTH_SHORT).show();
         } else {
-            Event event = new Event(id, title, date, desc, checkIns, signUps, limit, posterID, QRCodeID, shareQRCodeID, "",
-                    geoLocationEnabled,
-                    location,
-                    new HashMap<String, Location>());
+
+            if(!geoLocationEnabled) {
+                location = null;
+            }
+
+            Event event = new Event(null, title, date,
+                    desc, checkIns, signUps,
+                    limit, posterID, null,
+                    shareQRCodeID, null,
+                    geoLocationEnabled, location, new HashMap<>());
             addEvent(event);
         }
     }
+
 
     /**
      * Method to upload selected image file
@@ -282,6 +288,4 @@ public class AddEvent extends AppCompatActivity {
             }
         });
     }
-
-    //TODO: add switch for geolocation verification
 }

@@ -30,7 +30,7 @@
             android:name=".views.SignedUpAttendees"
             android:exported="false" />
         <activity
-            android:name=".views.AddEvent"
+            android:name=".views.AddEventActivity"
             android:exported="false" />
         <activity
             android:name=".views.CheckedInAttendees"

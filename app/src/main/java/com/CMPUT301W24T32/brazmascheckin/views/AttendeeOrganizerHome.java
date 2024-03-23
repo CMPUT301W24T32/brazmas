@@ -143,7 +143,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
         });
 
         addButton.setOnClickListener(v -> {
-            startActivity(new Intent(AttendeeOrganizerHome.this, AddEvent.class));
+            startActivity(new Intent(AttendeeOrganizerHome.this, AddEventActivity.class));
         });
     }
 

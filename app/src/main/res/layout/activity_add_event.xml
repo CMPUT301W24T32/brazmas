@@ -16,35 +16,35 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Event Name"
+            android:hint="@string/event_name"
             android:inputType="text"
             android:textColorHint="#9C27B0"
             android:layout_marginBottom="10dp"
-            />
+            android:autofillHints="event name" />
 
         <EditText
             android:id="@+id/add_event_desc_et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:text="Event Description"
+            android:hint="@string/event_description"
             android:inputType="text"
             android:textColorHint="#9C27B0"
             android:layout_below="@id/add_event_name_tv"
             android:layout_marginBottom="10dp"
-            />
+            android:autofillHints="event description" />
 
         <EditText
             android:id="@+id/add_event_limit_et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Attendee Limit"
+            android:hint="@string/attendee_limit"
             android:inputType="number"
             android:textColorHint="#9C27B0"
             android:layout_below="@id/add_event_desc_et"
             android:layout_marginBottom="10dp"
-            />
+            android:autofillHints="attendee limit" />
 
         <LinearLayout
             android:id="@+id/add_event_geolocation_configure_ll"
@@ -58,7 +58,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Geolocation Verification"
+                android:text="@string/geolocation_verification"
                 android:layout_marginEnd="10dp"
                 />
             <androidx.appcompat.widget.SwitchCompat
@@ -74,9 +74,10 @@
             android:id="@+id/add_event_choose_location_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Choose Location"
+            android:text="@string/choose_location"
             android:layout_alignParentEnd="true"
             android:layout_below="@id/add_event_limit_et"
+            android:visibility="gone"
             />
 
         <LinearLayout
@@ -86,11 +87,13 @@
             android:orientation="horizontal"
             android:layout_below="@id/add_event_geolocation_configure_ll"
             android:layout_marginBottom="10dp"
+            android:visibility="gone"
             >
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Location:"
+                android:text="@string/location"
+                android:layout_marginEnd="5dp"
                 />
 
             <TextView
@@ -110,7 +113,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
             <AutoCompleteTextView
-                android:id="@+id/autoCompleteTextView"
+                android:id="@+id/add_event_select_qr_code_actv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
@@ -123,7 +126,7 @@
             android:layout_height="wrap_content"
             android:background="#E29BEF"
             android:backgroundTint="#DD98EA"
-            android:text="Generate Promotional QR code"
+            android:text="@string/generate_promotional_qr_code"
             app:rippleColor="#9B27AF"
             android:layout_below="@id/add_event_select_qr_code"
             android:layout_marginBottom="10dp"
@@ -133,7 +136,7 @@
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Choose Image"
+            android:text="@string/choose_image"
             android:id="@+id/add_event_choose_image_button"
             android:background="#E29BEF"
             android:backgroundTint="#DD98EA"
@@ -147,7 +150,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/add_event_image_view"
             android:layout_below="@id/add_event_choose_image_button"
-            />
+            android:contentDescription="@string/event_poster" />
 
         <DatePicker
             android:id="@+id/add_event_date_dp"
@@ -163,7 +166,7 @@
             android:id="@+id/add_event_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Add"
+            android:text="@string/add_event"
             android:layout_below="@id/add_event_date_dp"
             />
     </RelativeLayout>
