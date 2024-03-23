@@ -47,6 +47,7 @@ public class AttendeeViewEventFragment extends DialogFragment {
     private TextView eventCheckIns;
     private Button checkedInAttendeesBtn;
     private Button signedUpAttendeesBtn;
+    private Button geoLocationBtn;
     private CheckBox signedUpCB;
     private ImageView QRCode;
     private EventController eventController;
@@ -123,6 +124,7 @@ public class AttendeeViewEventFragment extends DialogFragment {
         eventPoster = view.findViewById(R.id.view_event_poster_iv);
         checkedInAttendeesBtn = view.findViewById(R.id.view_event_see_checked_in_attendees_btn);
         signedUpAttendeesBtn = view.findViewById(R.id.view_event_see_signed_up_attendees_btn);
+        geoLocationBtn = view.findViewById(R.id.view_event_map_btn);
 
         signedUpCB = view.findViewById(R.id.signed_up_CB);
         String deviceID = DeviceID.getDeviceID(getContext());
@@ -155,6 +157,13 @@ public class AttendeeViewEventFragment extends DialogFragment {
         signedUpAttendeesBtn.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), SignedUpAttendees.class);
             intent.putExtra("EVENT", e);
+            startActivity(intent);
+        });
+
+        geoLocationBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), ViewMapActivity.class);
+            intent.putExtra(ViewMapActivity.EXTRA_LOCATION_PAIRS, e.getUserLocationPairs());
+            intent.putExtra(ViewMapActivity.EXTRA_EVENT, e);
             startActivity(intent);
         });
     }

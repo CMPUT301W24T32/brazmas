@@ -144,7 +144,7 @@ public class CameraActivity extends AppCompatActivity {
                                 checkIntoEvent(builder, event, l);
                             });
                         } else {
-                            Toast.makeText(CameraActivity.this, "Cannot check-in with location", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CameraActivity.this, "Checked into event without location", Toast.LENGTH_SHORT).show();
                             checkIntoEvent(builder, event, null);
                         }
                     } else {

@@ -77,11 +77,26 @@
             app:rippleColor="#9B27AF"
             />
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/add_event_geolocation_sw"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            />
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Geolocation Verification"
+                android:layout_marginEnd="10dp"
+                />
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/add_event_geolocation_sw"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+        </LinearLayout>
+
+
 
         <LinearLayout
             android:layout_width="match_parent"

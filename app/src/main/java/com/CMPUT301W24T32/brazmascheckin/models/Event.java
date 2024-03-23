@@ -38,7 +38,6 @@ public class Event implements Serializable {
 
     private Location eventLocation;
 
-    //TODO: add geolocation/event map
 
     /**
      * Constructs a new instance of the Event class with the full information for an event.
@@ -198,7 +197,6 @@ public class Event implements Serializable {
         }
     }
 
-    //TODO: how to deal with attendees leaving the event?
     /**
      * This method provides the list of attendees checked-into the event.
      * @return list of attendees checked-into the event
