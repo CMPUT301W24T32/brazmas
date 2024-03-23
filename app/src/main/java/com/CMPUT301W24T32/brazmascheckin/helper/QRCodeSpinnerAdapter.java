@@ -37,9 +37,13 @@ public class QRCodeSpinnerAdapter extends ArrayAdapter<Bitmap> {
         return row;
     }
 
-    public void add(Bitmap image, String id) {
+    @Override
+    public void add(Bitmap image) {
         qrcodeImageList.add(image);
-        qrcodeIDList.add(id);
+        //qrcodeIDList.add(eventID);
+        // Assuming qrcodeIDList is always of the same size as qrcodeImageList
+        // and corresponding IDs are added in the same order as images
+        qrcodeIDList.add(String.valueOf(qrcodeImageList.size() - 1)); // Add a dummy ID for now
         notifyDataSetChanged(); // Notify the adapter that the data set has changed
     }
 }

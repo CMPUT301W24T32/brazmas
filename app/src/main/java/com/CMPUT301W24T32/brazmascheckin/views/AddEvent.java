@@ -61,14 +61,18 @@ public class AddEvent extends Activity {
     private EventController eventController;
     private UserController userController;
     private QRCodeSpinnerAdapter qrCodeAdapter;
+    private ArrayList<Bitmap> listOfBitmaps;
+    private ArrayList<String> listOfEventIDs;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_event);
-
+        listOfBitmaps = new ArrayList<>();
+        listOfEventIDs = new ArrayList<>();
         // Configuring views and controllers
-        qrCodeAdapter = new QRCodeSpinnerAdapter(this, new ArrayList<>(), new ArrayList<>());
+        qrCodeAdapter = new QRCodeSpinnerAdapter(this, listOfBitmaps, listOfEventIDs);
         qrCodeChoice();
         configureViews();
         configureControllers();
@@ -105,10 +109,16 @@ public class AddEvent extends Activity {
     private void populateOrphanedQRCodeSpinner() {
         OrphanedQRCodeFinder qrCodeFinder = new OrphanedQRCodeFinder(imageController, eventController);
         qrCodeFinder.findAndProcessOrphanedQRCodes(orphanedQRCodeFileIDs -> {
+            Log.d("tag1", "OrphanedQRCodeSpinner size: "+orphanedQRCodeFileIDs.size());
             for (String fileID : orphanedQRCodeFileIDs) {
                 imageController.getImage("QR_CODE", fileID, bytes -> {
+                    Log.d("tag1", "file ID: "+fileID);
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    qrCodeAdapter.add(bitmap, fileID);
+                    listOfEventIDs.add(fileID);
+                    listOfBitmaps.add(bitmap);
+                    qrCodeAdapter.notifyDataSetChanged();
+                    //qrCodeAdapter.add(bitmap);
+                    Log.d("tag1", "count of qrcode adapter "+qrCodeAdapter.getCount());
                     qrCodeSpinner.setAdapter(qrCodeAdapter);
                     qrCodeSpinner.setVisibility(View.VISIBLE);
                 }, e -> {
