@@ -31,6 +31,7 @@ import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.controllers.AddFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
+import com.CMPUT301W24T32.brazmascheckin.controllers.SetFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.Date;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
@@ -130,6 +131,7 @@ public class AddEventActivity extends AppCompatActivity {
         chooseLocation.setOnClickListener(view -> {
             Intent intent = new Intent(AddEventActivity.this, ViewMapActivity.class);
             intent.putExtra(ViewMapActivity.EXTRA_MODE, ViewMapActivity.CHOOSE_LOCATION);
+            intent.putExtra(ViewMapActivity.EXTRA_PREV_LOCATION, location);
             viewMapLauncher.launch(intent);
         });
 
@@ -196,7 +198,7 @@ public class AddEventActivity extends AppCompatActivity {
         String desc = editDesc.getText().toString();
         String limitText = editLimit.getText().toString();
         int limit = 0;
-        if (!limitText.isEmpty() && limitText != null) {
+        if (!limitText.isEmpty()) {
             limit = Integer.parseInt(limitText);
             if (limit < 0) {
                 limit = 0;
@@ -214,7 +216,6 @@ public class AddEventActivity extends AppCompatActivity {
 
         String shareQRCodeID = "id";
 
-        // TODO: add check to see if location is null even if geolocation enabled
         if (title.isEmpty() || desc.isEmpty()) {
             Toast.makeText(this, "Enter all text fields", Toast.LENGTH_SHORT).show();
         } if (geoLocationEnabled && location == null) {
@@ -225,10 +226,10 @@ public class AddEventActivity extends AppCompatActivity {
                 location = null;
             }
 
-            Event event = new Event(null, title, date,
+            Event event = new Event("", title, date,
                     desc, checkIns, signUps,
-                    limit, posterID, null,
-                    shareQRCodeID, null,
+                    limit, posterID, "",
+                    shareQRCodeID, "",
                     geoLocationEnabled, location, new HashMap<>());
             addEvent(event);
         }
@@ -270,7 +271,7 @@ public class AddEventActivity extends AppCompatActivity {
             imageController.uploadQRCode(fileID, imageData, uri -> {
                 String QRCodeURI = uri.toString();
                 event.setQRCode(fileID);
-                eventController.setEvent(event, null, null);
+                eventController.setEvent(event, null, e -> Toast.makeText(AddEventActivity.this, "no qr", Toast.LENGTH_SHORT).show());
             }, e -> {
                 Toast.makeText(this, "Unable to store QR code", Toast.LENGTH_SHORT).show();
             });

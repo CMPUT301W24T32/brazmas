@@ -22,4 +22,11 @@
     <string name="choose_image">Choose Image</string>
     <string name="event_poster">Event Poster</string>
     <string name="add_event">Add Event</string>
+    <string name="attending">Attending</string>
+    <string name="placeholder_date">January 1, 1970</string>
+    <string name="date_label">Date:</string>
+    <string name="attendee_check_in_locations">Attendee Check-In Locations</string>
+    <string name="attendee_sign_ups">Attendee Sign-Ups</string>
+    <string name="attendee_check_ins">Attendee Check-Ins</string>
+    <string name="event_qr_code">Event QR Code</string>
 </resources>

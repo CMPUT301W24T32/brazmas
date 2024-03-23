@@ -21,10 +21,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
-import com.CMPUT301W24T32.brazmascheckin.controllers.AddFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
 
-import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
@@ -37,12 +35,12 @@ import java.util.ArrayList;
 /**
  * This class is the fragment for the individual event view
  */
-public class AttendeeViewEventFragment extends DialogFragment {
+public class ViewEventFragment extends DialogFragment {
     private TextView eventName;
     private TextView  eventDescription;
 
     private TextView eventDate;
-    private TextView eventAnnouncements;
+
     private ImageView eventPoster;
     private TextView eventCheckIns;
     private Button checkedInAttendeesBtn;
@@ -55,6 +53,10 @@ public class AttendeeViewEventFragment extends DialogFragment {
     private ImageController imageController;
 
     private String deviceID;
+    public static final String EXTRA_VIEW_MODE = "view_mode";
+    public static final int ATTENDEE_VIEW = 0;
+    public static final int ORGANIZER_VIEW = 1;
+    private int mode;
 
     /**
      * This function allows me to accept a bundle so i can access event data
@@ -62,10 +64,11 @@ public class AttendeeViewEventFragment extends DialogFragment {
      * @param e event
      * @return fragment
      */
-    public static AttendeeViewEventFragment sendEvent(Event e) {
+    public static ViewEventFragment sendEvent(Event e, int viewMode) {
         Bundle args = new Bundle();
         args.putSerializable("Event", e);
-        AttendeeViewEventFragment fragment = new AttendeeViewEventFragment();
+        args.putInt(EXTRA_VIEW_MODE, viewMode);
+        ViewEventFragment fragment = new ViewEventFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -82,14 +85,16 @@ public class AttendeeViewEventFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.attendee_view_event_fragment_layout,null);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.view_event_fragment_layout,null);
         eventController = new EventController(getContext());
         userController = new UserController(getContext());
         imageController = new ImageController(getContext());
         // retrieving from the bundle
         Bundle bundle = getArguments();
         Event e = (Event) bundle.getSerializable("Event");
-        configureViews(view, e);
+        mode = bundle.getInt(EXTRA_VIEW_MODE, -1);
+
+        configureViews(view, e, mode);
         configureControllers(e, getContext());
         deviceID = DeviceID.getDeviceID(getContext());
 
@@ -109,14 +114,13 @@ public class AttendeeViewEventFragment extends DialogFragment {
      * @param view view of the fragment
      * @param e event to be displayed
      */
-    private void configureViews(View view, Event e) {
+    private void configureViews(View view, Event e, int mode) {
 
 
         eventName = view.findViewById(R.id.view_event_name_tv);
         eventDescription = view.findViewById(R.id.view_event_description_tv);
         eventDate = view.findViewById(R.id.view_event_date_tv);
-        eventAnnouncements = view.findViewById(R.id.view_event_announcement_tv1);
-        eventCheckIns = view.findViewById(R.id.view_event_checkins_tv);
+        eventCheckIns = view.findViewById(R.id.view_event_social_tv);
         eventName.setText(e.getName());
         eventDate.setText(e.getDate().getPrettyDate());
         eventDescription.setText(e.getDescription());
@@ -126,7 +130,7 @@ public class AttendeeViewEventFragment extends DialogFragment {
         signedUpAttendeesBtn = view.findViewById(R.id.view_event_see_signed_up_attendees_btn);
         geoLocationBtn = view.findViewById(R.id.view_event_map_btn);
 
-        signedUpCB = view.findViewById(R.id.signed_up_CB);
+        signedUpCB = view.findViewById(R.id.view_event_signed_up_cb);
         String deviceID = DeviceID.getDeviceID(getContext());
         ArrayList<String> signUps = e.getSignUps();
         if (signUps.contains(deviceID)){
@@ -135,6 +139,14 @@ public class AttendeeViewEventFragment extends DialogFragment {
         QRCode = view.findViewById(R.id.view_event_QR_iv);
         displayImage(e.getPoster());
         displayQRCode(e.getQRCode());
+
+        if(mode == ATTENDEE_VIEW) {
+            eventCheckIns.setVisibility(View.GONE);
+            checkedInAttendeesBtn.setVisibility(View.GONE);
+            signedUpAttendeesBtn.setVisibility(View.GONE);
+            geoLocationBtn.setVisibility(View.GONE);
+            QRCode.setVisibility(View.GONE);
+        }
     }
 
     /**

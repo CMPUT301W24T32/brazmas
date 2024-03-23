@@ -45,6 +45,7 @@ public class ViewMapActivity extends AppCompatActivity {
     public static final String EXTRA_MODE = "mode";
     public static final int VIEW_ATTENDEES = 0;
     public static final int CHOOSE_LOCATION = 1;
+    public static final String EXTRA_PREV_LOCATION = "previous_location";
     public static final String RESULT_LOCATION = "result_location";
 
     @Override
@@ -69,8 +70,9 @@ public class ViewMapActivity extends AppCompatActivity {
                 displayCheckedInAttendees(event, locations);
                 break;
             case CHOOSE_LOCATION:
+                Location previousLocation = (Location) i.getSerializableExtra(EXTRA_PREV_LOCATION);
                 chooseLocationBtn.setVisibility(View.VISIBLE);
-                chooseLocation();
+                chooseLocation(previousLocation);
                 break;
         }
 
@@ -147,8 +149,12 @@ public class ViewMapActivity extends AppCompatActivity {
      * a marker is placed on the map to represent the chosen location.
      * If the user confirms the chosen location, the result is returned to the calling activity.
      */
-    private void chooseLocation() {
+    private void chooseLocation(Location previousLocation) {
         Marker marker = new Marker(mapView);
+        if(previousLocation != null) {
+            GeoPoint p = new GeoPoint(previousLocation.getLatitude(), previousLocation.getLongitude());
+            marker.setPosition(p);
+        }
         marker.setTitle("Event Location");
         MapEventsReceiver mapEventsReceiver = new MapEventsReceiver() {
             @Override
