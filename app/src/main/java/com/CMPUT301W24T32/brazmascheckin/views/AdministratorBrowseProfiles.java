@@ -1,22 +1,29 @@
+
 package com.CMPUT301W24T32.brazmascheckin.views;
 
-import android.content.Intent;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteSuccessListener;
+
+import com.CMPUT301W24T32.brazmascheckin.controllers.GetFailureListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
+
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteFailureListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.CMPUT301W24T32.brazmascheckin.helper.AdminProfileRecyclerViewAdapter;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
@@ -44,41 +51,8 @@ public class AdministratorBrowseProfiles extends AppCompatActivity {
         configureViews();
         configureControllers();
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.admin_profile_bnv);
-        bottomNavigationView.setSelectedItemId(R.id.admin_profile);
-        bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            /**
-             * This method determines something from navigation bar has been selected or not.
-             * @param menuItem The selected item
-             * @return True if selected, false otherwise.
-             */
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                int id = menuItem.getItemId();
-
-                if (id == (R.id.admin_event)){
-                    startActivity(new Intent(getApplicationContext(), AdministratorHome.class));
-                    overridePendingTransition(0,0);
-                    return true;
-                }
-
-                if (id == (R.id.admin_profile)){
-                    return true;
-                }
-
-                if (id == (R.id.admin_image)){
-                    startActivity(new Intent(getApplicationContext(), AdministratorBrowseImages.class));
-                    overridePendingTransition(0,0);
-                    return true;
-                }
-
-                return false;
-
-            }
-        });
-
+        //TODO: need to add navigation bar.
     }
-
 
 
     /**
@@ -102,6 +76,15 @@ public class AdministratorBrowseProfiles extends AppCompatActivity {
         showAllUsers();
 
         //TODO: need to implement long click or slide feature to delete a user
+
+        // set click listener for recyclerView items
+        profileRecyclerViewAdapter.setOnItemClickListener(new AdminProfileRecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                User clickedUser = userDataList.get(position);
+                showConfirmationDialog(clickedUser);
+            }
+        });
     }
 
     private void showAllUsers() {
@@ -121,5 +104,36 @@ public class AdministratorBrowseProfiles extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void deleteUser(User user) {
+
+        userController.deleteUser(user, new DeleteSuccessListener() {
+            @Override
+            public void onDeleteSuccess() {
+                // profile deleted successfuly
+                Toast.makeText(AdministratorBrowseProfiles.this, "Profile deleted", Toast.LENGTH_SHORT).show();
+            }
+        }, new DeleteFailureListener() {
+            @Override
+            public void onDeleteFailure(Exception e) {
+                // failed to delete event
+                Toast.makeText(AdministratorBrowseProfiles.this, "Failed to delete profile", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void showConfirmationDialog(User user) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure you want to delete this profile?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // User confirmed, delete the profile
+                deleteUser(user);
+            }
+        });
+        builder.setNegativeButton("No", null); // Do nothing if user cancels
+        builder.show();
     }
 }

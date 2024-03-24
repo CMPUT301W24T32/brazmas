@@ -1,3 +1,4 @@
+
 package com.CMPUT301W24T32.brazmascheckin.views;
 
 import androidx.annotation.NonNull;
@@ -57,34 +58,7 @@ public class AdministratorHome extends AppCompatActivity {
         configureViews();
         configureControllers();
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.admin_home_bnv);
-        bottomNavigationView.setSelectedItemId(R.id.admin_event);
-        bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            /**
-             * This method determines something from navigation bar has been selected or not.
-             * @param menuItem The selected item
-             * @return True if selected, false otherwise.
-             */
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                int id = menuItem.getItemId();
-
-                if (id == (R.id.admin_event)){
-                    return true;
-                }
-
-                if (id == (R.id.admin_profile)){
-                    startActivity(new Intent(getApplicationContext(), AdministratorBrowseProfiles.class));
-                    overridePendingTransition(0,0);
-                }
-                if (id == (R.id.admin_image)){
-                    startActivity(new Intent(getApplicationContext(), AdministratorBrowseImages.class));
-                    overridePendingTransition(0,0);
-                }
-                return false;
-
-            }
-        });
+        //TODO: need to add the navigation bar
     }
 
     /**

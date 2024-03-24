@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,7 @@ public class AdminProfileRecyclerViewAdapter extends RecyclerView.Adapter<AdminP
 
     private ArrayList<User> users;
     private Context context;
+    private OnItemClickListener onItemClickListener;
 
     /**
      * This method constructs a new AdminProfileRecyclerViewAdapter.
@@ -68,6 +70,21 @@ public class AdminProfileRecyclerViewAdapter extends RecyclerView.Adapter<AdminP
     }
 
     /**
+     * This method sets an itemClickListener for handling click events on the RecyclerView items.
+     * @param onItemClickListener the click listener.
+     */
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
+    /**
+     * This method is the interface for the item click listener.
+     */
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
+
+    /**
      * This ViewHolder class holds data about an user and their profile.
      */
     public class AdminProfileViewHolder extends RecyclerView.ViewHolder {
@@ -79,7 +96,20 @@ public class AdminProfileRecyclerViewAdapter extends RecyclerView.Adapter<AdminP
          */
         public AdminProfileViewHolder(@NonNull View itemView) {
             super(itemView);
+
+            // initializes the views
             name = itemView.findViewById(R.id.admin_view_profile_name_tv);
+
+            // set the click listener for the itemView
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // notify the registered click listener about the recently clicked profile
+                    if (onItemClickListener != null) {
+                        onItemClickListener.onItemClick(getAdapterPosition());
+                    }
+                }
+            });
         }
 
         /**
