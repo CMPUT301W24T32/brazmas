@@ -13,6 +13,7 @@ import com.CMPUT301W24T32.brazmascheckin.controllers.GetFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
+import com.CMPUT301W24T32.brazmascheckin.views.AdministratorBrowseImages;
 import com.CMPUT301W24T32.brazmascheckin.views.AdministratorBrowseProfiles;
 import com.CMPUT301W24T32.brazmascheckin.views.AdministratorHome;
 import com.CMPUT301W24T32.brazmascheckin.views.AttendeeOrganizerHome;
@@ -43,7 +44,8 @@ public class MainActivity extends AppCompatActivity {
         // control flow of different types of users
         adminController.getAdmin(deviceID, object -> {
             //Intent intent = new Intent(MainActivity.this, AdministratorHome.class);
-            Intent intent = new Intent(MainActivity.this, AdministratorBrowseProfiles.class);
+            //Intent intent = new Intent(MainActivity.this, AdministratorBrowseProfiles.class);
+            Intent intent = new Intent(MainActivity.this, AdministratorBrowseImages.class);
 
             startActivity(intent);
             finish();
