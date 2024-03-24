@@ -46,6 +46,10 @@ public class CheckedInAttendees extends AppCompatActivity implements
         Event e = (Event) intent.getSerializableExtra("EVENT");
         configureViews();
         configureControllers(e);
+
+        notify.setOnClickListener(v -> {
+            new AddAnnouncementFragment().show(getSupportFragmentManager(), "Add Announcement");
+        });
     }
 
     /**
