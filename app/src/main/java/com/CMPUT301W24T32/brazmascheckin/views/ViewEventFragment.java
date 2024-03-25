@@ -41,6 +41,8 @@ public class ViewEventFragment extends DialogFragment {
 
     private ImageView eventPoster;
     private TextView eventCheckIns;
+    private TextView qrCodeTitle;
+    private TextView shareqrCodeTitle;
     private Button checkedInAttendeesBtn;
     private Button signedUpAttendeesBtn;
     private Button geoLocationBtn;
@@ -120,6 +122,8 @@ public class ViewEventFragment extends DialogFragment {
         eventDescription = view.findViewById(R.id.view_event_description_tv);
         eventDate = view.findViewById(R.id.view_event_date_tv);
         eventCheckIns = view.findViewById(R.id.view_event_social_tv);
+        qrCodeTitle = view.findViewById(R.id.check_in_qr_code_text);
+        shareqrCodeTitle = view.findViewById(R.id.share_qr_code_text);
         eventName.setText(e.getName());
         eventDate.setText(e.getDate().getPrettyDate());
         eventDescription.setText(e.getDescription());
@@ -147,6 +151,10 @@ public class ViewEventFragment extends DialogFragment {
             signedUpAttendeesBtn.setVisibility(View.GONE);
             geoLocationBtn.setVisibility(View.GONE);
             QRCode.setVisibility(View.GONE);
+            shareQRCode.setVisibility(View.GONE);
+            shareqrCodeTitle.setVisibility(View.GONE);
+            qrCodeTitle.setVisibility(View.GONE);
+
         }
     }
 
