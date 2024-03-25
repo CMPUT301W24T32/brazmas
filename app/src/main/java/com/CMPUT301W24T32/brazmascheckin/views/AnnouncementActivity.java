@@ -3,6 +3,7 @@ package com.CMPUT301W24T32.brazmascheckin.views;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -50,6 +51,9 @@ public class AnnouncementActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_announcement);
+
+        configureControllers();
+        configureViews();
 
         // Allows the app to switch between activities
         BottomNavigationView bottomNavigationView = findViewById(R.id.announcement_bnv);
@@ -113,9 +117,10 @@ public class AnnouncementActivity extends AppCompatActivity  {
                     announcementDataList.clear();
                    for(Event event: events) {
                        if(signedUp.contains(event.getID())){
+                           //Toast.makeText(getBaseContext(), "Unable to connect to the database", Toast.LENGTH_LONG).show();
                            ArrayList<Announcement> announcements = event.getAnnouncements();
-                           for (Announcement a : announcements){
-                               announcementDataList.add(a);
+                           if (announcements != null) {
+                               announcementDataList.addAll(announcements);
                            }
                        }
                    }
