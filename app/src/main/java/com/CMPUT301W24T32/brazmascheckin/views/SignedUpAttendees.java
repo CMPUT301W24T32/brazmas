@@ -6,9 +6,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.helper.AttendeeSignedUpRecyclerViewAdapter;
+import com.CMPUT301W24T32.brazmascheckin.models.Announcement;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
@@ -16,13 +18,15 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 
 import java.util.ArrayList;
+// TODO: ADD BACK BUTTON AND MOVE NOTIFY
 
 /**
  * Activity to display signed-up attendees
  */
-public class SignedUpAttendees extends AppCompatActivity {
+public class SignedUpAttendees extends AppCompatActivity implements AddAnnouncementFragment.AddAnnouncementDialogListener {
 
     private RecyclerView recyclerView;
+    private Button notify;
     private ArrayList<User> userDataList;
     private AttendeeSignedUpRecyclerViewAdapter attendeeSignedUpRecyclerViewAdapter;
 
@@ -52,6 +56,7 @@ public class SignedUpAttendees extends AppCompatActivity {
         );
         recyclerView.setAdapter(attendeeSignedUpRecyclerViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        notify = findViewById(R.id.signed_up_attendees_notification_btn);
     }
 
     /**
@@ -85,5 +90,13 @@ public class SignedUpAttendees extends AppCompatActivity {
                         });
             }
         });
+        notify.setOnClickListener(v -> {
+            new AddAnnouncementFragment().show(getSupportFragmentManager(), "Add Announcement");
+        });
+    }
+
+    @Override
+    public void addAnnouncement(Announcement announcement) {
+        //here add the annoucnment to users firebase -> then access it and put it into annoucnement activity
     }
 }

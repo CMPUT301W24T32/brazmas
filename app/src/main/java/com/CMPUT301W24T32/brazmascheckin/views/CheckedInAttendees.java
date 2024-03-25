@@ -27,7 +27,7 @@ public class CheckedInAttendees extends AppCompatActivity implements
     private RecyclerView recyclerView;
     private Button share;
     private Button map;
-    private Button notify;
+    //private Button notify;
     private ArrayList<User> userDataList;
     private ArrayList<Integer> userCheckIns;
 
@@ -47,9 +47,9 @@ public class CheckedInAttendees extends AppCompatActivity implements
         configureViews();
         configureControllers(e);
 
-        notify.setOnClickListener(v -> {
-            new AddAnnouncementFragment().show(getSupportFragmentManager(), "Add Announcement");
-        });
+       //notify.setOnClickListener(v -> {
+           // new AddAnnouncementFragment().show(getSupportFragmentManager(), "Add Announcement");
+       // });
     }
 
     /**
@@ -61,7 +61,7 @@ public class CheckedInAttendees extends AppCompatActivity implements
         recyclerView = findViewById(R.id.checked_in_attendees_attendees_rv);
         share = findViewById(R.id.checked_in_attendees_share_btn);
         map = findViewById(R.id.checked_in_attendees_map_btn);
-        notify = findViewById(R.id.checked_in_attendees_notification_btn);
+        //notify = findViewById(R.id.checked_in_attendees_notification_btn);
         attendeeCheckedInRecyclerViewAdapter = new AttendeeCheckedInRecyclerViewAdapter(this, userDataList,
                 userCheckIns,
                 this);
@@ -76,6 +76,10 @@ public class CheckedInAttendees extends AppCompatActivity implements
     private void configureControllers(Event e) {
         CollectionReference eventsRef = FirestoreDB.getEventsRef();
         DocumentReference eventDoc = eventsRef.document(e.getID());
+        //notify.setOnClickListener(v -> {
+                    //new AddAnnouncementFragment().show(getSupportFragmentManager(), "Add Announcement");
+                   // });
+
 
         CollectionReference attendeesRef = FirestoreDB.getUsersRef();
         eventDoc.addSnapshotListener((value, error) -> {
@@ -102,6 +106,10 @@ public class CheckedInAttendees extends AppCompatActivity implements
                         });
             }
         });
+
+        //notify.setOnClickListener(v -> {
+            //new AddAnnouncementFragment().show(getSupportFragmentManager(), "Add Announcement");
+        //});
     }
 
 

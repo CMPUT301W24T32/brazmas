@@ -26,6 +26,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+//todo: No date -> plus add event name for toast and in announcement activity -> so for message store organizer name 2
+//todo: toast message if sent, else error message
+
 public class AddAnnouncementFragment extends DialogFragment {
     private EditText editTitle;
     private EditText editDesc;
@@ -64,7 +67,7 @@ public class AddAnnouncementFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder
                 .setView(view)
-                .setTitle("Add an event")
+                .setTitle("Add an Announcement")
                 .setNegativeButton("Cancel",null)
                 .setPositiveButton("Add", (dialog, which) -> {
                     retrieveInput();
@@ -97,4 +100,6 @@ public class AddAnnouncementFragment extends DialogFragment {
 
 
     }
+
+
 }

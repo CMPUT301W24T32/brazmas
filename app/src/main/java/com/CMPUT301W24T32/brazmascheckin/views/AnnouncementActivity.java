@@ -15,13 +15,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.helper.AnnouncementRecyclerViewAdapter;
+import com.CMPUT301W24T32.brazmascheckin.models.Announcement;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /**
  * Announcement activity is made for testing navigation
  */
 
-public class AnnouncementActivity extends AppCompatActivity {
+public class AnnouncementActivity extends AppCompatActivity  {
 
     /**
      * variables
@@ -79,7 +80,7 @@ public class AnnouncementActivity extends AppCompatActivity {
 
             }
         });
-
-        //end baab
     }
+
+
 }

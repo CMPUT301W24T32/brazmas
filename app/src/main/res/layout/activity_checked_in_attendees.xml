@@ -32,14 +32,7 @@
             android:text="Map"
             android:layout_margin="10dp"
             />
-        <Button
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:id="@+id/checked_in_attendees_notification_btn"
-            android:text="Notify"
-            android:layout_margin="10dp"
-            />
+
 
 
     </LinearLayout>
