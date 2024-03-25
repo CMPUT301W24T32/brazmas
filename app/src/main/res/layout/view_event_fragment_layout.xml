@@ -131,5 +131,16 @@
             android:contentDescription="@string/event_qr_code"
             android:layout_centerHorizontal="true"
             />
+
+        <ImageView
+            android:id="@+id/view_event_share_QR_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/view_event_QR_iv"
+            android:contentDescription="@string/event_qr_code"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            />
+
     </RelativeLayout>
 </ScrollView>

@@ -17,13 +17,16 @@ public class ImageController {
     private StorageReference posterReference;
     private StorageReference qrCodeReference;
     private StorageReference profilePictureReference;
+    private StorageReference shareqrCodeReference;
     private Context context;
     private static final String POSTER_PATH = "posters";
     private static final String QR_CODE_PATH = "qr_codes";
     private static final String PROFILE_PICTURE_PATH = "profile_pictures";
+    private static final String SHARE_QR_CODE_PATH = "ShareQRCodes";
     public static final String PROFILE_PICTURE = "PROFILE_PICTURE";
     public static final String EVENT_POSTER = "EVENT_POSTER";
     public static final String QR_CODE ="QR_CODE";
+    public static final String SHARE_QR_CODE = "SHARE_QR_CODE";
 
     /**
      * Constructs a new instance of the Image Controller.
@@ -35,6 +38,7 @@ public class ImageController {
         posterReference = FirestoreDB.getStorageReference(POSTER_PATH);
         qrCodeReference = FirestoreDB.getStorageReference(QR_CODE_PATH);
         profilePictureReference = FirestoreDB.getStorageReference(PROFILE_PICTURE_PATH);
+        shareqrCodeReference = FirestoreDB.getStorageReference(SHARE_QR_CODE_PATH);
     }
 
     public void uploadImage(String TYPE, String fileID,
@@ -75,9 +79,15 @@ public class ImageController {
      * @param successListener a listener to handle success callbacks for the operation.
      * @param failureListener a listener to handle failure callbacks for the operation.
      */
-    public void uploadQRCode(String fileID, byte[] imageData, AddSuccessListener<Uri> successListener,
+    public void uploadQRCode(String type, String fileID, byte[] imageData, AddSuccessListener<Uri> successListener,
                              AddFailureListener failureListener) {
-        StorageReference fileReference = qrCodeReference.child(fileID);
+        StorageReference fileReference;
+        if (type == "CHECK-IN") {
+            fileReference = qrCodeReference.child(fileID);
+        }
+        else {
+            fileReference = shareqrCodeReference.child(fileID);
+        }
         fileReference.putBytes(imageData)
                 .addOnSuccessListener(taskSnapshot -> fileReference.getDownloadUrl()
                         .addOnSuccessListener(uri -> {
@@ -114,6 +124,8 @@ public class ImageController {
             imageReference = profilePictureReference.child(fileID);
         } else if (TYPE.equals(QR_CODE)) {
             imageReference = qrCodeReference.child(fileID);
+        } else if (TYPE.equals(SHARE_QR_CODE)) {
+            imageReference = shareqrCodeReference.child(fileID);
         } else {
             imageReference = null;
             return;

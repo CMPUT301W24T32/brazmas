@@ -64,6 +64,7 @@ public class AddEventActivity extends AppCompatActivity {
     private LinearLayout geoLocationLinearLayout;
     private TextView addEventLocationTextView;
     private Button chooseLocation;
+    private Button addShareQRCode;
     private String deviceID;
     private Spinner qrCodeSpinner;
     private List<String> orphanedQRCodeFileIDs;
@@ -78,6 +79,9 @@ public class AddEventActivity extends AppCompatActivity {
 
     private Location location;
     private AutoCompleteTextView autoCompleteTextView;
+
+    //conditional
+    private boolean shareQRCodeClicked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,9 +107,6 @@ public class AddEventActivity extends AppCompatActivity {
     private void qrCodeChoice() {
         String[] options = {"Generate new QR code", "Use existing QR code"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, options);
-
-
-
         autoCompleteTextView.setText(options[0]);
         autoCompleteTextView.setAdapter(adapter);
     }
@@ -124,6 +125,7 @@ public class AddEventActivity extends AppCompatActivity {
         geoLocationLinearLayout = findViewById(R.id.add_event_geolocation_display_ll);
         chooseLocation = findViewById(R.id.add_event_choose_location_btn);
         addEventLocationTextView = findViewById(R.id.add_event_location_tv);
+        addShareQRCode = findViewById(R.id.add_event_generate_promo_qr_btn);
         deviceID = DeviceID.getDeviceID(this);
         chooseImage.setOnClickListener(view -> openFileChooser());
         qrCodeSpinner = findViewById(R.id.orphaned_qr_code_spinner);
@@ -190,7 +192,24 @@ public class AddEventActivity extends AppCompatActivity {
             viewMapLauncher.launch(intent);
         });
 
+        addShareQRCode.setOnClickListener(view -> {
+            shareQRCodeClicked = true;
+        });
+        Log.d("tag1", "configureControllers: "+shareQRCodeClicked);
+
    }
+
+    private void generateShareQRCode(Event event) {
+        Bitmap qrCodeBitmap = QRCodeGenerator.generateQRCode(event.getID());
+        byte[] imageData = QRCodeGenerator.getQRCodeByteArray(qrCodeBitmap);
+        String fileID = event.getID()+"-SHARE-QRCODE";
+        event.setShareQRCode(fileID);
+        imageController.uploadQRCode("SHARE",fileID, imageData, uri -> {
+            String QRCodeURI = uri.toString();
+        }, e -> {
+            Toast.makeText(this, "Unable to store share QR code", Toast.LENGTH_SHORT).show();
+        });
+    }
 
     private ActivityResultLauncher<Intent> viewMapLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -268,9 +287,6 @@ public class AddEventActivity extends AppCompatActivity {
         ArrayList<String> signUps = new ArrayList<>();
         String posterID = uploadFile();
         boolean geoLocationEnabled = geoLocationSwitch.isChecked();
-
-        String shareQRCodeID = "id";
-
         if (title.isEmpty() || desc.isEmpty()) {
             Toast.makeText(this, "Enter all text fields", Toast.LENGTH_SHORT).show();
         } if (geoLocationEnabled && location == null) {
@@ -286,7 +302,7 @@ public class AddEventActivity extends AppCompatActivity {
             Event event = new Event("", title, date,
                     desc, checkIns, signUps,
                     limit, posterID, "",
-                    shareQRCodeID, "",
+                    "", "",
                     geoLocationEnabled, location, new HashMap<>());
             addEvent(event, generateNewQRCode);
         }
@@ -334,7 +350,9 @@ public class AddEventActivity extends AppCompatActivity {
         String newID = selectQRCodeFileID.substring(0, selectQRCodeFileID.indexOf('-'));
         event.setID(newID);
         event.setQRCode(selectQRCodeFileID);
-
+        if (shareQRCodeClicked) {
+            generateShareQRCode(event);
+        }
         eventController.setEvent(event, () -> userController.getUser(deviceID, user -> {
             user.createEvent(newID);
             userController.setUser(user, null ,null);
@@ -352,7 +370,7 @@ public class AddEventActivity extends AppCompatActivity {
 
             String fileID = event.getID() + "-QRCODE";
 
-            imageController.uploadQRCode(fileID, imageData, uri -> {
+            imageController.uploadQRCode("CHECK-IN",fileID, imageData, uri -> {
                 String QRCodeURI = uri.toString();
                 event.setQRCode(fileID);
                 eventController.setEvent(event, null, e -> Toast.makeText(AddEventActivity.this, "no qr", Toast.LENGTH_SHORT).show());

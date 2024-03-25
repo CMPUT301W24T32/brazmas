@@ -22,13 +22,11 @@ import androidx.fragment.app.DialogFragment;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
-
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
-
 
 import java.util.ArrayList;
 
@@ -48,6 +46,7 @@ public class ViewEventFragment extends DialogFragment {
     private Button geoLocationBtn;
     private CheckBox signedUpCB;
     private ImageView QRCode;
+    private ImageView shareQRCode;
     private EventController eventController;
     private UserController userController;
     private ImageController imageController;
@@ -137,8 +136,10 @@ public class ViewEventFragment extends DialogFragment {
             signedUpCB.setChecked(true);
         }
         QRCode = view.findViewById(R.id.view_event_QR_iv);
+        shareQRCode = view.findViewById(R.id.view_event_share_QR_iv);
         displayImage(e.getPoster());
-        displayQRCode(e.getQRCode());
+        displayQRCode(e.getQRCode(), QRCode, false);
+        displayQRCode(e.getShareQRCode(), shareQRCode, true);
 
         if(mode == ATTENDEE_VIEW) {
             eventCheckIns.setVisibility(View.GONE);
@@ -286,11 +287,16 @@ public class ViewEventFragment extends DialogFragment {
      * @param code the ID of the QRC code in the database
      */
 
-    private void displayQRCode(String code) {
-
-        imageController.getImage(ImageController.QR_CODE, code, bytes -> {
+    private void displayQRCode(String code, ImageView QRCodeType, boolean share) {
+        String type;
+        if (share) {
+            type = ImageController.SHARE_QR_CODE;
+        } else {
+            type = ImageController.QR_CODE;
+        }
+        imageController.getImage(type, code, bytes -> {
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-            QRCode.setImageBitmap(bitmap);
+            QRCodeType.setImageBitmap(bitmap);
         }, e -> {
 
         });
