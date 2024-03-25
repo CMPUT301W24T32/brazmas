@@ -1,36 +1,27 @@
 package com.CMPUT301W24T32.brazmascheckin.views;
 
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.util.Pair;
 import android.widget.GridView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.helper.ImageAdapter;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.StorageReference;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class AdministratorBrowseImages extends AppCompatActivity {
     private GridView gridView;
     private ImageAdapter imageAdapter;
-    private List<String> imageUrls;
+    private List<Pair<String, String>> imageUrlsWithType; // Change imageUrls to hold pairs of URL and type
     private ImageController imageController;
 
     @Override
@@ -38,68 +29,60 @@ public class AdministratorBrowseImages extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_administrator_image);
 
-        // Initialize variables
         gridView = findViewById(R.id.gridView);
-        imageUrls = new ArrayList<>();
-        imageAdapter = new ImageAdapter(imageUrls, this);
+        imageUrlsWithType = new ArrayList<>(); // Initialize the list for URLs and types
+        imageAdapter = new ImageAdapter(imageUrlsWithType, this); // Update adapter
         gridView.setAdapter(imageAdapter);
 
         imageController = new ImageController(this);
 
-        // Fetch images from Firebase Storage
         fetchImagesFromFirebase();
 
-        // set click listener for gridView items
         imageAdapter.setOnItemClickListener(new ImageAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                showConfirmationDialog(position);
+                showConfirmationDialog(position); // Only pass position
             }
         });
     }
 
     private void fetchImagesFromFirebase() {
-        // Get reference to the "posters" folder in Firebase Storage
-        StorageReference postersRef = FirestoreDB.getStorageReference("posters");
+        fetchImagesFromFolder("posters", "EVENT_POSTER"); // Fetch posters
+        fetchImagesFromFolder("profile_pictures", "PROFILE_PICTURE"); // Fetch profile pictures
+    }
 
-        postersRef.listAll().addOnSuccessListener(listResult -> {
+    private void fetchImagesFromFolder(String folderName, String imageType) {
+        StorageReference folderRef = FirestoreDB.getStorageReference(folderName);
+
+        folderRef.listAll().addOnSuccessListener(listResult -> {
             for (StorageReference item : listResult.getItems()) {
-                // Get download URL for each item
                 item.getDownloadUrl().addOnSuccessListener(uri -> {
-                    // testing
-                    Log.d("ImageURL", "Image URL: " + uri.toString());
-
-
-                    // Add URL to imageUrls list
-                    imageUrls.add(uri.toString());
-                    // Notify adapter of data change
+                    // Add URL and its type to the list
+                    imageUrlsWithType.add(new Pair<>(uri.toString(), imageType));
                     imageAdapter.notifyDataSetChanged();
                 }).addOnFailureListener(exception -> {
-                    // Handle any errors
-                    Log.e("ImageURL", "Failed to get image URL" + exception.getMessage());
+                    Log.e("ImageURL", "Failed to get image URL: " + exception.getMessage());
                 });
             }
         }).addOnFailureListener(exception -> {
-            // Handle any errors
             Log.e("FetchImages", "Failed to fetch images: " + exception.getMessage());
         });
     }
 
-    private void deleteImage(int position, String image_type) {
-        image_type = "EVENT_POSTER";
-        imageController.deleteImage(image_type, imageUrls.get(position), new DeleteSuccessListener() {
+    private void deleteImage(int position) {
+        // Get the image type from the list using the position
+        String imageType = imageUrlsWithType.get(position).second;
+        imageController.deleteImage(imageType, imageUrlsWithType.get(position).first, new DeleteSuccessListener() {
             @Override
             public void onDeleteSuccess() {
-                // profile deleted successfully
-                Toast.makeText(AdministratorBrowseImages.this, "Event poster deleted", Toast.LENGTH_SHORT).show();
-                imageUrls.remove(position);
+                Toast.makeText(AdministratorBrowseImages.this, "Image deleted", Toast.LENGTH_SHORT).show();
+                imageUrlsWithType.remove(position);
                 imageAdapter.notifyDataSetChanged();
             }
         }, new DeleteFailureListener() {
             @Override
             public void onDeleteFailure(Exception e) {
-                // failed to delete image
-                Toast.makeText(AdministratorBrowseImages.this, "Failed to delete event poster", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdministratorBrowseImages.this, "Failed to delete image", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -110,11 +93,10 @@ public class AdministratorBrowseImages extends AppCompatActivity {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // User confirmed, delete the profile
-                deleteImage(position, "EVENT_POSTER");
+                deleteImage(position);
             }
         });
-        builder.setNegativeButton("No", null); // Do nothing if user cancels
+        builder.setNegativeButton("No", null);
         builder.show();
     }
 }
