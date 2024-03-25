@@ -26,6 +26,9 @@
             android:name=".views.AddEvent"
             android:exported="false" />
         <activity
+            android:name=".views.AdministratorBrowseImages"
+            android:exported="false"/>
+        <activity
             android:name=".views.CheckedInAttendees"
             android:exported="false" />
         <activity

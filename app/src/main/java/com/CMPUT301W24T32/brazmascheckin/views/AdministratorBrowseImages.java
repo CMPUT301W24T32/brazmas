@@ -1,88 +1,69 @@
 package com.CMPUT301W24T32.brazmascheckin.views;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
-import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
 import com.CMPUT301W24T32.brazmascheckin.helper.ImageAdapter;
-import com.CMPUT301W24T32.brazmascheckin.models.Event;
+import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * This class will be the page to browse images for admin.
- */
 public class AdministratorBrowseImages extends AppCompatActivity {
-
-    private GridView gridView;
-    private List<String> imageIDs;  // list of image IDS from events and profiles
-    private ImageController imageController;
+    GridView gridView;
+    ImageAdapter imageAdapter;
+    List<String> imageUrls;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_administrator_image);
 
-        gridView = findViewById(R.id.grid_view);
-        imageController = new ImageController(this);
+        // Initialize variables
+        gridView = findViewById(R.id.gridView);
+        imageUrls = new ArrayList<>();
+        imageAdapter = new ImageAdapter(imageUrls, this);
+        gridView.setAdapter(imageAdapter);
 
-        // Fetch event posters
-        getAllEvents();
+        // Fetch images from Firebase Storage
+        fetchImagesFromFirebase();
     }
 
-    private void getAllEvents() {
-        EventController eventController = new EventController(this);
-        eventController.addSnapshotListener(new SnapshotListener<Event>() {
-            @Override
-            public void snapshotListenerCallback(ArrayList<Event> events) {
-                imageIDs = new ArrayList<>();
-                for (Event event : events) {
-                    // Add event poster IDs to the list
-                    imageIDs.add(event.getPoster());
-                }
-                // Once all event posters are fetched, load them into the grid view
-                loadImages();
-            }
+    private void fetchImagesFromFirebase() {
+        // Get reference to the "posters" folder in Firebase Storage
+        StorageReference postersRef = FirestoreDB.getStorageReference("posters");
 
-            @Override
-            public void onError(Exception e) {
-                Toast.makeText(AdministratorBrowseImages.this, "Unable to connect to the database", Toast.LENGTH_LONG).show();
+        postersRef.listAll().addOnSuccessListener(listResult -> {
+            for (StorageReference item : listResult.getItems()) {
+                // Get download URL for each item
+                item.getDownloadUrl().addOnSuccessListener(uri -> {
+                    // testing
+                    Log.d("ImageURL", "Image URL: " + uri.toString());
+
+
+                    // Add URL to imageUrls list
+                    imageUrls.add(uri.toString());
+                    // Notify adapter of data change
+                    imageAdapter.notifyDataSetChanged();
+                }).addOnFailureListener(exception -> {
+                    // Handle any errors
+                    Log.e("ImageURL", "Failed to get image URL" + exception.getMessage());
+                });
             }
+        }).addOnFailureListener(exception -> {
+            // Handle any errors
+            Log.e("FetchImages", "Failed to fetch images: " + exception.getMessage());
         });
-    }
-
-    private void loadImages() {
-        List<Bitmap> bitmaps = new ArrayList<>(); // List to hold Bitmap objects
-        AtomicInteger imageCounter = new AtomicInteger();  // counter to track the number of loaded images
-
-        // Loop through image IDs and load each image into the grid view
-        for (String imageID : imageIDs) {
-            imageController.getImage(ImageController.EVENT_POSTER, imageID, bytes -> {
-                // Convert byte array to Bitmap
-                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                bitmaps.add(bitmap); // Add Bitmap to the list
-
-                // increase imageCounter
-                imageCounter.getAndIncrement();
-
-                if (imageCounter.get() == imageIDs.size()) {
-                    ImageAdapter adapter = new ImageAdapter(AdministratorBrowseImages.this, bitmaps);
-                    gridView.setAdapter(adapter);
-                }
-            }, e -> {
-                // Handle failure
-                Toast.makeText(AdministratorBrowseImages.this, "Unable to load image", Toast.LENGTH_SHORT).show();
-            });
-        }
     }
 }
