@@ -200,7 +200,7 @@ public class AddEventActivity extends AppCompatActivity {
    }
 
     private void generateShareQRCode(Event event) {
-        Bitmap qrCodeBitmap = QRCodeGenerator.generateQRCode(event.getID());
+        Bitmap qrCodeBitmap = QRCodeGenerator.generateQRCode(event.getID()+"-SHARE-QRCODE");
         byte[] imageData = QRCodeGenerator.getQRCodeByteArray(qrCodeBitmap);
         String fileID = event.getID()+"-SHARE-QRCODE";
         event.setShareQRCode(fileID);
