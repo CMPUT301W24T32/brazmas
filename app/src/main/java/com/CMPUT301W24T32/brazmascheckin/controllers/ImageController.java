@@ -1,3 +1,4 @@
+
 package com.CMPUT301W24T32.brazmascheckin.controllers;
 
 import android.content.Context;
@@ -110,7 +111,7 @@ public class ImageController {
      * @param successListener a listener to handle success callbacks for the operation.
      * @param failureListener a listener to handle failure callbacks for the operation.
      */
-    public void getImage(String TYPE, String fileID, GetSuccessListener<byte[]> successListener,
+    public String getImage(String TYPE, String fileID, GetSuccessListener<byte[]> successListener,
                          AddFailureListener failureListener) {
         StorageReference imageReference;
         if(TYPE.equals(EVENT_POSTER)) {
@@ -120,9 +121,10 @@ public class ImageController {
         } else if (TYPE.equals(QR_CODE)) {
             imageReference = qrCodeReference.child(fileID);
         } else {
-            imageReference = null;
-            return;
+            // Handle the case where TYPE is invalid
+            return null; // Or throw an exception, depending on your requirements
         }
+
         imageReference.getBytes(Long.MAX_VALUE)
                 .addOnSuccessListener(bytes -> {
                     if(successListener != null) {
@@ -134,6 +136,8 @@ public class ImageController {
                         failureListener.onAddFailure(e);
                     }
                 });
+
+        return fileID;
     }
 
     /**
@@ -170,4 +174,5 @@ public class ImageController {
                     }
                 });
     }
+
 }

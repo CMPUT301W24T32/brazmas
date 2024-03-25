@@ -1,3 +1,4 @@
+
 package com.CMPUT301W24T32.brazmascheckin.helper;
 
 import android.content.Context;
@@ -95,4 +96,3 @@ public class ImageAdapter extends BaseAdapter {
     }
 
 }
-

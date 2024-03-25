@@ -1,3 +1,4 @@
+
 package com.CMPUT301W24T32.brazmascheckin.views;
 
 import android.content.DialogInterface;
@@ -23,6 +24,7 @@ public class AdministratorBrowseImages extends AppCompatActivity {
     private ImageAdapter imageAdapter;
     private List<Pair<String, String>> imageUrlsWithType; // Change imageUrls to hold pairs of URL and type
     private ImageController imageController;
+    private List<String> allFileIds; // Declare a list to hold all file IDs
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,10 @@ public class AdministratorBrowseImages extends AppCompatActivity {
                 item.getDownloadUrl().addOnSuccessListener(uri -> {
                     // Add URL and its type to the list
                     imageUrlsWithType.add(new Pair<>(uri.toString(), imageType));
+                    if (allFileIds == null) {
+                        allFileIds = new ArrayList<>(); // Initialize allFileIds if null
+                    }
+                    allFileIds.add(item.getName()); // Add file ID to the list of all file IDs
                     imageAdapter.notifyDataSetChanged();
                 }).addOnFailureListener(exception -> {
                     Log.e("ImageURL", "Failed to get image URL: " + exception.getMessage());
@@ -72,7 +78,8 @@ public class AdministratorBrowseImages extends AppCompatActivity {
     private void deleteImage(int position) {
         // Get the image type from the list using the position
         String imageType = imageUrlsWithType.get(position).second;
-        imageController.deleteImage(imageType, imageUrlsWithType.get(position).first, new DeleteSuccessListener() {
+        String fileID = allFileIds.get(position);
+        imageController.deleteImage(imageType, fileID, new DeleteSuccessListener() {
             @Override
             public void onDeleteSuccess() {
                 Toast.makeText(AdministratorBrowseImages.this, "Image deleted", Toast.LENGTH_SHORT).show();
