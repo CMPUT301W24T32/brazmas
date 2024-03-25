@@ -137,6 +137,10 @@ public class AddEventActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Function to populate qr code spinner with qr codes not associated with event
+     */
+
     private void populateOrphanedQRCodeSpinner() {
         OrphanedQRCodeFinder qrCodeFinder = new OrphanedQRCodeFinder(imageController, eventController);
         qrCodeFinder.findAndProcessOrphanedQRCodes(orphanedQRCodeFileIDs -> {
@@ -198,6 +202,11 @@ public class AddEventActivity extends AppCompatActivity {
         Log.d("tag1", "configureControllers: "+shareQRCodeClicked);
 
    }
+
+    /**
+     *
+     * @param event event for which promo qr code is being generated
+     */
 
     private void generateShareQRCode(Event event) {
         Bitmap qrCodeBitmap = QRCodeGenerator.generateQRCode(event.getID()+"-SHARE-QRCODE");
@@ -345,6 +354,11 @@ public class AddEventActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Function that allows user to select a qr code in database not associated with event
+     * @param event event for which function is assigning a qr code already in database
+     */
+
     private void useExistingQRCode(Event event) {
         String selectQRCodeFileID = (String) qrCodeSpinner.getSelectedItem();
         String newID = selectQRCodeFileID.substring(0, selectQRCodeFileID.indexOf('-'));
@@ -360,6 +374,10 @@ public class AddEventActivity extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * Function to generate a new qr code and add it to the database
+     * @param event event for which qr code is being generated
+     */
     private void generateAndAddQRCode(Event event) {
         eventController.addEvent(event, ID -> {
             event.setID(ID);
