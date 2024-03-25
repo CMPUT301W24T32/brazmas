@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Fields cannot be empty", Toast.LENGTH_SHORT).show();
                     } else {
                         User user = new User(
-                                firstName, lastName, new ArrayList<String>(), null, null,
+                                firstName, lastName, new ArrayList<String>(), null, null,null,
                                 new ArrayList<String>(), false
                         );
                         user.setFirstName(firstName);
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                         int color = ContextCompat.getColor(getBaseContext(),R.color.darkGrey);
                         Bitmap bitmap = textAsBitmap(firstLetter,45,color);
                         imageUri = getImageUri(getBaseContext(),bitmap);
-                        user.setProfilePicture(uploadFile());
+                        user.setDefaultProfilePicture(uploadFile());
 
 
                         userController.setUser(user, () -> {

@@ -2,6 +2,8 @@ package com.CMPUT301W24T32.brazmascheckin.views;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,6 +33,7 @@ import com.google.firebase.storage.StorageReference;
 public class EditProfileActivity extends AppCompatActivity {
     private ImageView profilePicture;
     private FloatingActionButton changeProfileBtn;
+    private FloatingActionButton removeProfileBtn;
     private Button doneBtn;
     private EditText firstName;
     private EditText lastName;
@@ -66,6 +69,7 @@ public class EditProfileActivity extends AppCompatActivity {
         firstName = findViewById(R.id.first_name_et);
         lastName = findViewById(R.id.last_name_et);
         changeProfileBtn = findViewById(R.id.change_profile_picture_btn);
+        removeProfileBtn = findViewById(R.id.remove_profile_picture_btn);
         storageRef = FirestoreDB.getStorageReference("uploads");
         deviceID = DeviceID.getDeviceID(this);
         doneBtn = findViewById(R.id.done_btn);
@@ -86,8 +90,28 @@ public class EditProfileActivity extends AppCompatActivity {
             String lastNameS = user.getLastName();
             firstName.setText(firstNameS);
             lastName.setText(lastNameS);
-        },null);
+            if (user.getProfilePicture() != null) {
+                displayImage(user.getProfilePicture());
+            }
+            else{
+                displayImage(user.getDefaultProfilePicture());
+            }
 
+        },null);
+        removeProfileBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userController.getUser(deviceID, user -> {
+                    if (user.getProfilePicture() == null) {
+                        Toast.makeText(getBaseContext(), "cannot remove default profile picture",Toast.LENGTH_LONG).show();
+                    } else {
+                    user.setProfilePicture(null);
+                    userController.setUser(user,null,null);
+                    displayImage(user.getDefaultProfilePicture());
+                }
+                },null);
+            }
+        });
 
         doneBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,11 +182,31 @@ public class EditProfileActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        userController.getUser(deviceID,user-> {
         if (requestCode == IMG_REQ && resultCode == Activity.RESULT_OK && data != null
-                && data.getData() != null) {
+                && data.getData() != null && user.getProfilePicture() == null) {
             imageUri = data.getData();
+                //so that the profile can be removed after adding a new one
+                user.setProfilePicture("hold");
+                userController.setUser(user,null,null);
+
             profilePicture.setImageURI(imageUri);
             profilePicture.setTag(imageUri);
+        }
+        },null);
+    }
+
+    /**
+     * This method retrieves the poster image from the database and displays it in the view.
+     * @param posterID the ID of the image in the database
+     */
+    private void displayImage(String posterID) {
+        if (posterID != null) {
+            //Toast.makeText(getBaseContext(), "Unable to connect to the " + posterID, Toast.LENGTH_LONG).show();
+            imageController.getImage(ImageController.PROFILE_PICTURE, posterID, bytes -> {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                profilePicture.setImageBitmap(bitmap);
+            }, null);
         }
     }
 
