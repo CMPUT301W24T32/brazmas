@@ -26,6 +26,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.helper.Date;
+import com.CMPUT301W24T32.brazmascheckin.models.Announcement;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.google.firebase.storage.StorageReference;
@@ -153,7 +154,7 @@ public class AddEventFragment extends DialogFragment {
         if(title.isEmpty() || desc.isEmpty()) {
             Toast.makeText(getContext(), "Enter all text fields", Toast.LENGTH_SHORT).show();
         } else {
-            listener.addEvent(new Event(id, title, date, desc, checkIns, signUps, limit, posterID, QRCodeID, shareQRCodeID, ""));
+            listener.addEvent(new Event(id, title, date, desc, checkIns, signUps, limit, posterID, QRCodeID, shareQRCodeID, "", new ArrayList<Announcement>()));
         }
 
     }

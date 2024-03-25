@@ -7,16 +7,20 @@ import android.view.MenuItem;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
+import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.AnnouncementRecyclerViewAdapter;
+import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.models.Announcement;
+import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.ArrayList;
 
 /**
  * Announcement activity is made for testing navigation
@@ -27,8 +31,13 @@ public class AnnouncementActivity extends AppCompatActivity  {
     /**
      * variables
      */
+    private ArrayList<Announcement> announcementDataList;
+
+
     private RecyclerView recyclerView;
     private AnnouncementRecyclerViewAdapter adapter;
+    private EventController eventController;
+    private UserController userController;
     /**
      *This method initializes the Announcement activity.
      * @param savedInstanceState If the activity is being re-initialized after
@@ -41,10 +50,6 @@ public class AnnouncementActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_announcement);
-
-        // setting recycler view
-        recyclerView = findViewById(R.id.announcement_rv);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Allows the app to switch between activities
         BottomNavigationView bottomNavigationView = findViewById(R.id.announcement_bnv);
@@ -80,6 +85,51 @@ public class AnnouncementActivity extends AppCompatActivity  {
 
             }
         });
+    }
+
+    /**
+     * configures the views
+     */
+    public void configureViews(){
+        recyclerView = findViewById(R.id.announcement_rv);
+        announcementDataList = new ArrayList<>();
+        adapter = new AnnouncementRecyclerViewAdapter(this, announcementDataList);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+    /**
+     * configures the controllers
+     */
+    public void configureControllers(){
+        eventController = new EventController(this);
+        userController = new UserController(this);
+        String deviceID = DeviceID.getDeviceID(this);
+        // change these from null
+        userController.getUser(deviceID, user -> {
+           ArrayList<String> signedUp = user.getSignedUpEvents();
+           eventController.addSnapshotListener(new SnapshotListener<Event>() {
+               @Override
+               public void snapshotListenerCallback(ArrayList<Event> events) {
+                    announcementDataList.clear();
+                   for(Event event: events) {
+                       if(signedUp.contains(event.getID())){
+                           ArrayList<Announcement> announcements = event.getAnnouncements();
+                           for (Announcement a : announcements){
+                               announcementDataList.add(a);
+                           }
+                       }
+                   }
+                   adapter.notifyDataSetChanged();
+               }
+
+               @Override
+               public void onError(Exception e) {
+                //do soon
+               }
+           });
+
+        }, null);
+
     }
 
 

@@ -28,6 +28,7 @@ public class Event implements Serializable {
     private String QRCode;
     private String shareQRCode;
     private String organizer;
+    private ArrayList<Announcement> announcements;
 
     //TODO: add geolocation/event map
 
@@ -44,10 +45,11 @@ public class Event implements Serializable {
      * @param QRCodeID Reference to the image
      * @param shareQRCodeID Reference to the image
      * @param organizer Reference to the user who created the event
+     *
      */
     public Event(String ID, String name, Date date, String description, HashMap<String, Integer> checkIns,
                  ArrayList<String> signUps, int attendeeLimit, String posterID, String QRCodeID,
-                 String shareQRCodeID, String organizer) {
+                 String shareQRCodeID, String organizer, ArrayList<Announcement> announcements) {
         this.ID = ID;
         this.name = name;
         this.date = date;
@@ -59,6 +61,7 @@ public class Event implements Serializable {
         this.QRCode = QRCodeID;
         this.shareQRCode = shareQRCodeID;
         this.organizer = organizer;
+        this.announcements = announcements;
     }
 
     /**
@@ -336,5 +339,21 @@ public class Event implements Serializable {
      */
     public void setOrganizer(String organizer) {
         this.organizer = organizer;
+    }
+
+    /**
+     * Getter for the list of annoucments for this event
+     * @return the annoucments
+     */
+    public ArrayList<Announcement> getAnnouncements() {
+        return announcements;
+    }
+
+    /**
+     * setter for the annoucments
+     * @param announcements
+     */
+    public void setAnnouncements(ArrayList<Announcement> announcements) {
+        this.announcements = announcements;
     }
 }

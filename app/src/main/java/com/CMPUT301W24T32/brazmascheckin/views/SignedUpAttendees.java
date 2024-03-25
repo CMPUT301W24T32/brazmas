@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.widget.Button;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
 import com.CMPUT301W24T32.brazmascheckin.helper.AttendeeSignedUpRecyclerViewAdapter;
 import com.CMPUT301W24T32.brazmascheckin.models.Announcement;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
@@ -29,6 +30,8 @@ public class SignedUpAttendees extends AppCompatActivity implements AddAnnouncem
     private Button notify;
     private ArrayList<User> userDataList;
     private AttendeeSignedUpRecyclerViewAdapter attendeeSignedUpRecyclerViewAdapter;
+    private EventController eventController;
+    private Event e;
 
     /**
      * Called when the activity is created
@@ -40,7 +43,7 @@ public class SignedUpAttendees extends AppCompatActivity implements AddAnnouncem
         setContentView(R.layout.activity_signed_up_attendees);
 
         Intent intent = getIntent();
-        Event e = (Event) intent.getSerializableExtra("EVENT");
+        e = (Event) intent.getSerializableExtra("EVENT");
         configureViews();
         configureControllers(e);
     }
@@ -97,6 +100,10 @@ public class SignedUpAttendees extends AppCompatActivity implements AddAnnouncem
 
     @Override
     public void addAnnouncement(Announcement announcement) {
+        eventController = new EventController(this);
+        e.getAnnouncements().add(announcement);
+        eventController.setEvent(e,null,null);
+
         //here add the annoucnment to users firebase -> then access it and put it into annoucnement activity
     }
 }
