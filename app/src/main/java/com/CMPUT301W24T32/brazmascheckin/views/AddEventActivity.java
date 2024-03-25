@@ -20,8 +20,8 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,12 +34,11 @@ import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.controllers.AddFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.SetFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.Date;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
-import com.CMPUT301W24T32.brazmascheckin.helper.OrphanedQRCodeFinder;
 import com.CMPUT301W24T32.brazmascheckin.helper.Location;
+import com.CMPUT301W24T32.brazmascheckin.helper.OrphanedQRCodeFinder;
 import com.CMPUT301W24T32.brazmascheckin.helper.QRCodeGenerator;
 import com.CMPUT301W24T32.brazmascheckin.helper.QRCodeSpinnerAdapter;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
@@ -95,6 +94,7 @@ public class AddEventActivity extends AppCompatActivity {
         qrCodeChoice();
         configureControllers();
         populateOrphanedQRCodeSpinner();
+
     }
 
     /**
@@ -152,7 +152,6 @@ public class AddEventActivity extends AppCompatActivity {
                     Log.e("failure", "processOrphanesQRCodes: " + e.getMessage());
                 });
             }
-            qrCodeSpinner.setVisibility(View.VISIBLE);
         });
     }
     /**
@@ -324,6 +323,7 @@ public class AddEventActivity extends AppCompatActivity {
             generateAndAddQRCode(event);
         } else {
             // Use existing QR code and add event
+            qrCodeSpinner.setVisibility(View.VISIBLE);
             useExistingQRCode(event);
         }
 
