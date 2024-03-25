@@ -29,4 +29,7 @@
     <string name="attendee_sign_ups">Attendee Sign-Ups</string>
     <string name="attendee_check_ins">Attendee Check-Ins</string>
     <string name="event_qr_code">Event QR Code</string>
+    <string name="map">Map</string>
+    <string name="share">Share</string>
+    <string name="notify">Notify</string>
 </resources>

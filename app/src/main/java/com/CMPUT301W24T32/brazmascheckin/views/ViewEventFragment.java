@@ -161,14 +161,16 @@ public class ViewEventFragment extends DialogFragment {
 
 
         checkedInAttendeesBtn.setOnClickListener(view -> {
-            Intent intent = new Intent(getActivity(), CheckedInAttendees.class);
-            intent.putExtra("EVENT", e);
+            Intent intent = new Intent(getActivity(), ViewAttendeesActivity.class);
+            intent.putExtra(ViewAttendeesActivity.EXTRA_EVENT, e);
+            intent.putExtra(ViewAttendeesActivity.EXTRA_MODE, ViewAttendeesActivity.CHECK_IN_MODE);
             startActivity(intent);
         });
 
         signedUpAttendeesBtn.setOnClickListener(view -> {
-            Intent intent = new Intent(getActivity(), SignedUpAttendees.class);
-            intent.putExtra("EVENT", e);
+            Intent intent = new Intent(getActivity(), ViewAttendeesActivity.class);
+            intent.putExtra(ViewAttendeesActivity.EXTRA_EVENT, e);
+            intent.putExtra(ViewAttendeesActivity.EXTRA_MODE, ViewAttendeesActivity.SIGN_UP_MODE);
             startActivity(intent);
         });
 

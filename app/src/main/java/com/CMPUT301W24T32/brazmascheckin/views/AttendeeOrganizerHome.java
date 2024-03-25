@@ -42,7 +42,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
     private UserController userController;
     private ImageController imageController;
     private String deviceID;
-
+    private int mode = ViewEventFragment.ATTENDEE_VIEW;
 
 
     /**
@@ -129,6 +129,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
         showAllEvents();
         // filters for all events
         allEventsButton.setOnClickListener(view -> {
+            mode = ViewEventFragment.ATTENDEE_VIEW;
             showAllEvents();
         });
 
@@ -138,7 +139,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
         // to access event details by clicking single event
         eventRecyclerViewAdapter.setOnItemClickListener(position -> {
             Event clickedEvent = eventDataList.get(position);
-            ViewEventFragment fragment = ViewEventFragment.sendEvent(clickedEvent, 0);
+            ViewEventFragment fragment = ViewEventFragment.sendEvent(clickedEvent, mode);
             fragment.show(getSupportFragmentManager(), "Display Event");
         });
 
@@ -169,6 +170,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
 
     private void handleAttendeeMode() {
         attendingEventsButton.setOnClickListener(view -> {
+            mode = ViewEventFragment.ATTENDEE_VIEW;
 
             userController.getUser(deviceID, user -> {
                 ArrayList<String> signedUp = user.getSignedUpEvents();
@@ -198,6 +200,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
 
     public void handleOrganizerMode() {
         organizingEventsButton.setOnClickListener(view -> {
+            mode = ViewEventFragment.ORGANIZER_VIEW;
             userController.getUser(deviceID, user -> {
                 ArrayList<String> organizedEvents = user.getOrganizedEvents();
                 eventController.addSnapshotListener(new SnapshotListener<Event>() {
