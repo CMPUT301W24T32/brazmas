@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
@@ -14,9 +15,18 @@ import java.util.List;
 
 public class ImageAdapter extends BaseAdapter {
 
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
+
     private List<String> imageUrls;
     private Context context;
     private LayoutInflater layoutInflater;
+    private OnItemClickListener onItemClickListener;
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.onItemClickListener = listener;
+    }
 
     public ImageAdapter(List<String> imageUrls, Context context) {
         this.imageUrls = imageUrls;
@@ -54,10 +64,20 @@ public class ImageAdapter extends BaseAdapter {
         // Load image using Glide
         Glide.with(context).load(imageUrls.get(position)).into(holder.gridImage);
 
+        holder.gridImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onItemClickListener != null) {
+                    onItemClickListener.onItemClick(position);
+                }
+            }
+        });
+
         return convertView;
     }
 
     static class ViewHolder {
         ImageView gridImage;
     }
+
 }
