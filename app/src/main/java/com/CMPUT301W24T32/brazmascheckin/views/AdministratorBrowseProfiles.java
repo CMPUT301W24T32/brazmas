@@ -1,0 +1,139 @@
+
+package com.CMPUT301W24T32.brazmascheckin.views;
+
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.widget.Toast;
+
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteSuccessListener;
+
+import com.CMPUT301W24T32.brazmascheckin.controllers.GetFailureListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
+
+import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteFailureListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteSuccessListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
+import com.CMPUT301W24T32.brazmascheckin.models.User;
+import com.CMPUT301W24T32.brazmascheckin.helper.AdminProfileRecyclerViewAdapter;
+
+import java.util.ArrayList;
+
+/**
+ * This class will be the page to browse profiles for admin.
+ */
+public class AdministratorBrowseProfiles extends AppCompatActivity {
+
+    private ArrayList<User> userDataList;
+    private AdminProfileRecyclerViewAdapter profileRecyclerViewAdapter;
+    private RecyclerView profileRecyclerView;
+    private UserController userController;
+
+    /**
+     * This method initializes the browse profiles admin activity.
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     */
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_administrator_profile);
+
+        configureViews();
+        configureControllers();
+
+        //TODO: need to add navigation bar.
+    }
+
+
+    /**
+     * This method initializes the views, adapters, and models required for the activity.
+     */
+    private void configureViews() {
+        userDataList = new ArrayList<>();
+
+        profileRecyclerViewAdapter = new AdminProfileRecyclerViewAdapter(this, userDataList);
+        profileRecyclerView = findViewById(R.id.all_profiles_rv_admin);
+        profileRecyclerView.setAdapter(profileRecyclerViewAdapter);
+        profileRecyclerView.setLayoutManager(new LinearLayoutManager(this)); // deal with this
+    }
+
+    /**
+     * This method defines the controllers for the views of the activity.
+     */
+    private void configureControllers() {
+        userController = new UserController(this);
+
+        showAllUsers();
+
+        //TODO: need to implement long click or slide feature to delete a user
+
+        // set click listener for recyclerView items
+        profileRecyclerViewAdapter.setOnItemClickListener(new AdminProfileRecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                User clickedUser = userDataList.get(position);
+                showConfirmationDialog(clickedUser);
+            }
+        });
+    }
+
+    private void showAllUsers() {
+        userController.addSnapshotListener(new SnapshotListener<User>() {
+            @Override
+            public void snapshotListenerCallback(ArrayList<User> users) {
+                userDataList.clear();
+                for (User user : users) {
+                    userDataList.add(user);
+                }
+                profileRecyclerViewAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Toast.makeText(AdministratorBrowseProfiles.this, "Unable to connect to the " + "database", Toast.LENGTH_LONG).show();
+
+            }
+        });
+    }
+
+    private void deleteUser(User user) {
+
+        userController.deleteUser(user, new DeleteSuccessListener() {
+            @Override
+            public void onDeleteSuccess() {
+                // profile deleted successfuly
+                Toast.makeText(AdministratorBrowseProfiles.this, "Profile deleted", Toast.LENGTH_SHORT).show();
+            }
+        }, new DeleteFailureListener() {
+            @Override
+            public void onDeleteFailure(Exception e) {
+                // failed to delete event
+                Toast.makeText(AdministratorBrowseProfiles.this, "Failed to delete profile", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void showConfirmationDialog(User user) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure you want to delete this profile?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // User confirmed, delete the profile
+                deleteUser(user);
+            }
+        });
+        builder.setNegativeButton("No", null); // Do nothing if user cancels
+        builder.show();
+    }
+}
