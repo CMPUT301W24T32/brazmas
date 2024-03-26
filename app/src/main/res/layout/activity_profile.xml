@@ -29,16 +29,15 @@
 
     <ImageView
         android:id="@+id/profile_picture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="185dp"
+        android:layout_height="172dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="146dp"
-        android:layout_marginEnd="148dp"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        tools:srcCompat="@tools:sample/avatars"
-        android:contentDescription="TODO" />
+        android:layout_centerInParent="true"
+        android:layout_marginTop="129dp"
+        android:layout_marginEnd="110dp"
+        android:contentDescription="TODO"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/name_tv"

@@ -9,16 +9,15 @@
 
     <ImageView
         android:id="@+id/profile_picture_edit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="214dp"
+        android:layout_height="202dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="146dp"
-        android:layout_marginEnd="148dp"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        tools:srcCompat="@tools:sample/avatars"
-        android:contentDescription="TODO" />
+        android:layout_centerInParent="true"
+        android:layout_marginTop="71dp"
+        android:layout_marginEnd="98dp"
+        android:contentDescription="TODO"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <EditText
         android:id="@+id/first_name_et"
@@ -46,12 +45,14 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/profile_picture_edit"
         android:layout_alignEnd="@+id/profile_picture_edit"
-        android:layout_marginTop="-42dp"
-        android:layout_marginEnd="-12dp"
+        android:layout_marginTop="-44dp"
+        android:layout_marginEnd="-10dp"
         android:clickable="true"
-        app:srcCompat="@android:drawable/ic_input_add"
         android:contentDescription="TODO"
-        android:focusable="true" />
+        android:focusable="true"
+        app:srcCompat="@android:drawable/ic_input_add" />
+
+
 
     <Button
         android:id="@+id/done_btn"
@@ -62,6 +63,19 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:text="Done" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/remove_profile_picture_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/profile_picture_edit"
+        android:layout_alignEnd="@+id/profile_picture_edit"
+        android:layout_marginTop="-41dp"
+        android:layout_marginEnd="166dp"
+        android:clickable="true"
+        android:contentDescription="TODO"
+        android:focusable="true"
+        app:srcCompat="@drawable/sharp_remove_black_36" />
 
 
 </RelativeLayout>

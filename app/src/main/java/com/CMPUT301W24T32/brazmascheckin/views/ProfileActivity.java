@@ -133,7 +133,12 @@ public class ProfileActivity extends AppCompatActivity {
             String firstName = user.getFirstName();
             String lastName = user.getLastName();
             String fullName = firstName + " " + lastName;
-            displayImage(user.getProfilePicture());
+            if (user.getProfilePicture() != null) {
+                displayImage(user.getProfilePicture());
+            }
+            else{
+                displayImage(user.getDefaultProfilePicture());
+            }
             userName.setText(fullName);
         },null);
 
