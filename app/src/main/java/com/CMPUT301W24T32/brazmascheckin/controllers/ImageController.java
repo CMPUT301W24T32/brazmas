@@ -1,5 +1,4 @@
 
-
 package com.CMPUT301W24T32.brazmascheckin.controllers;
 
 import android.content.Context;
@@ -123,7 +122,7 @@ public class ImageController {
             imageReference = qrCodeReference.child(fileID);
         } else {
             // Handle the case where TYPE is invalid
-            return null; // Or throw an exception, depending on your requirements
+            return null; // Or throw an exception
         }
 
         imageReference.getBytes(Long.MAX_VALUE)
