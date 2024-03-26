@@ -2,11 +2,9 @@ package com.CMPUT301W24T32.brazmascheckin.views;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -21,20 +19,16 @@ import androidx.core.app.ActivityCompat;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.GetFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
-import com.CMPUT301W24T32.brazmascheckin.controllers.SetFailureListener;
-import com.CMPUT301W24T32.brazmascheckin.controllers.SetSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.helper.Location;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
-import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanIntentResult;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 /**
@@ -126,12 +120,38 @@ public class CameraActivity extends AppCompatActivity {
 
     // Activity result launcher for QR code scanning
     ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
-        AlertDialog.Builder builder = new AlertDialog.Builder(CameraActivity.this);
+        handleScanResult(result);
+    });
+
+    private void handleScanResult(ScanIntentResult result) {
 
         // Get the scanned QR code content (event ID)
-        String eventID = result.getContents();
+        String qrID = result.getContents();
+        Log.d("log1", "handleScanResult: "+qrID);
+        if (qrID.endsWith("SHARE-QRCODE")) {
+            openEventViewFragment(qrID);
+        } else {
+            handleCheckIn(qrID);
+        }
+    }
 
+    private void openEventViewFragment(String shareqrID) {
+        String eventID = shareqrID.replace("-SHARE-QRCODE","");
         eventController.getEvent(eventID, new GetSuccessListener<Event>() {
+            @Override
+            public void onSuccess(Event event) {
+                // Open the view fragment for the event
+                ViewEventFragment viewEventFragment = ViewEventFragment.sendEvent(event, ViewEventFragment.ATTENDEE_VIEW);
+                viewEventFragment.show(getSupportFragmentManager(), "view_event_fragment");
+            }
+        }, e -> {
+            Toast.makeText(CameraActivity.this, "Unable to load event details", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private void handleCheckIn(String qrID) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(CameraActivity.this);
+        eventController.getEvent(qrID, new GetSuccessListener<Event>() {
             @SuppressLint("MissingPermission")
             @Override
             public void onSuccess(Event event) {
@@ -155,7 +175,7 @@ public class CameraActivity extends AppCompatActivity {
         }, e -> {
             Toast.makeText(this, "Unable to check into event", Toast.LENGTH_SHORT).show();
         });
-    });
+    }
 
     /**
      * Helper method for the check-in process.

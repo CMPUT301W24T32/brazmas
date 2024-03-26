@@ -1,10 +1,7 @@
 package com.CMPUT301W24T32.brazmascheckin.models;
 
-import android.util.Log;
-
 import com.CMPUT301W24T32.brazmascheckin.helper.Date;
 import com.CMPUT301W24T32.brazmascheckin.helper.Location;
-import com.CMPUT301W24T32.brazmascheckin.helper.UserLocationPair;
 
 import java.io.Serializable;
 import java.util.ArrayList;
