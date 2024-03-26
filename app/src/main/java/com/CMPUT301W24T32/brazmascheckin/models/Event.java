@@ -1,6 +1,7 @@
 package com.CMPUT301W24T32.brazmascheckin.models;
 
 import com.CMPUT301W24T32.brazmascheckin.helper.Date;
+import com.CMPUT301W24T32.brazmascheckin.helper.Location;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,7 +30,11 @@ public class Event implements Serializable {
     private String shareQRCode;
     private String organizer;
 
-    //TODO: add geolocation/event map
+    private Boolean geoLocationEnabled = false;
+    private HashMap<String, Location> userLocationPairs;
+
+    private Location eventLocation;
+
 
     /**
      * Constructs a new instance of the Event class with the full information for an event.
@@ -44,10 +49,14 @@ public class Event implements Serializable {
      * @param QRCodeID Reference to the image
      * @param shareQRCodeID Reference to the image
      * @param organizer Reference to the user who created the event
+     * @param geoLocationEnabled If geolocation is enabled
+     * @param eventLocation the location of the event
+     * @param userLocationPairs the list of users who have checked in, and where they have checked in
      */
     public Event(String ID, String name, Date date, String description, HashMap<String, Integer> checkIns,
                  ArrayList<String> signUps, int attendeeLimit, String posterID, String QRCodeID,
-                 String shareQRCodeID, String organizer) {
+                 String shareQRCodeID, String organizer, boolean geoLocationEnabled, Location eventLocation,
+                 HashMap<String, Location> userLocationPairs) {
         this.ID = ID;
         this.name = name;
         this.date = date;
@@ -59,6 +68,9 @@ public class Event implements Serializable {
         this.QRCode = QRCodeID;
         this.shareQRCode = shareQRCodeID;
         this.organizer = organizer;
+        this.geoLocationEnabled = geoLocationEnabled;
+        this.eventLocation = eventLocation;
+        this.userLocationPairs = userLocationPairs;
     }
 
     /**
@@ -76,15 +88,20 @@ public class Event implements Serializable {
      * @param checkIns Attendees who have checked in, including number of times they have checked in
      * @param signUps Attendees who have signed up
      * @param organizer Reference to the user who created the event
+     * @param geoLocationEnabled If geolocation is enabled
+     * @param userLocationPairs the list of users who have checked in, and where they have checked in
      */
     public Event(String ID, String name, String description, HashMap<String, Integer> checkIns,
-                 ArrayList<String> signUps, String organizer) {
+                 ArrayList<String> signUps, String organizer, boolean geoLocationEnabled,
+                 HashMap<String, Location> userLocationPairs) {
         this.ID = ID;
         this.name = name;
         this.description = description;
         this.checkIns = checkIns;
         this.signUps = signUps;
         this.organizer = organizer;
+        this.geoLocationEnabled = geoLocationEnabled;
+        this.userLocationPairs = userLocationPairs;
     }
 
     /**
@@ -155,9 +172,8 @@ public class Event implements Serializable {
      * This method "checks-in" the attendee to the event, updating how many times they
      * have previously checked-in.
      * @param attendee the attendee who is checking into the event
-     * @return successful check-in to the event
      */
-    public boolean checkIn(String attendee) {
+    public void checkIn(String attendee, Location location) {
         if(attendee != null) {
             if(checkIns.containsKey(attendee)) {
                 // retrieving the previous number of check-ins by the attendee
@@ -165,19 +181,19 @@ public class Event implements Serializable {
 
                 if(previousCheckIns != null) {
                     checkIns.put(attendee, previousCheckIns + 1);
-                    return true;
                 }
 
             } else {
                 Integer firstCheckIn = 1;
                 checkIns.put(attendee, firstCheckIn);
-                return true;
+            }
+
+            if(geoLocationEnabled && location != null) {
+                userLocationPairs.put(attendee, location);
             }
         }
-        return false;
     }
 
-    //TODO: how to deal with attendees leaving the event?
     /**
      * This method provides the list of attendees checked-into the event.
      * @return list of attendees checked-into the event
@@ -336,5 +352,55 @@ public class Event implements Serializable {
      */
     public void setOrganizer(String organizer) {
         this.organizer = organizer;
+    }
+
+    /**
+     * Returns whether geolocation is enabled for the user.
+     *
+     * @return true if geolocation is enabled, false otherwise
+     */
+    public Boolean getGeoLocationEnabled() {
+        return geoLocationEnabled;
+    }
+
+    /**
+     * Sets whether geolocation is enabled for the user.
+     *
+     * @param geoLocationEnabled true to enable geolocation, false to disable it
+     */
+    public void setGeoLocationEnabled(Boolean geoLocationEnabled) {
+        this.geoLocationEnabled = geoLocationEnabled;
+    }
+
+    /**
+     * Retrieves the location of the event.
+     * @return the location of the event
+     */
+    public Location getEventLocation() {
+        return eventLocation;
+    }
+
+    /**
+     * Sets the location of the event.
+     * @param eventLocation the location of the event
+     */
+    public void setEventLocation(Location eventLocation) {
+        this.eventLocation = eventLocation;
+    }
+
+    /**
+     * Retrieves the map associating users to where they checked in
+     * @return the map associating users to where they checked in
+     */
+    public HashMap<String, Location> getUserLocationPairs() {
+        return userLocationPairs;
+    }
+
+    /**
+     * Sets the map associating users to where they checked in
+     * @param userLocationPairs the map associating users to where they checked in
+     */
+    public void setUserLocationPairs(HashMap<String, Location> userLocationPairs) {
+        this.userLocationPairs = userLocationPairs;
     }
 }

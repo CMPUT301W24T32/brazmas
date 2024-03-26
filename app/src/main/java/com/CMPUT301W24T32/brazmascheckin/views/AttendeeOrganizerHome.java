@@ -45,8 +45,11 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
     private UserController userController;
     private ImageController imageController;
     private String deviceID;
+
     private final String lightGrey = "#B2B4B6";
     private final String lightPink = "#FDB0C0";
+
+    private int mode = ViewEventFragment.ATTENDEE_VIEW;
 
 
 
@@ -134,6 +137,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
         showAllEvents();
         // filters for all events
         allEventsButton.setOnClickListener(view -> {
+            mode = ViewEventFragment.ATTENDEE_VIEW;
             showAllEvents();
         });
 
@@ -143,12 +147,12 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
         // to access event details by clicking single event
         eventRecyclerViewAdapter.setOnItemClickListener(position -> {
             Event clickedEvent = eventDataList.get(position);
-            AttendeeViewEventFragment fragment = AttendeeViewEventFragment.sendEvent(clickedEvent);
+            ViewEventFragment fragment = ViewEventFragment.sendEvent(clickedEvent, mode);
             fragment.show(getSupportFragmentManager(), "Display Event");
         });
 
         addButton.setOnClickListener(v -> {
-            startActivity(new Intent(AttendeeOrganizerHome.this, AddEvent.class));
+            startActivity(new Intent(AttendeeOrganizerHome.this, AddEventActivity.class));
         });
     }
 
@@ -180,6 +184,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
 
     private void handleAttendeeMode() {
         attendingEventsButton.setOnClickListener(view -> {
+            mode = ViewEventFragment.ATTENDEE_VIEW;
 
             attendingEventsButton.setBackgroundColor(Color.parseColor(lightPink));
             organizingEventsButton.setBackgroundColor(Color.parseColor(lightGrey));
@@ -216,11 +221,14 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
     public void handleOrganizerMode() {
         organizingEventsButton.setOnClickListener(view -> {
 
+
             attendingEventsButton.setBackgroundColor(Color.parseColor(lightGrey));
             organizingEventsButton.setBackgroundColor(Color.parseColor(lightPink));
             allEventsButton.setBackgroundColor(Color.parseColor(lightGrey));
 
             addButton.setVisibility(View.VISIBLE);
+
+            mode = ViewEventFragment.ORGANIZER_VIEW;
 
             userController.getUser(deviceID, user -> {
                 ArrayList<String> organizedEvents = user.getOrganizedEvents();
