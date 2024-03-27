@@ -1,3 +1,4 @@
+
 package com.CMPUT301W24T32.brazmascheckin.views;
 
 import android.app.AlertDialog;
@@ -142,21 +143,20 @@ public class ViewEventFragment extends DialogFragment {
         QRCode = view.findViewById(R.id.view_event_QR_iv);
         shareQRCode = view.findViewById(R.id.view_event_share_QR_iv);
         displayImage(e.getPoster());
-<<<<<<< HEAD:app/src/main/java/com/CMPUT301W24T32/brazmascheckin/views/AttendeeViewEventFragment.java
-        displayQRCode(e.getQRCode());
+        //displayQRCode(e.getQRCode());
 
 
         checkedInAttendeesBtn.setVisibility(View.INVISIBLE);
         signedUpAttendeesBtn.setVisibility(View.INVISIBLE);
         // allows only organzier to check signed up and checked in
         userController.getUser(deviceID, user -> {
-                    ArrayList<String> organizedEvents = user.getOrganizedEvents();
-                    if (organizedEvents.contains(e.getID())){
-                        checkedInAttendeesBtn.setVisibility(View.VISIBLE);
-                        signedUpAttendeesBtn.setVisibility(View.VISIBLE);
-                    }
-                    },null);
-=======
+            ArrayList<String> organizedEvents = user.getOrganizedEvents();
+            if (organizedEvents.contains(e.getID())){
+                checkedInAttendeesBtn.setVisibility(View.VISIBLE);
+                signedUpAttendeesBtn.setVisibility(View.VISIBLE);
+            }
+        },null);
+
         displayQRCode(e.getQRCode(), QRCode, false);
         displayQRCode(e.getShareQRCode(), shareQRCode, true);
 
@@ -171,7 +171,6 @@ public class ViewEventFragment extends DialogFragment {
             qrCodeTitle.setVisibility(View.GONE);
 
         }
->>>>>>> ed8612e3e9f28cb0aa6b67a0f7360ca436a5dc34:app/src/main/java/com/CMPUT301W24T32/brazmascheckin/views/ViewEventFragment.java
     }
 
     /**
@@ -259,7 +258,7 @@ public class ViewEventFragment extends DialogFragment {
             eventController.setEvent(event, null, null);
         }, e -> {
 
-                });
+        });
 
 
         userController.getUser(deviceID, user -> {

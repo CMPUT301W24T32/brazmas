@@ -1,22 +1,36 @@
 package com.CMPUT301W24T32.brazmascheckin.views;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.controllers.AdminController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
+import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
+import com.CMPUT301W24T32.brazmascheckin.helper.Date;
+import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.helper.EventRecyclerViewAdapter;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
+import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
 /**
- * This class will be the home page for organizer.
+ * This class will be the home page for admin.
  * This is where the admin will browse events.
  */
 public class AdministratorHome extends AppCompatActivity {
@@ -29,7 +43,7 @@ public class AdministratorHome extends AppCompatActivity {
     private EventController eventController;
 
     /**
-     * This method initializes the attendee/organizer home activity.
+     * This method initializes the admin home activity.
      * @param savedInstanceState If the activity is being re-initialized after
      *     previously being shut down then this Bundle contains the data it most
      *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
