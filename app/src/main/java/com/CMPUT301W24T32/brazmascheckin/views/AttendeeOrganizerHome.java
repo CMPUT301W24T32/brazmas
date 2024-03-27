@@ -25,6 +25,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * This class will be the home page for attendee/organizer
@@ -167,8 +169,28 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
 
                 addButton.setVisibility(View.INVISIBLE);
                 eventDataList.clear();
+
+                // getting current date
+                Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(calendar.YEAR);
+                int month = calendar.get(calendar.MONTH);
+                int day = calendar.get(calendar.DATE);
+
                 for (Event event : events) {
-                    eventDataList.add(event);
+                    if (year < event.getDate().getYear()) {
+                        eventDataList.add(event);
+                    }
+                    else if (year == event.getDate().getYear()){
+                        if (month < event.getDate().getMonth()){
+                            eventDataList.add(event);
+                        }
+                        else if(month == event.getDate().getMonth()){
+                            if (day <= event.getDate().getDay()){
+                                eventDataList.add(event);
+                            }
+                        }
+
+                    }
                 }
                 eventRecyclerViewAdapter.notifyDataSetChanged();
             }
