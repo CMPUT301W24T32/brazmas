@@ -144,6 +144,7 @@ public class ViewEventFragment extends DialogFragment {
         displayImage(e.getPoster());
 
 
+
         displayQRCode(e.getQRCode(), QRCode, false);
         displayQRCode(e.getShareQRCode(), shareQRCode, true);
 
@@ -298,17 +299,6 @@ public class ViewEventFragment extends DialogFragment {
      */
 
     private void displayQRCode(String code, ImageView QRCodeType, boolean share) {
-        String type;
-        if (share) {
-            type = ImageController.SHARE_QR_CODE;
-        } else {
-            type = ImageController.QR_CODE;
-        }
-        imageController.getImage(type, code, bytes -> {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-            QRCodeType.setImageBitmap(bitmap);
-        }, e -> {
-
-        });
+       
     }
 }
