@@ -32,4 +32,6 @@
     <string name="map">Map</string>
     <string name="share">Share</string>
     <string name="notify">Notify</string>
+    <string name="promotional_code">Promotional code</string>
+    <string name="check_in_code">Check-in code</string>
 </resources>
