@@ -56,8 +56,9 @@ public class AnnouncementActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.announcement_rv);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        configureControllers();
         configureViews();
+        configureControllers();
+
         // Allows the app to switch between activities
         BottomNavigationView bottomNavigationView = findViewById(R.id.announcement_bnv);
         bottomNavigationView.setSelectedItemId(R.id.bottom_announcement);
@@ -112,6 +113,9 @@ public class AnnouncementActivity extends AppCompatActivity {
         String deviceID = DeviceID.getDeviceID(this);
         // change these from null
         userController.getUser(deviceID, user -> {
+            user.setLastAnnouncementCheck(System.currentTimeMillis());
+            userController.setUser(user, null ,null);
+
             ArrayList<String> signedUp = user.getSignedUpEvents();
             eventController.addSnapshotListener(new SnapshotListener<Event>() {
                 @Override

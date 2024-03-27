@@ -15,7 +15,7 @@ public class AnnouncementTest {
     @Before
     public void setUp() {
         date = new Date();
-        announcement = new Announcement("Test Announcement", "This is a test announcement", date, "event1");
+        //announcement = new Announcement("Test Announcement", "This is a test announcement", date, "event1", );
     }
 
     @Test

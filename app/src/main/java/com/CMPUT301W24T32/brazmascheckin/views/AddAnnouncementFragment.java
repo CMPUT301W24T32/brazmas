@@ -24,6 +24,7 @@ import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 //todo: No date -> plus add event name for toast and in announcement activity -> so for message store organizer name 2
@@ -78,11 +79,11 @@ public class AddAnnouncementFragment extends DialogFragment {
         int month = datePicker.getMonth() ;
         int year = datePicker.getYear();
         Date date = new Date(day, month, year);
-
+        long time = System.currentTimeMillis();
         if(title.isEmpty() || desc.isEmpty()) {
             Toast.makeText(getContext(), "Enter all text fields", Toast.LENGTH_SHORT).show();
         } else {
-            listener.addAnnouncement(new Announcement(title, desc, date, "hello"));
+            listener.addAnnouncement(new Announcement(title, desc, date, "hello", time));
         }
 
     }

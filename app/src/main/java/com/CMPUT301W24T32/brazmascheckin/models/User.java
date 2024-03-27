@@ -13,12 +13,12 @@ public class User {
     private String lastName;
     private ArrayList<String> signedUpEvents;
     private String ID;
-
     private String profilePicture;
     private String defaultProfilePicture;
     private ArrayList<String> organizedEvents;
-
+    private long lastAnnouncementCheck;
     private boolean geoLocationEnabled = false;
+
 
 
 
@@ -33,7 +33,7 @@ public class User {
      * @param geoLocationEnabled If geolocation is enabled
      */
     public User(String firstName, String lastName, ArrayList<String> signedUpEvents, String ID,
-                String profilePicture,String defaultProfilePicture, ArrayList<String> organizedEvents, boolean geoLocationEnabled) {
+                String profilePicture,String defaultProfilePicture, ArrayList<String> organizedEvents, boolean geoLocationEnabled, long lastAnnouncementCheck) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.signedUpEvents = signedUpEvents;
@@ -42,6 +42,7 @@ public class User {
         this.organizedEvents = organizedEvents;
         this.geoLocationEnabled = geoLocationEnabled;
         this.defaultProfilePicture = defaultProfilePicture;
+        this.lastAnnouncementCheck = lastAnnouncementCheck;
     }
 
     /**
@@ -231,5 +232,13 @@ public class User {
 
     public void setDefaultProfilePicture(String defaultProfilePicture) {
         this.defaultProfilePicture = defaultProfilePicture;
+    }
+
+    public long getLastAnnouncementCheck() {
+        return lastAnnouncementCheck;
+    }
+
+    public void setLastAnnouncementCheck(long lastAnnouncementCheck) {
+        this.lastAnnouncementCheck = lastAnnouncementCheck;
     }
 }

@@ -16,7 +16,11 @@ public class Announcement implements Serializable {
     private String name;
     private String description;
     private Date date;
-    private String eventID;
+
+    private String eventID; //not needed field
+    private long timeCreated;
+
+
 
     public void sendNotification(){
 
@@ -28,11 +32,12 @@ public class Announcement implements Serializable {
      * @param date The date of the announcement.
      * @ eventID The ID of the event related to the announcement.
      */
-    public Announcement(String name, String description, Date date, String eventID) {
+    public Announcement(String name, String description, Date date, String eventID, long timeCreated) {
         this.name = name;
         this.description = description;
         this.date = date;
         this.eventID = eventID;
+        this.timeCreated = timeCreated;
     }
 
     /**
@@ -105,4 +110,8 @@ public class Announcement implements Serializable {
     public void setEventID(String eventID) {
         this.eventID = eventID;
     }
+
+    public long getTimeCreated() {return timeCreated;}
+
+    public void setTimeCreated(long timeCreated) {this.timeCreated = timeCreated;}
 }
