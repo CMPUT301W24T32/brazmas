@@ -128,7 +128,7 @@ public class UserController {
                 User user = doc.toObject(User.class);
                 users.add(user);
             }
-            listener.snapshotListenerCallback(new ArrayList());
+            listener.snapshotListenerCallback(users);
         });
     }
 
