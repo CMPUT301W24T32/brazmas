@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -34,6 +33,7 @@ import java.util.ArrayList;
  * This class is the fragment for the individual event view
  */
 public class ViewEventFragment extends DialogFragment {
+    private String deviceID;
     private TextView eventName;
     private TextView  eventDescription;
 
@@ -49,11 +49,11 @@ public class ViewEventFragment extends DialogFragment {
     private CheckBox signedUpCB;
     private ImageView QRCode;
     private ImageView shareQRCode;
+    private TextView shareQRCodeLabel;
     private EventController eventController;
     private UserController userController;
     private ImageController imageController;
 
-    private String deviceID;
     public static final String EXTRA_VIEW_MODE = "view_mode";
     public static final int ATTENDEE_VIEW = 0;
     public static final int ORGANIZER_VIEW = 1;
@@ -99,16 +99,11 @@ public class ViewEventFragment extends DialogFragment {
         configureControllers(e, getContext());
         deviceID = DeviceID.getDeviceID(getContext());
 
-
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
                 .setNegativeButton("Back",null)
                 .setView(view).create();
-
     }
-
-
 
     /**
      * This method configures the views required by the fragment
@@ -116,36 +111,50 @@ public class ViewEventFragment extends DialogFragment {
      * @param e event to be displayed
      */
     private void configureViews(View view, Event e, int mode) {
-
-
+        // views
         eventName = view.findViewById(R.id.view_event_name_tv);
         eventDescription = view.findViewById(R.id.view_event_description_tv);
         eventDate = view.findViewById(R.id.view_event_date_tv);
         eventCheckIns = view.findViewById(R.id.view_event_social_tv);
-        qrCodeTitle = view.findViewById(R.id.check_in_qr_code_text);
-        shareqrCodeTitle = view.findViewById(R.id.share_qr_code_text);
-        eventName.setText(e.getName());
-        eventDate.setText(e.getDate().getPrettyDate());
-        eventDescription.setText(e.getDescription());
-        eventCheckIns.setText(String.valueOf(e.helperCount()));
+        qrCodeTitle = view.findViewById(R.id.view_event_check_in_qr_code_tv);
+        shareqrCodeTitle = view.findViewById(R.id.view_event_share_qr_code_tv);
         eventPoster = view.findViewById(R.id.view_event_poster_iv);
         checkedInAttendeesBtn = view.findViewById(R.id.view_event_see_checked_in_attendees_btn);
         signedUpAttendeesBtn = view.findViewById(R.id.view_event_see_signed_up_attendees_btn);
         geoLocationBtn = view.findViewById(R.id.view_event_map_btn);
-
         signedUpCB = view.findViewById(R.id.view_event_signed_up_cb);
-        String deviceID = DeviceID.getDeviceID(getContext());
+        QRCode = view.findViewById(R.id.view_event_QR_iv);
+        shareQRCode = view.findViewById(R.id.view_event_share_QR_iv);
+        shareQRCodeLabel = view.findViewById(R.id.view_event_share_qr_code_tv);
+
+        // information
+
+        deviceID = DeviceID.getDeviceID(getContext());
+
+        eventName.setText(e.getName());
+        eventDate.setText(e.getDate().getPrettyDate());
+        eventDescription.setText(e.getDescription());
+        eventCheckIns.setText(String.valueOf(e.helperCount()));
+
         ArrayList<String> signUps = e.getSignUps();
         if (signUps.contains(deviceID)){
             signedUpCB.setChecked(true);
         }
-        QRCode = view.findViewById(R.id.view_event_QR_iv);
-        shareQRCode = view.findViewById(R.id.view_event_share_QR_iv);
-        displayImage(e.getPoster());
 
+        if(e.getPoster() != null && !e.getPoster().isEmpty()) {
+            displayImage(e.getPoster());
+        }
 
-        displayQRCode(e.getQRCode(), QRCode, false);
-        displayQRCode(e.getShareQRCode(), shareQRCode, true);
+        if(e.getQRCode() != null && !e.getQRCode().isEmpty()) {
+            displayQRCode(e.getQRCode(), QRCode, false);
+        }
+
+        if(e.getShareQRCode() != null && !e.getShareQRCode().isEmpty()) {
+            displayQRCode(e.getShareQRCode(), shareQRCode, true);
+        } else {
+            shareQRCodeLabel.setVisibility(View.GONE);
+            shareQRCode.setVisibility(View.GONE);
+        }
 
         if(mode == ATTENDEE_VIEW) {
             eventCheckIns.setVisibility(View.GONE);
@@ -165,11 +174,8 @@ public class ViewEventFragment extends DialogFragment {
      * @param e
      */
     private void configureControllers(Event e, Context context) {
-
-
         handleCheckedInNumber(e.getID());
         handleCheckBox(e.getID());
-
 
         checkedInAttendeesBtn.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), ViewAttendeesActivity.class);
@@ -210,12 +216,9 @@ public class ViewEventFragment extends DialogFragment {
                     ArrayList<String> signUps = event.getSignUps();
                     int signUpsCount = signUps.size();
                     int maxSignUps = event.getAttendeeLimit();
-                    Log.d("ATTENDEE", String.valueOf(maxSignUps));
 
-                    if((signUpsCount + 1 > maxSignUps) && (!signUps.contains(deviceID))) {
-                        signedUpCB.setEnabled(false);
-                    } else {
-                        signedUpCB.setEnabled(true);
+                    if(maxSignUps != -1) {
+                        signedUpCB.setEnabled((signUpsCount + 1 <= maxSignUps) || (signUps.contains(deviceID)));
                     }
                 }
             }
@@ -238,7 +241,6 @@ public class ViewEventFragment extends DialogFragment {
     }
 
     private void handleChecked(String ID) {
-
         eventController.getEvent(ID, event -> {
             ArrayList<String> signUps = event.getSignUps();
             signUps.add(deviceID);
@@ -246,7 +248,6 @@ public class ViewEventFragment extends DialogFragment {
         }, e -> {
 
                 });
-
 
         userController.getUser(deviceID, user -> {
             ArrayList<String> signUps = user.getSignedUpEvents();
@@ -298,17 +299,19 @@ public class ViewEventFragment extends DialogFragment {
      */
 
     private void displayQRCode(String code, ImageView QRCodeType, boolean share) {
-        String type;
-        if (share) {
-            type = ImageController.SHARE_QR_CODE;
-        } else {
-            type = ImageController.QR_CODE;
-        }
-        imageController.getImage(type, code, bytes -> {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-            QRCodeType.setImageBitmap(bitmap);
-        }, e -> {
+        if(code != null && !code.isEmpty()) {
+            String type;
+            if (share) {
+                type = ImageController.SHARE_QR_CODE;
+            } else {
+                type = ImageController.QR_CODE;
+            }
+            imageController.getImage(type, code, bytes -> {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                QRCodeType.setImageBitmap(bitmap);
+            }, e -> {
 
-        });
+            });
+        }
     }
 }
