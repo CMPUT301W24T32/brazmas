@@ -49,11 +49,12 @@ import java.util.HashMap;
 import java.util.List;
 
 public class AddEventActivity extends AppCompatActivity {
+    // CONSTANTS
+    private final int IMG_REQ = 200;
 
     // Views
     private ImageView imageView;
     private Uri imageUri;
-    private final int IMG_REQ = 200;
     private EditText editName;
     private EditText editDesc;
     private DatePicker datePicker;
@@ -67,7 +68,6 @@ public class AddEventActivity extends AppCompatActivity {
     private Button addShareQRCode;
     private String deviceID;
     private Spinner qrCodeSpinner;
-    private List<String> orphanedQRCodeFileIDs;
 
     // Controllers
     private ImageController imageController;
@@ -199,12 +199,10 @@ public class AddEventActivity extends AppCompatActivity {
         addShareQRCode.setOnClickListener(view -> {
             shareQRCodeClicked = true;
         });
-        Log.d("tag1", "configureControllers: "+shareQRCodeClicked);
-
    }
 
     /**
-     *
+     * Method to generate a promotional QR Code for an event
      * @param event event for which promo qr code is being generated
      */
 
@@ -280,12 +278,10 @@ public class AddEventActivity extends AppCompatActivity {
         String title = editName.getText().toString();
         String desc = editDesc.getText().toString();
         String limitText = editLimit.getText().toString();
-        int limit = 0;
+
+        int limit = -1;
         if (!limitText.isEmpty()) {
             limit = Integer.parseInt(limitText);
-            if (limit < 0) {
-                limit = 0;
-            }
         }
 
         int day = datePicker.getDayOfMonth();
@@ -296,6 +292,7 @@ public class AddEventActivity extends AppCompatActivity {
         ArrayList<String> signUps = new ArrayList<>();
         String posterID = uploadFile();
         boolean geoLocationEnabled = geoLocationSwitch.isChecked();
+
         if (title.isEmpty() || desc.isEmpty()) {
             Toast.makeText(this, "Enter all text fields", Toast.LENGTH_SHORT).show();
         } if (geoLocationEnabled && location == null) {
@@ -320,7 +317,7 @@ public class AddEventActivity extends AppCompatActivity {
 
     /**
      * Method to upload selected image file
-     * @return
+     * @return file ID generated based on current system time
      */
     private String uploadFile() {
         String fileID = String.valueOf(System.currentTimeMillis());
@@ -358,7 +355,6 @@ public class AddEventActivity extends AppCompatActivity {
      * Function that allows user to select a qr code in database not associated with event
      * @param event event for which function is assigning a qr code already in database
      */
-
     private void useExistingQRCode(Event event) {
         String selectQRCodeFileID = (String) qrCodeSpinner.getSelectedItem();
         String newID = selectQRCodeFileID.substring(0, selectQRCodeFileID.indexOf('-'));

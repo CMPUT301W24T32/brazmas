@@ -124,10 +124,10 @@
             />
 
         <TextView
-            android:id="@+id/check_in_qr_code_text"
+            android:id="@+id/view_event_check_in_qr_code_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Check-in code"
+            android:text="@string/check_in_code"
             android:layout_below="@id/view_event_see_checked_in_attendees_btn"
             android:layout_marginTop="20dp" />
 
@@ -135,16 +135,16 @@
             android:id="@+id/view_event_QR_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/check_in_qr_code_text"
+            android:layout_below="@id/view_event_check_in_qr_code_tv"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:contentDescription="@string/event_qr_code" />
 
         <TextView
-            android:id="@+id/share_qr_code_text"
+            android:id="@+id/view_event_share_qr_code_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Promotional code"
+            android:text="@string/promotional_code"
             android:layout_below="@id/view_event_QR_iv"
             android:layout_marginTop="20dp" />
 
@@ -152,7 +152,7 @@
             android:id="@+id/view_event_share_QR_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/share_qr_code_text"
+            android:layout_below="@id/view_event_share_qr_code_tv"
             android:layout_centerHorizontal="true"
             android:contentDescription="@string/event_qr_code"
             android:layout_marginTop="20dp" />
