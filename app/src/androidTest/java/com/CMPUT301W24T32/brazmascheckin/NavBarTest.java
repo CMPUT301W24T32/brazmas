@@ -8,15 +8,12 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
-import androidx.test.filters.LargeTest;
 
 import com.CMPUT301W24T32.brazmascheckin.views.AnnouncementActivity;
-import com.CMPUT301W24T32.brazmascheckin.views.AttendeeOrganizerHome;
+import com.CMPUT301W24T32.brazmascheckin.views.UserHome;
 import com.CMPUT301W24T32.brazmascheckin.views.CameraActivity;
 import com.CMPUT301W24T32.brazmascheckin.views.ProfileActivity;
 
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,8 +27,8 @@ public class NavBarTest {
 
 
         @Rule
-        public ActivityScenarioRule<AttendeeOrganizerHome> mActivityScenarioRule =
-                new ActivityScenarioRule<AttendeeOrganizerHome>(AttendeeOrganizerHome.class);
+        public ActivityScenarioRule<UserHome> mActivityScenarioRule =
+                new ActivityScenarioRule<UserHome>(UserHome.class);
 
         /**
         * Tests to see if navigation controller can switch from event(main page for users) to announcement
