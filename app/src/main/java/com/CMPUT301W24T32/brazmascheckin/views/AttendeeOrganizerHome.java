@@ -1,8 +1,10 @@
 package com.CMPUT301W24T32.brazmascheckin.views;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -20,6 +22,7 @@ import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.helper.EventRecyclerViewAdapter;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -32,7 +35,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
     private EventRecyclerViewAdapter eventRecyclerViewAdapter;
 
     private RecyclerView eventRecyclerView;
-    private Button addButton;
+    private FloatingActionButton addButton;
 
     private Button allEventsButton;
     private Button attendingEventsButton;
@@ -42,7 +45,12 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
     private UserController userController;
     private ImageController imageController;
     private String deviceID;
+
+    private final String lightGrey = "#B2B4B6";
+    private final String lightPink = "#FDB0C0";
+
     private int mode = ViewEventFragment.ATTENDEE_VIEW;
+
 
 
     /**
@@ -109,7 +117,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
         eventRecyclerView.setAdapter(eventRecyclerViewAdapter);
         eventRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         addButton = findViewById(R.id.user_home_add_event_btn);
-
+        addButton.setVisibility(View.INVISIBLE);
         allEventsButton = findViewById(R.id.user_home_all_btn);
         attendingEventsButton = findViewById(R.id.user_home_attending_btn);
         organizingEventsButton = findViewById(R.id.user_home_organizing_btn);
@@ -152,6 +160,12 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
         eventController.addSnapshotListener(new SnapshotListener<Event>() {
             @Override
             public void snapshotListenerCallback(ArrayList<Event> events) {
+
+                attendingEventsButton.setBackgroundColor(Color.parseColor(lightGrey));
+                organizingEventsButton.setBackgroundColor(Color.parseColor(lightGrey));
+                allEventsButton.setBackgroundColor(Color.parseColor(lightPink));
+
+                addButton.setVisibility(View.INVISIBLE);
                 eventDataList.clear();
                 for (Event event : events) {
                     eventDataList.add(event);
@@ -171,6 +185,12 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
     private void handleAttendeeMode() {
         attendingEventsButton.setOnClickListener(view -> {
             mode = ViewEventFragment.ATTENDEE_VIEW;
+
+            attendingEventsButton.setBackgroundColor(Color.parseColor(lightPink));
+            organizingEventsButton.setBackgroundColor(Color.parseColor(lightGrey));
+            allEventsButton.setBackgroundColor(Color.parseColor(lightGrey));
+
+            addButton.setVisibility(View.INVISIBLE);
 
             userController.getUser(deviceID, user -> {
                 ArrayList<String> signedUp = user.getSignedUpEvents();
@@ -200,7 +220,16 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
 
     public void handleOrganizerMode() {
         organizingEventsButton.setOnClickListener(view -> {
+
+
+            attendingEventsButton.setBackgroundColor(Color.parseColor(lightGrey));
+            organizingEventsButton.setBackgroundColor(Color.parseColor(lightPink));
+            allEventsButton.setBackgroundColor(Color.parseColor(lightGrey));
+
+            addButton.setVisibility(View.VISIBLE);
+
             mode = ViewEventFragment.ORGANIZER_VIEW;
+
             userController.getUser(deviceID, user -> {
                 ArrayList<String> organizedEvents = user.getOrganizedEvents();
                 eventController.addSnapshotListener(new SnapshotListener<Event>() {

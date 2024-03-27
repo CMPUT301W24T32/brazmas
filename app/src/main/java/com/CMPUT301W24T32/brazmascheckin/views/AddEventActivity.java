@@ -364,9 +364,12 @@ public class AddEventActivity extends AppCompatActivity {
         String newID = selectQRCodeFileID.substring(0, selectQRCodeFileID.indexOf('-'));
         event.setID(newID);
         event.setQRCode(selectQRCodeFileID);
+
+        //generate share QR code
         if (shareQRCodeClicked) {
             generateShareQRCode(event);
         }
+        
         eventController.setEvent(event, () -> userController.getUser(deviceID, user -> {
             user.createEvent(newID);
             userController.setUser(user, null ,null);
@@ -381,6 +384,11 @@ public class AddEventActivity extends AppCompatActivity {
     private void generateAndAddQRCode(Event event) {
         eventController.addEvent(event, ID -> {
             event.setID(ID);
+
+            //generate share QR code
+            if (shareQRCodeClicked) {
+                generateShareQRCode(event);
+            }
 
             // Generate and upload QR code
             Bitmap bitmap = QRCodeGenerator.generateQRCode(ID);

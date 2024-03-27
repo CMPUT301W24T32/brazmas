@@ -15,6 +15,7 @@ public class User {
     private String ID;
 
     private String profilePicture;
+    private String defaultProfilePicture;
     private ArrayList<String> organizedEvents;
 
     private boolean geoLocationEnabled = false;
@@ -32,7 +33,7 @@ public class User {
      * @param geoLocationEnabled If geolocation is enabled
      */
     public User(String firstName, String lastName, ArrayList<String> signedUpEvents, String ID,
-                String profilePicture, ArrayList<String> organizedEvents, boolean geoLocationEnabled) {
+                String profilePicture,String defaultProfilePicture, ArrayList<String> organizedEvents, boolean geoLocationEnabled) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.signedUpEvents = signedUpEvents;
@@ -40,6 +41,7 @@ public class User {
         this.profilePicture = profilePicture;
         this.organizedEvents = organizedEvents;
         this.geoLocationEnabled = geoLocationEnabled;
+        this.defaultProfilePicture = defaultProfilePicture;
     }
 
     /**
@@ -223,7 +225,11 @@ public class User {
         this.geoLocationEnabled = geoLocationEnabled;
     }
 
-    // TODO: public void setProfilePicture(Image picture)
-    // TODO: public void checkIn(QrScanner qr)
+    public String getDefaultProfilePicture() {
+        return defaultProfilePicture;
+    }
 
+    public void setDefaultProfilePicture(String defaultProfilePicture) {
+        this.defaultProfilePicture = defaultProfilePicture;
+    }
 }
