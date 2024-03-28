@@ -29,10 +29,9 @@ import java.util.HashMap;
 public class ViewAttendeesActivity extends AppCompatActivity implements AddAnnouncementFragment.AddAnnouncementDialogListener{
     private RecyclerView recyclerView;
     private AttendeeRecyclerViewAdapter recyclerViewAdapter;
-    private Button shareButton;
-    private Button mapButton;
     private Button notifyButton;
     private LinearLayout organizerActionsLinearLayout;
+
     private ArrayList<User> userDataList;
     private ArrayList<Integer> userCheckIns;
     private EventController eventController;
@@ -57,12 +56,12 @@ public class ViewAttendeesActivity extends AppCompatActivity implements AddAnnou
         configureControllers(event);
     }
 
+    /**
+     * Assigns the views and adapters required for the activity; sets the visibility based on state.
+     */
     private void configureViews() {
         userDataList = new ArrayList<>();
-        shareButton = findViewById(R.id.view_attendees_share_btn);
-        mapButton = findViewById(R.id.view_attendees_map_btn);
         notifyButton = findViewById(R.id.view_attendees_notify_btn);
-        organizerActionsLinearLayout = findViewById(R.id.view_attendees_organizer_action_ll);
         recyclerView = findViewById(R.id.view_attendees_attendee_rv);
 
         if(mode == CHECK_IN_MODE) {
@@ -78,12 +77,19 @@ public class ViewAttendeesActivity extends AppCompatActivity implements AddAnnou
             mapButton.setVisibility(View.GONE);
             shareButton.setVisibility(View.GONE);
             notifyButton.setVisibility(View.VISIBLE); //bc we need it for organizer -> notify for signed attendees not checked in
+            recyclerViewAdapter = new AttendeeRecyclerViewAdapter(this, userDataList,
+                    SIGN_UP_MODE);
+            notifyButton.setVisibility(View.GONE);
         }
 
         recyclerView.setAdapter(recyclerViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
+    /**
+     * Configures the controllers required by the activity.
+     * @param event the event for which attendees are being viewed
+     */
     private void configureControllers(Event event) {
         eventController = new EventController(this);
         userController = new UserController(this);

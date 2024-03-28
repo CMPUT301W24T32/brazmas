@@ -77,7 +77,10 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         User user = new User(
                                 firstName, lastName, new ArrayList<String>(), null, null,null,
+
                                 new ArrayList<String>(), false, 0
+                                new ArrayList<String>(), false, new ArrayList<String>()
+
                         );
                         user.setFirstName(firstName);
                         user.setLastName(lastName);
