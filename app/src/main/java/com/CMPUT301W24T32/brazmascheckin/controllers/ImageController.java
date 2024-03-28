@@ -178,6 +178,10 @@ public class ImageController {
                 });
     }
 
+    /**
+     * This method retrieves the file IDs of all QR Codes stored in Firebase Storage.
+     * @param listener to handle success of providing a list of file IDs.
+     */
     public void getAllQRCodeFileIDs(GetSuccessListener<List<String>> listener) {
 
         qrCodeReference.listAll().addOnSuccessListener(listResult -> {
@@ -188,6 +192,44 @@ public class ImageController {
             }
             if (listener != null) {
                 listener.onSuccess(qrCodeFileIDs);
+            }
+        }).addOnFailureListener(e -> {
+        });
+    }
+
+    /**
+     * This method retrieves the file IDs of all profile pictures stored in Firebase Storage.
+     * @param listener to handle success of providing a list of file IDs.
+     */
+    public void getAllProfilePicFileIDs(GetSuccessListener<List<String>> listener) {
+        profilePictureReference.listAll().addOnSuccessListener(listResult -> {
+            List<String> profilePicFileIDs = new ArrayList<>();
+            for (StorageReference item : listResult.getItems()) {
+                String fileID = item.getName();
+                profilePicFileIDs.add(fileID);
+            }
+
+            if(listener != null) {
+                listener.onSuccess(profilePicFileIDs);
+            }
+        }).addOnFailureListener(e -> {
+        });
+    }
+
+    /**
+     * This method retrieves the file IDs of all event posters stored in Firebase Storage.
+     * @param listener to handle success of providing a list of file IDs.
+     */
+    public void getAllPosterFileIDs(GetSuccessListener<List<String>> listener) {
+        posterReference.listAll().addOnSuccessListener(listResult -> {
+            List<String> posterFileIDs = new ArrayList<>();
+            for (StorageReference item : listResult.getItems()) {
+                String fileID = item.getName();
+                posterFileIDs.add(fileID);
+            }
+
+            if (listener != null) {
+                listener.onSuccess(posterFileIDs);
             }
         }).addOnFailureListener(e -> {
         });

@@ -1,10 +1,13 @@
 package com.CMPUT301W24T32.brazmascheckin.views;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
@@ -12,6 +15,7 @@ import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
 import com.CMPUT301W24T32.brazmascheckin.helper.EventRecyclerViewAdapter;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
@@ -43,6 +47,35 @@ public class AdministratorHome extends AppCompatActivity {
         configureControllers();
 
         //TODO: need to add the navigation bar
+        BottomNavigationView bottomNavigationView = findViewById(R.id.admin_home_bnv);
+        bottomNavigationView.setSelectedItemId(R.id.admin_event);
+        bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            /**
+             * This method determines something from navigation bar has been selected or not.
+             * @param menuItem The selected item
+             * @return True if selected, false otherwise.
+             */
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                int id = menuItem.getItemId();
+
+                if (id == (R.id.admin_event)){
+                    return true;
+                }
+
+                if (id == (R.id.admin_profile)){
+                    startActivity(new Intent(getApplicationContext(), AdministratorBrowseProfiles.class));
+                    overridePendingTransition(0,0);
+                }
+                if (id == (R.id.admin_image)){
+                    startActivity(new Intent(getApplicationContext(), AdministratorBrowseImages.class));
+                    overridePendingTransition(0,0);
+                }
+                return false;
+
+            }
+        });
+
     }
 
     /**
