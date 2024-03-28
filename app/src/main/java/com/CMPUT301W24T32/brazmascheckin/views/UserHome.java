@@ -246,9 +246,9 @@ public class UserHome extends AppCompatActivity {
                                 eventDataList.add(event);
                             }
 
-                            if(organizedEvents.contains(event.getID())) {
-                                handleAttendanceAlerts(event);
-                            }
+//                            if(organizedEvents.contains(event.getID())) {
+//                                handleAttendanceAlerts(event);
+//                            }
                         }
                         eventRecyclerViewAdapter.notifyDataSetChanged();
                     }
@@ -288,7 +288,7 @@ public class UserHome extends AppCompatActivity {
                         for(Event event : events) {
                             if(organizedEvents.contains(event.getID())) {
                                 eventDataList.add(event);
-                                handleAttendanceAlerts(event);
+//                                handleAttendanceAlerts(event);
                             }
                         }
                         eventRecyclerViewAdapter.notifyDataSetChanged();
