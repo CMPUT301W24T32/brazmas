@@ -11,11 +11,9 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
-import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
@@ -27,9 +25,9 @@ public class aSignUpTest {
     public void testSignUp(){
         // will only pass on first try
         Intents.init();
-        onView(withId(R.id.main_firstname_textview)).perform(typeText("John"), closeSoftKeyboard());
-        onView(withId(R.id.main_lastname_textview)).perform(typeText("White"), closeSoftKeyboard());
-        onView(withId(R.id.main_submit_button)).perform(click());
+        onView(withId(R.id.sign_up_firstname_tv)).perform(typeText("John"), closeSoftKeyboard());
+        onView(withId(R.id.sign_up_lastname_tv)).perform(typeText("White"), closeSoftKeyboard());
+        onView(withId(R.id.sign_up_submit_btn)).perform(click());
         Intents.release();
     }
 
