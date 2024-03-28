@@ -32,6 +32,7 @@ public class AdministratorBrowseImages extends AppCompatActivity {
     private GridView gridView;
     private ImageAdapter imageAdapter;
     private List<Pair<String, String>> imageUrlsWithType; // URL and type
+    private List<String> imageType;
     private ImageController imageController;
     private List<String> allFileIds; // list to hold all file IDs
 
@@ -76,6 +77,8 @@ public class AdministratorBrowseImages extends AppCompatActivity {
 
         gridView = findViewById(R.id.gridView);
         imageUrlsWithType = new ArrayList<>(); // Initialize the list for URLs and types
+        allFileIds = new ArrayList<>();
+        imageType = new ArrayList<>();
         imageAdapter = new ImageAdapter(imageUrlsWithType, this); // Update adapter
         gridView.setAdapter(imageAdapter);
 
@@ -103,6 +106,8 @@ public class AdministratorBrowseImages extends AppCompatActivity {
                             // Add URL and its type to the list
                             String imageUrl = "data:image/jpeg;base64," + Base64.encodeToString(imageData, Base64.DEFAULT);
                             imageUrlsWithType.add(new Pair<>(imageUrl, ImageController.EVENT_POSTER));
+                            allFileIds.add(fileID); // Add fileID to the list
+                            imageType.add(ImageController.EVENT_POSTER); // Add image type to the list
                             imageAdapter.notifyDataSetChanged();
                         }
                     }, new AddFailureListener() {
@@ -126,6 +131,8 @@ public class AdministratorBrowseImages extends AppCompatActivity {
                             // Add URL and its type to the list
                             String imageUrl = "data:image/jpeg;base64," + Base64.encodeToString(imageData, Base64.DEFAULT);
                             imageUrlsWithType.add(new Pair<>(imageUrl, ImageController.PROFILE_PICTURE));
+                            allFileIds.add(fileID); // Add fileID to the list
+                            imageType.add(ImageController.PROFILE_PICTURE); // Add image type to the list
                             imageAdapter.notifyDataSetChanged();
                         }
                     }, new AddFailureListener() {
@@ -136,28 +143,6 @@ public class AdministratorBrowseImages extends AppCompatActivity {
                     });
                 }
             }
-        });
-    }
-
-    private void fetchImagesFromFolder(String folderName, String imageType) {
-        StorageReference folderRef = FirestoreDB.getStorageReference(folderName);
-
-        folderRef.listAll().addOnSuccessListener(listResult -> {
-            for (StorageReference item : listResult.getItems()) {
-                item.getDownloadUrl().addOnSuccessListener(uri -> {
-                    // Add URL and its type to the list
-                    imageUrlsWithType.add(new Pair<>(uri.toString(), imageType));
-                    if (allFileIds == null) {
-                        allFileIds = new ArrayList<>(); // Initialize allFileIds if null
-                    }
-                    allFileIds.add(item.getName()); // Add file ID to the list of all file IDs
-                    imageAdapter.notifyDataSetChanged();
-                }).addOnFailureListener(exception -> {
-                    Log.e("ImageURL", "Failed to get image URL: " + exception.getMessage());
-                });
-            }
-        }).addOnFailureListener(exception -> {
-            Log.e("FetchImages", "Failed to fetch images: " + exception.getMessage());
         });
     }
 
