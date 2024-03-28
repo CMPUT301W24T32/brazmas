@@ -25,6 +25,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:id="@+id/view_attendees_map_btn"
+            android:backgroundTint="@color/lightPink"
+            android:textColor="@color/black"
+            android:fontFamily="sans-serif-condensed-medium"
             android:text="@string/map"
             android:layout_margin="10dp"
             />
@@ -34,6 +37,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:id="@+id/view_attendees_share_btn"
+            android:backgroundTint="@color/lightPink"
+            android:textColor="@color/black"
+            android:fontFamily="sans-serif-condensed-medium"
             android:text="@string/share"
             android:layout_margin="10dp"
             />
@@ -43,6 +49,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:id="@+id/view_attendees_notify_btn"
+            android:backgroundTint="@color/lightPink"
+            android:textColor="@color/black"
+            android:fontFamily="sans-serif-condensed-medium"
             android:text="@string/notify"
             android:layout_margin="10dp"
             />
