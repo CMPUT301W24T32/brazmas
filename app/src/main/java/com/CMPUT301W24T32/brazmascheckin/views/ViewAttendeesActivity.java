@@ -74,8 +74,6 @@ public class ViewAttendeesActivity extends AppCompatActivity implements AddAnnou
             recyclerViewAdapter = new AttendeeRecyclerViewAdapter(this, userDataList,
                     SIGN_UP_MODE);
             Toast.makeText(ViewAttendeesActivity.this, "test", Toast.LENGTH_SHORT).show();
-            mapButton.setVisibility(View.GONE);
-            shareButton.setVisibility(View.GONE);
             notifyButton.setVisibility(View.VISIBLE); //bc we need it for organizer -> notify for signed attendees not checked in
             recyclerViewAdapter = new AttendeeRecyclerViewAdapter(this, userDataList,
                     SIGN_UP_MODE);
