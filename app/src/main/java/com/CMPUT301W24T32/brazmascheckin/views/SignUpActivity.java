@@ -50,11 +50,10 @@ public class SignUpActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Fields cannot be empty", Toast.LENGTH_SHORT).show();
             } else {
                 User user = new User(
-                        firstName, lastName, new ArrayList<String>(), null, null,null,
-                        new ArrayList<String>(), false, new ArrayList<String>()
+                        firstName, lastName, new ArrayList<>(), null, new ArrayList<>(),
+                        false, 0, null,
+                        null, new ArrayList<>()
                 );
-                user.setFirstName(firstName);
-                user.setLastName(lastName);
                 user.setID(deviceID);
 
                 // creating random pfp
