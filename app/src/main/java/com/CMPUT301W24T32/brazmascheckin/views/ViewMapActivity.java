@@ -12,6 +12,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -39,6 +41,7 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,6 +54,7 @@ public class ViewMapActivity extends AppCompatActivity {
     private UserController userController;
     private EventController eventController;
     private ImageController imageController;
+    private Geocoder geocoder;
     public static final String EXTRA_LOCATION_PAIRS = "user_location_pair";
     public static final String EXTRA_EVENT = "event";
     public static final String EXTRA_MODE = "mode";
@@ -107,8 +111,7 @@ public class ViewMapActivity extends AppCompatActivity {
     }
 
     /**
-     * Configures the activity by initializing the map view, setting its properties,
-     * and initializing necessary controllers and UI elements.
+     * Configures the views and controllers of the activity.
      */
     private void configureActivity() {
         mapView = (MapView) findViewById(R.id.map);
@@ -129,19 +132,21 @@ public class ViewMapActivity extends AppCompatActivity {
         userController = new UserController(this);
         eventController = new EventController(this);
         imageController = new ImageController(this);
+        geocoder = new Geocoder(this);
     }
 
     /**
-     * Displays markers for the event location and checked-in attendees on the map.
+     * Method to change the state of the map to display customized markers to indicate check-in
+     * locations of attendees for specified event.
      * @param event The event for which markers are to be displayed.
      * @param locations A HashMap containing the locations of the checked-in attendees.
      */
     private void displayCheckedInAttendees(Event event, HashMap<String, Location> locations) {
         // event location
         Location location = event.getEventLocation();
-        Marker marker = new Marker(mapView);
+        Marker eventMarker = new Marker(mapView);
         GeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
-        marker.setPosition(point);
+        eventMarker.setPosition(point);
 
         if(event.getPoster() != null && !event.getPoster().isEmpty()) {
             imageController.getImage(ImageController.EVENT_POSTER, event.getPoster(), byteArray -> {
@@ -149,31 +154,29 @@ public class ViewMapActivity extends AppCompatActivity {
                 Bitmap bitmap = Bitmap.createScaledBitmap(rawBitmap, 100, 100, false);
                 BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
                         bitmap);
-                marker.setIcon(bitmapDrawable);
+                eventMarker.setIcon(bitmapDrawable);
             }, e -> {
                 Toast.makeText(this, "Unable to retrieve event poster for " + event.getName(), Toast.LENGTH_SHORT).show();
             });
         }
-        marker.setTitle(event.getName());
-        marker.setSnippet(event.getDescription());
-        mapView.getOverlays().add(marker);
+        eventMarker.setTitle(event.getName());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(),
+                    location.getLongitude(), 1);
+            eventMarker.setSnippet(event.getDescription() + "<br>" + addresses.get(0).getAddressLine(0));
+        } catch (Exception e) {
+            eventMarker.setSnippet(event.getDescription());
+        }
+        mapView.getOverlays().add(eventMarker);
 
         for(String id : locations.keySet()) {
-            Location l = locations.get(id);
-            Marker m = new Marker(mapView);
-            GeoPoint p = new GeoPoint(l.getLatitude(), l.getLongitude());
-
+            Location attendeeLocation = locations.get(id);
+            Marker attendeeMarker = new Marker(mapView);
+            GeoPoint attendeePoint = new GeoPoint(attendeeLocation.getLatitude(), attendeeLocation.getLongitude());
             userController.getUser(id, user -> {
-                m.setPosition(p);
+                attendeeMarker.setPosition(attendeePoint);
                 String name = user.getFirstName() + " " + user.getLastName();
-                m.setTitle(name);
-
-                /*
-                TODO:
-                1. instead of latitude/longitude, include address
-                2. maybe include address of event in event details
-                 */
-
+                attendeeMarker.setTitle(name);
                 String profilePicture = null;
                 if(user.getProfilePicture() != null && !user.getProfilePicture().isEmpty()) {
                     profilePicture = user.getProfilePicture();
@@ -185,24 +188,28 @@ public class ViewMapActivity extends AppCompatActivity {
                             Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
                             BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
                                     bitmap);
-                            m.setIcon(bitmapDrawable);
+                            attendeeMarker.setIcon(bitmapDrawable);
                         },
                         e -> Toast.makeText(this, "Unable to retrieve profile picture", Toast.LENGTH_SHORT).show());
 
-                String snippet = "User ID: " + id + "<br>Latitude: " + l.getLatitude() + "<br>Longitude: " + l.getLongitude();
-                m.setSnippet(snippet);
 
-                //TODO: add icon for profile
-
-                mapView.getOverlays().add(m);
+                String snippet;
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(attendeeLocation.getLatitude(),
+                            attendeeLocation.getLongitude(), 1);
+                    snippet = "User ID: " + id + "<br>" + addresses.get(0).getAddressLine(0);
+                } catch (Exception e) {
+                    snippet = "User ID: " + id + "<br>Latitude: " + attendeeLocation.getLatitude() + "<br>Longitude: " + attendeeLocation.getLongitude();
+                }
+                attendeeMarker.setSnippet(snippet);
+                mapView.getOverlays().add(attendeeMarker);
             }, e -> Toast.makeText(ctx, "Unable to display user " + id, Toast.LENGTH_SHORT).show());
         }
     }
 
     /**
-     * Allows the user to choose a location on the map by tapping. Once a location is chosen,
-     * a marker is placed on the map to represent the chosen location.
-     * If the user confirms the chosen location, the result is returned to the calling activity.
+     * Method to change the state of the activity to allow an organizer to select a location
+     * for their event by dropping a marker.
      */
     private void chooseLocation(Location previousLocation) {
         Marker marker = new Marker(mapView);
@@ -215,10 +222,16 @@ public class ViewMapActivity extends AppCompatActivity {
             @Override
             public boolean singleTapConfirmedHelper(GeoPoint p) {
                 marker.setPosition(p);
-                String location = "Latitude: " + p.getLatitude() + "<br> Longitude: " + p.getLongitude();
+                String location;
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(p.getLatitude(),
+                            p.getLongitude(), 1);
+                    location = addresses.get(0).getAddressLine(0);
+                } catch (Exception e) {
+                     location = "Latitude: " + p.getLatitude() + "<br> Longitude: " + p.getLongitude();
+                }
                 marker.setSnippet(location);
                 mapView.invalidate();
-
                 return true;
             }
 
@@ -247,31 +260,48 @@ public class ViewMapActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Method to change the state of the activity to display all the user's recorded
+     * check-in locations for events they have checked into, with customized markers.
+     */
     private void showAttendeeCheckIns() {
         userController.getUser(deviceID, user -> {
             ArrayList<String> checkIns = user.getCheckInEvents();
             for(String eventID : checkIns) {
                 eventController.getEvent(eventID, event -> {
                     HashMap<String, Location> checkInLocationPairs = event.getUserLocationPairs();
-                    Location checkInLocation = checkInLocationPairs.get(deviceID);
-                    Marker m = new Marker(mapView);
-                    GeoPoint point = new GeoPoint(checkInLocation.getLatitude(),
-                            checkInLocation.getLongitude());
-                    m.setPosition(point);
-                    m.setTitle(event.getName());
-                    m.setSnippet(event.getDescription());
-                    if(event.getPoster() != null && !event.getPoster().isEmpty()) {
-                        imageController.getImage(ImageController.EVENT_POSTER, event.getPoster(),
-                                byteArray -> {
-                                    Bitmap rawBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-                                    Bitmap bitmap = Bitmap.createScaledBitmap(rawBitmap, 100, 100, false);
-                                    BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
-                                            bitmap);
-                                    m.setIcon(bitmapDrawable);
-                                }, e -> Toast.makeText(ViewMapActivity.this,
-                                        "Unable to retrieve image for " + event.getName(), Toast.LENGTH_SHORT).show());
+                    if (checkInLocationPairs.containsKey(deviceID)){
+                        Location checkInLocation = checkInLocationPairs.get(deviceID);
+                        Marker marker = new Marker(mapView);
+                        GeoPoint point = new GeoPoint(checkInLocation.getLatitude(),
+                                checkInLocation.getLongitude());
+                        marker.setPosition(point);
+                        marker.setTitle(event.getName());
+
+                        String snippet;
+                        try {
+                            List<Address> addresses = geocoder.getFromLocation(checkInLocation.getLatitude(),
+                                    checkInLocation.getLongitude(), 1);
+                            snippet = event.getDescription() + "<br>" + addresses.get(0).getAddressLine(0);
+                        } catch (Exception e) {
+                            snippet = event.getDescription() + " <br> Latitude: " + checkInLocation.getLatitude()
+                                + "<br> Longitude: " + checkInLocation.getLongitude();
+                        }
+
+                        marker.setSnippet(snippet);
+                        if (event.getPoster() != null && !event.getPoster().isEmpty()) {
+                            imageController.getImage(ImageController.EVENT_POSTER, event.getPoster(),
+                                    byteArray -> {
+                                        Bitmap rawBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                                        Bitmap bitmap = Bitmap.createScaledBitmap(rawBitmap, 100, 100, false);
+                                        BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
+                                                bitmap);
+                                        marker.setIcon(bitmapDrawable);
+                                    }, e -> Toast.makeText(ViewMapActivity.this,
+                                            "Unable to retrieve image for " + event.getName(), Toast.LENGTH_SHORT).show());
                     }
-                    mapView.getOverlays().add(m);
+                    mapView.getOverlays().add(marker);
+                }
                 }, e -> Toast.makeText(ViewMapActivity.this,
                         "Unable to retrieve check-in location for event " + eventID,
                         Toast.LENGTH_SHORT).show());
@@ -279,16 +309,30 @@ public class ViewMapActivity extends AppCompatActivity {
         }, e -> Toast.makeText(ViewMapActivity.this, "Unable to retrieve user data", Toast.LENGTH_SHORT).show());
     }
 
+    /**
+     * Method to change the state of the activity to display all the events with recorded locations,
+     * with customized markers.
+     */
     private void showAllEvents() {
         eventController.getAllEvents(events -> {
             for(Event event : events) {
                 Location eventLocation = event.getEventLocation();
-                Marker m = new Marker(mapView);
+                Marker marker = new Marker(mapView);
                 GeoPoint point = new GeoPoint(eventLocation.getLatitude(),
                         eventLocation.getLongitude());
-                m.setPosition(point);
-                m.setTitle(event.getName());
-                m.setSnippet(eventLocation.getLatitude() + " <br> " + eventLocation.getLongitude());
+                marker.setPosition(point);
+                marker.setTitle(event.getName());
+                String snippet;
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(eventLocation.getLatitude(),
+                            eventLocation.getLongitude(), 1);
+                    snippet = event.getDescription() + "<br>" + addresses.get(0).getAddressLine(0);
+                } catch (Exception e) {
+                    snippet = event.getDescription() + " <br> Latitude: " + eventLocation.getLatitude()
+                            + "<br> Longitude: " + eventLocation.getLongitude();
+                }
+
+                marker.setSnippet(snippet);
                 if(event.getPoster() != null && !event.getPoster().isEmpty()) {
                     imageController.getImage(ImageController.EVENT_POSTER, event.getPoster(),
                             byteArray -> {
@@ -297,50 +341,60 @@ public class ViewMapActivity extends AppCompatActivity {
                                 BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
                                         bitmap);
 
-                                m.setIcon(bitmapDrawable);
+                                marker.setIcon(bitmapDrawable);
                             }, e -> Toast.makeText(ViewMapActivity.this,
                                     "Unable to retrieve image for " + event.getName(), Toast.LENGTH_SHORT).show());
                 }
-                m.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
-                mapView.getOverlays().add(m);
+                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
+                mapView.getOverlays().add(marker);
             }
         }, e -> Toast.makeText(ViewMapActivity.this, "Unable to retrieve all events", Toast.LENGTH_SHORT).show());
     }
 
+    /**
+     * Method to change the state of the activity to display all the user's organized events
+     * that have recorded locations, with customized markers.
+     */
     private void showOrganizedEvents() {
         userController.getUser(deviceID, user -> {
             ArrayList<String> organizedEvents = user.getOrganizedEvents();
             for(String eventID : organizedEvents) {
                 eventController.getEvent(eventID, event -> {
-                    Location eventLocation = event.getEventLocation();
-                    Marker m = new Marker(mapView);
-                    GeoPoint p = new GeoPoint(eventLocation.getLatitude(), eventLocation.getLongitude());
-                    m.setPosition(p);
-                    m.setTitle(event.getID());
-                    m.setSnippet(event.getDescription());
+                    if(event.getGeoLocationEnabled()) {
+                        Location eventLocation = event.getEventLocation();
+                        Marker marker = new Marker(mapView);
+                        GeoPoint point = new GeoPoint(eventLocation.getLatitude(), eventLocation.getLongitude());
+                        marker.setPosition(point);
+                        marker.setTitle(event.getID());
 
-                    if(event.getPoster() != null && !event.getPoster().isEmpty()) {
-                        imageController.getImage(ImageController.EVENT_POSTER, event.getPoster(),
-                                byteArray -> {
-                                    Bitmap rawBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-                                    Bitmap bitmap = Bitmap.createScaledBitmap(rawBitmap, 100, 100, false);
-                                    BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
-                                            bitmap);
+                        String snippet;
+                        try {
+                            List<Address> addresses = geocoder.getFromLocation(eventLocation.getLatitude(),
+                                    eventLocation.getLongitude(), 1);
+                            snippet = event.getDescription() + "<br>" + addresses.get(0).getAddressLine(0);
+                        } catch (Exception e) {
+                            snippet = event.getDescription() + " <br> Latitude: " + eventLocation.getLatitude()
+                                    + "<br> Longitude: " + eventLocation.getLongitude();
+                        }
+                        marker.setSnippet(snippet);
 
-                                    m.setIcon(bitmapDrawable);
-                                }, e -> Toast.makeText(ViewMapActivity.this,
-                                        "Unable to retrieve image for " + event.getName(), Toast.LENGTH_SHORT).show());
+                        if (event.getPoster() != null && !event.getPoster().isEmpty()) {
+                            imageController.getImage(ImageController.EVENT_POSTER, event.getPoster(),
+                                    byteArray -> {
+                                        Bitmap rawBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                                        Bitmap bitmap = Bitmap.createScaledBitmap(rawBitmap, 100, 100, false);
+                                        BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
+                                                bitmap);
+                                        marker.setIcon(bitmapDrawable);
+                                    }, e -> Toast.makeText(ViewMapActivity.this,
+                                            "Unable to retrieve image for " + event.getName(), Toast.LENGTH_SHORT).show());
+                        }
+                        mapView.getOverlays().add(marker);
                     }
-
-                                       mapView.getOverlays().add(m);
-                }, e -> {
-                    Toast.makeText(ViewMapActivity.this,
-                            "Unable to retrieve check-in location for event " + eventID,
-                            Toast.LENGTH_SHORT).show();
-                });
+                }, e -> Toast.makeText(ViewMapActivity.this,
+                        "Unable to retrieve check-in location for event " + eventID,
+                        Toast.LENGTH_SHORT).show());
             }
-        }, e -> {
-            Toast.makeText(ViewMapActivity.this, "Unable to retrieve user data", Toast.LENGTH_SHORT).show();
-        });
+        }, e -> Toast.makeText(ViewMapActivity.this, "Unable to retrieve user data", Toast.LENGTH_SHORT).show());
     }
 }
