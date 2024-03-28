@@ -1,9 +1,12 @@
 package com.CMPUT301W24T32.brazmascheckin.views;
 
 import android.content.DialogInterface;
+import androidx.annotation.NonNull;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
+import android.view.MenuItem;
 import android.widget.GridView;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
@@ -14,6 +17,7 @@ import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.helper.ImageAdapter;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +35,38 @@ public class AdministratorBrowseImages extends AppCompatActivity {
         setContentView(R.layout.activity_administrator_image);
 
         // bottom navigation bar
+        BottomNavigationView bottomNavigationView = findViewById(R.id.admin_image_bnv);
+        bottomNavigationView.setSelectedItemId(R.id.admin_image);
+        bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            /**
+             * This method determines something from navigation bar has been selected or not.
+             * @param menuItem The selected item
+             * @return True if selected, false otherwise.
+             */
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                int id = menuItem.getItemId();
+
+                if (id == (R.id.admin_event)){
+                    startActivity(new Intent(getApplicationContext(), AdministratorHome.class));
+                    overridePendingTransition(0,0);
+                    return true;
+                }
+
+                if (id == (R.id.admin_profile)){
+                    startActivity(new Intent(getApplicationContext(), AdministratorBrowseProfiles.class));
+                    overridePendingTransition(0,0);
+                    return true;
+                }
+
+                if (id == (R.id.admin_image)){
+                    return true;
+                }
+
+                return false;
+
+            }
+        });
 
         gridView = findViewById(R.id.gridView);
         imageUrlsWithType = new ArrayList<>(); // Initialize the list for URLs and types

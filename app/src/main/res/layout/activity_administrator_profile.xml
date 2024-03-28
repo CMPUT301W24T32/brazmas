@@ -40,7 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
-        android:id="@+id/admin_home_bnv"
+        android:id="@+id/admin_profile_bnv"
         android:layout_alignParentBottom="true"
         android:background="@drawable/admin_bar"
         android:layout_marginEnd="20dp"

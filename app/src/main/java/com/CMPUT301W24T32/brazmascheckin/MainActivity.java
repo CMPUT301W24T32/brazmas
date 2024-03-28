@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         // control flow of different types of users
         adminController.getAdmin(deviceID, object -> {
-            Intent intent = new Intent(MainActivity.this, AdministratorBrowseProfiles.class);
+            Intent intent = new Intent(MainActivity.this, AdministratorHome.class);
             startActivity(intent);
             finish();
         }, null);
