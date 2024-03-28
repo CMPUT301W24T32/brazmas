@@ -47,6 +47,7 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="41dp"
+        android:fontFamily="sans-serif-condensed-medium"
         android:textSize="18dp"
         android:text="TextView" />
 
@@ -57,6 +58,9 @@
         android:layout_below="@id/name_tv"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
+        android:backgroundTint="@color/lightPink"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:textColor="@color/black"
         android:text="Edit Profile" />
 
     <LinearLayout
@@ -73,6 +77,8 @@
             android:id="@+id/profile_geolocation_label_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:textColor="@color/black"
             android:text="Geolocation: "
             />
 

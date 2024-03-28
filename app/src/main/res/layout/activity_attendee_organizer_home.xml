@@ -22,7 +22,8 @@
         android:layout_marginRight="0dp"
         android:layout_marginBottom="2dp"
         android:ems="14"
-        android:hint="search" />
+        android:fontFamily="sans-serif-condensed-medium"
+        android:hint="Search" />
 
 
     <!-- Three buttons below -->
@@ -40,6 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
+            android:fontFamily="sans-serif-condensed-medium"
             android:text="All"
             android:layout_marginRight="2dp"
             android:layout_marginLeft="2dp"/>
@@ -50,6 +52,7 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/lightGrey"
             android:textColor="@color/black"
+            android:fontFamily="sans-serif-condensed-medium"
             android:text="Attendee"
             android:layout_marginRight="2dp"/>
 
@@ -58,6 +61,7 @@
             android:layout_width="wrap_content"
             android:backgroundTint="@color/lightGrey"
             android:textColor="@color/black"
+            android:fontFamily="sans-serif-condensed-medium"
             android:layout_height="wrap_content"
             android:text="Organizer"/>
 
@@ -106,6 +110,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/lightPink"
         android:clickable="true"
         app:srcCompat="@android:drawable/ic_input_add" />
 
