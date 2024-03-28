@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import androidx.annotation.NonNull;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.util.Pair;
 import android.view.MenuItem;
@@ -12,8 +13,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.controllers.AddFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteSuccessListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.helper.ImageAdapter;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
@@ -22,12 +25,15 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class will be the activity where admin can browse images (posters, profile pic).
+ */
 public class AdministratorBrowseImages extends AppCompatActivity {
     private GridView gridView;
     private ImageAdapter imageAdapter;
-    private List<Pair<String, String>> imageUrlsWithType; // Change imageUrls to hold pairs of URL and type
+    private List<Pair<String, String>> imageUrlsWithType; // URL and type
     private ImageController imageController;
-    private List<String> allFileIds; // Declare a list to hold all file IDs
+    private List<String> allFileIds; // list to hold all file IDs
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +81,7 @@ public class AdministratorBrowseImages extends AppCompatActivity {
 
         imageController = new ImageController(this);
 
-        fetchImagesFromFirebase();
+        fetchImagesFromController();
 
         imageAdapter.setOnItemClickListener(new ImageAdapter.OnItemClickListener() {
             @Override
@@ -85,9 +91,52 @@ public class AdministratorBrowseImages extends AppCompatActivity {
         });
     }
 
-    private void fetchImagesFromFirebase() {
-        fetchImagesFromFolder("posters", "EVENT_POSTER"); // Fetch posters
-        fetchImagesFromFolder("profile_pictures", "PROFILE_PICTURE"); // Fetch profile pictures
+    private void fetchImagesFromController() {
+        imageController.getAllPosterFileIDs(new GetSuccessListener<List<String>>() {
+            @Override
+            public void onSuccess(List<String> posterFileIDs) {
+                for (String fileID : posterFileIDs) {
+                    // Fetch poster images using ImageController
+                    imageController.getImage(ImageController.EVENT_POSTER, fileID, new GetSuccessListener<byte[]>() {
+                        @Override
+                        public void onSuccess(byte[] imageData) {
+                            // Add URL and its type to the list
+                            String imageUrl = "data:image/jpeg;base64," + Base64.encodeToString(imageData, Base64.DEFAULT);
+                            imageUrlsWithType.add(new Pair<>(imageUrl, ImageController.EVENT_POSTER));
+                            imageAdapter.notifyDataSetChanged();
+                        }
+                    }, new AddFailureListener() {
+                        @Override
+                        public void onAddFailure(Exception e) {
+                            Log.e("FetchImages", "Failed to fetch poster image: " + e.getMessage());
+                        }
+                    });
+                }
+            }
+        });
+
+        imageController.getAllProfilePicFileIDs(new GetSuccessListener<List<String>>() {
+            @Override
+            public void onSuccess(List<String> profilePicFileIDs) {
+                for (String fileID : profilePicFileIDs) {
+                    // Fetch profile pictures using ImageController
+                    imageController.getImage(ImageController.PROFILE_PICTURE, fileID, new GetSuccessListener<byte[]>() {
+                        @Override
+                        public void onSuccess(byte[] imageData) {
+                            // Add URL and its type to the list
+                            String imageUrl = "data:image/jpeg;base64," + Base64.encodeToString(imageData, Base64.DEFAULT);
+                            imageUrlsWithType.add(new Pair<>(imageUrl, ImageController.PROFILE_PICTURE));
+                            imageAdapter.notifyDataSetChanged();
+                        }
+                    }, new AddFailureListener() {
+                        @Override
+                        public void onAddFailure(Exception e) {
+                            Log.e("FetchImages", "Failed to fetch profile picture: " + e.getMessage());
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void fetchImagesFromFolder(String folderName, String imageType) {
@@ -120,7 +169,9 @@ public class AdministratorBrowseImages extends AppCompatActivity {
             @Override
             public void onDeleteSuccess() {
                 Toast.makeText(AdministratorBrowseImages.this, "Image deleted", Toast.LENGTH_SHORT).show();
+                // Remove the image URL and type from the list
                 imageUrlsWithType.remove(position);
+                allFileIds.remove(position);
                 imageAdapter.notifyDataSetChanged();
             }
         }, new DeleteFailureListener() {
@@ -144,4 +195,3 @@ public class AdministratorBrowseImages extends AppCompatActivity {
         builder.show();
     }
 }
-
