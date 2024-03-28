@@ -34,4 +34,7 @@
     <string name="notify">Notify</string>
     <string name="promotional_code">Promotional code</string>
     <string name="check_in_code">Check-in code</string>
+    <string name="check_in_map">Check-In Map</string>
+    <string name="all_events">All Events</string>
+    <string name="organized_events">Organized Events</string>
 </resources>

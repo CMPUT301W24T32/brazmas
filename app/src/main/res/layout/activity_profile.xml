@@ -55,7 +55,7 @@
         android:id="@+id/edit_profile_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/profile_geolocation_ll"
+        android:layout_below="@id/name_tv"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
         android:backgroundTint="@color/lightPink"
@@ -68,7 +68,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_above="@id/bottomNavigationView"
+        android:layout_below="@id/edit_profile_btn"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
         >
@@ -87,5 +87,41 @@
             android:layout_height="wrap_content"
             android:id="@+id/profile_geolocation_sw"
             />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/profile_geolocation_extra_ll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/profile_geolocation_ll"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:gravity="center"
+        android:visibility="gone"
+        >
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/profile_geolocation_attendee_checkins_btn"
+            android:text="@string/check_in_map"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/profile_geolocation_all_events_btn"
+            android:text="@string/all_events"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/profile_geolocation_organized_events_btn"
+            android:text="@string/organized_events"
+            />
+
+
     </LinearLayout>
 </RelativeLayout>
