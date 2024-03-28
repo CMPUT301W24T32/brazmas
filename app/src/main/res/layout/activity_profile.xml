@@ -85,6 +85,7 @@
         <androidx.appcompat.widget.SwitchCompat
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/lightPink"
             android:id="@+id/profile_geolocation_sw"
             />
     </LinearLayout>
@@ -104,6 +105,9 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/lightPink"
+            android:textColor="@color/black"
+            android:fontFamily="sans-serif-condensed-medium"
             android:id="@+id/profile_geolocation_attendee_checkins_btn"
             android:text="@string/check_in_map"
             />
