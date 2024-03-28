@@ -22,10 +22,9 @@ import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.CMPUT301W24T32.brazmascheckin.views.AdministratorHome;
-import com.CMPUT301W24T32.brazmascheckin.views.AttendeeOrganizerHome;
+import com.CMPUT301W24T32.brazmascheckin.views.UserHome;
 
 import java.io.ByteArrayOutputStream;
-import java.net.URI;
 import java.util.ArrayList;
 
 /**
@@ -58,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }, null);
         userController.getUser(deviceID, object -> {
-            Intent intent = new Intent(MainActivity.this, AttendeeOrganizerHome.class);
+            Intent intent = new Intent(MainActivity.this, UserHome.class);
             startActivity(intent);
             finish();
         }, new GetFailureListener() {
@@ -88,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                         userController.setUser(user, () -> {
-                            Intent intent = new Intent(MainActivity.this, AttendeeOrganizerHome.class);
+                            Intent intent = new Intent(MainActivity.this, UserHome.class);
                             startActivity(intent);
                             //TODO: verify the context works
                             Toast.makeText(getApplicationContext(), "user", Toast.LENGTH_SHORT).show();

@@ -92,7 +92,7 @@ public class ProfileActivity extends AppCompatActivity {
                     return true;
                 }
                 if (id == (R.id.bottom_event)) {
-                    startActivity(new Intent(getApplicationContext(), AttendeeOrganizerHome.class));
+                    startActivity(new Intent(getApplicationContext(), UserHome.class));
                     overridePendingTransition(0, 0);
                     return true;
                 }

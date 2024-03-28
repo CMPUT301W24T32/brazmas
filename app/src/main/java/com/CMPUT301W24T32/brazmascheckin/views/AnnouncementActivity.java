@@ -7,9 +7,6 @@ import android.view.MenuItem;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -85,7 +82,7 @@ public class AnnouncementActivity extends AppCompatActivity {
                     return true;
                 }
                 if (id == (R.id.bottom_event)){
-                    startActivity(new Intent(getApplicationContext(), AttendeeOrganizerHome.class));
+                    startActivity(new Intent(getApplicationContext(), UserHome.class));
                     overridePendingTransition(0,0);
                     return true;
                 }

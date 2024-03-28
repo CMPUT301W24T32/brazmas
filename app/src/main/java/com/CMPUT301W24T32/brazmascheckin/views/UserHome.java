@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
+import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
@@ -22,6 +23,7 @@ import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.helper.EventRecyclerViewAdapter;
 import com.CMPUT301W24T32.brazmascheckin.models.Announcement;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
+import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -33,7 +35,7 @@ import java.util.Date;
  * This class will be the home page for attendee/organizer
  */
 
-public class AttendeeOrganizerHome extends AppCompatActivity {
+public class UserHome extends AppCompatActivity {
     private ArrayList<Event> eventDataList;
     private EventRecyclerViewAdapter eventRecyclerViewAdapter;
 
@@ -53,8 +55,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
     private final String lightPink = "#FDB0C0";
 
     private int mode = ViewEventFragment.ATTENDEE_VIEW;
-
-
+    public static final int[] ATTENDANCE_MILESTONES = {1, 5, 10, 20, 50, 100, 500, 1000, 5000, 10000};
 
     /**
      * This method initializes the attendee/organizer home activity.
@@ -104,9 +105,6 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
 
             }
         });
-
-
-
     }
 
     /**
@@ -158,56 +156,74 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
         });
 
         addButton.setOnClickListener(v -> {
-            startActivity(new Intent(AttendeeOrganizerHome.this, AddEventActivity.class));
+            startActivity(new Intent(UserHome.this, AddEventActivity.class));
         });
     }
 
+    /**
+     * Method to display ALL events by retrieving data from the database and populating
+     * the event list. Corresponding background colors are set for the buttons.
+     */
     private void showAllEvents() {
-        eventController.addSnapshotListener(new SnapshotListener<Event>() {
-            @Override
-            public void snapshotListenerCallback(ArrayList<Event> events) {
 
-                attendingEventsButton.setBackgroundColor(Color.parseColor(lightGrey));
-                organizingEventsButton.setBackgroundColor(Color.parseColor(lightGrey));
-                allEventsButton.setBackgroundColor(Color.parseColor(lightPink));
+        userController.getUser(deviceID, user -> {
+            ArrayList<String> organizedEvents = user.getOrganizedEvents();
+            eventController.addSnapshotListener(new SnapshotListener<Event>() {
+                @Override
+                public void snapshotListenerCallback(ArrayList<Event> events) {
 
-                addButton.setVisibility(View.INVISIBLE);
-                eventDataList.clear();
+                    attendingEventsButton.setBackgroundColor(Color.parseColor(lightGrey));
+                    organizingEventsButton.setBackgroundColor(Color.parseColor(lightGrey));
+                    allEventsButton.setBackgroundColor(Color.parseColor(lightPink));
 
-                // getting current date
-                Calendar calendar = Calendar.getInstance();
-                int year = calendar.get(calendar.YEAR);
-                int month = calendar.get(calendar.MONTH);
-                int day = calendar.get(calendar.DATE);
-
-                for (Event event : events) {
-                    if (year < event.getDate().getYear()) {
+                    addButton.setVisibility(View.INVISIBLE);
+                    eventDataList.clear();
+                    for (Event event : events) {
                         eventDataList.add(event);
+                        if (organizedEvents.contains(event.getID())) {
+                            handleAttendanceAlerts(event);
+                        }
                     }
-                    else if (year == event.getDate().getYear()){
-                        if (month < event.getDate().getMonth()){
-                            eventDataList.add(event);
-                        }
-                        else if(month == event.getDate().getMonth()){
-                            if (day <= event.getDate().getDay()){
-                                eventDataList.add(event);
-                            }
-                        }
+                    eventRecyclerViewAdapter.notifyDataSetChanged();
+                    addButton.setVisibility(View.INVISIBLE);
+                    eventDataList.clear();
 
+                    // getting current date
+                    Calendar calendar = Calendar.getInstance();
+                    int year = calendar.get(calendar.YEAR);
+                    int month = calendar.get(calendar.MONTH);
+                    int day = calendar.get(calendar.DATE);
+
+                    for (Event event : events) {
+                        if (year < event.getDate().getYear()) {
+                            eventDataList.add(event);
+                        } else if (year == event.getDate().getYear()) {
+                            if (month < event.getDate().getMonth()) {
+                                eventDataList.add(event);
+                            } else if (month == event.getDate().getMonth()) {
+                                if (day <= event.getDate().getDay()) {
+                                    eventDataList.add(event);
+                                }
+                            }
+
+                        }
                     }
                 }
-                eventRecyclerViewAdapter.notifyDataSetChanged();
-            }
 
-            @Override
-            public void onError(Exception e) {
-                Toast.makeText(AttendeeOrganizerHome.this, "Unable to connect to the " +
-                        "database", Toast.LENGTH_LONG).show();
-
-            }
-        });
+                @Override
+                public void onError(Exception e) {
+                    Toast.makeText(UserHome.this, "Unable to connect to the " +
+                            "database", Toast.LENGTH_LONG).show();
+                }
+            });
+        }, e-> Toast.makeText(UserHome.this, "Unable to connect to the " +
+                "database", Toast.LENGTH_LONG).show());
     }
 
+    /**
+     * Method to configure attendee mode functionality.
+     * Displays events that the attendee is signed up for.
+     */
     private void handleAttendeeMode() {
         attendingEventsButton.setOnClickListener(view -> {
             mode = ViewEventFragment.ATTENDEE_VIEW;
@@ -220,6 +236,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
 
             userController.getUser(deviceID, user -> {
                 ArrayList<String> signedUp = user.getSignedUpEvents();
+                ArrayList<String> organizedEvents = user.getOrganizedEvents();
                 eventController.addSnapshotListener(new SnapshotListener<Event>() {
                     @Override
                     public void snapshotListenerCallback(ArrayList<Event> events) {
@@ -228,26 +245,32 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
                             if(signedUp.contains(event.getID())) {
                                 eventDataList.add(event);
                             }
+
+                            if(organizedEvents.contains(event.getID())) {
+                                handleAttendanceAlerts(event);
+                            }
                         }
                         eventRecyclerViewAdapter.notifyDataSetChanged();
                     }
-
                     @Override
                     public void onError(Exception e) {
-                        Toast.makeText(AttendeeOrganizerHome.this, "Unable to connect to the " +
+                        Toast.makeText(UserHome.this, "Unable to connect to the " +
                                 "database", Toast.LENGTH_LONG).show();
                     }
                 });
-            }, e -> Toast.makeText(AttendeeOrganizerHome.this, "Unable to connect to the " +
+            }, e -> Toast.makeText(UserHome.this, "Unable to connect to the " +
                     "database", Toast.LENGTH_LONG).show());
 
         });
     }
 
+    /**
+     * Method to configure organizer functionality.
+     * Displays all events the user is organizing.
+     */
+
     public void handleOrganizerMode() {
         organizingEventsButton.setOnClickListener(view -> {
-
-
             attendingEventsButton.setBackgroundColor(Color.parseColor(lightGrey));
             organizingEventsButton.setBackgroundColor(Color.parseColor(lightPink));
             allEventsButton.setBackgroundColor(Color.parseColor(lightGrey));
@@ -265,6 +288,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
                         for(Event event : events) {
                             if(organizedEvents.contains(event.getID())) {
                                 eventDataList.add(event);
+                                handleAttendanceAlerts(event);
                             }
                         }
                         eventRecyclerViewAdapter.notifyDataSetChanged();
@@ -272,14 +296,45 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
 
                     @Override
                     public void onError(Exception e) {
-                        Toast.makeText(AttendeeOrganizerHome.this, "Unable to connect to the " +
+                        Toast.makeText(UserHome.this, "Unable to connect to the " +
                                 "database", Toast.LENGTH_LONG).show();
                     }
                 });
-            }, e -> Toast.makeText(AttendeeOrganizerHome.this, "Unable to connect to the " +
+            }, e -> Toast.makeText(UserHome.this, "Unable to connect to the " +
                     "database", Toast.LENGTH_LONG).show());
         });
+    }
 
+    /**
+     * Helper function to send organizer milestones for real-time attendance
+     * @param event the event being checked for attendance milestones
+     */
+    private void handleAttendanceAlerts(Event event) {
+        int currentAttendance = event.helperCount();
+        int nextMilestone = event.getNextMilestone();
+        String eventName = event.getName();
+
+        if(nextMilestone != -1 && currentAttendance >= nextMilestone) {
+            for(int i = ATTENDANCE_MILESTONES.length - 1; i > -1; i--) {
+                if(currentAttendance >= ATTENDANCE_MILESTONES[i]) {
+                    String attendees = "attendees";
+                    if(nextMilestone == 1) {
+                        attendees = "attendee";
+                    }
+                    Toast.makeText(this, "\"" + eventName + "\" has reached " + nextMilestone
+                            + " " + attendees + "!", Toast.LENGTH_SHORT).show();
+
+                    if(i + 1 < ATTENDANCE_MILESTONES.length) {
+                        event.setNextMilestone(ATTENDANCE_MILESTONES[i + 1]);
+                    } else {
+                        event.setNextMilestone(-1);
+                    }
+
+                    eventController.setEvent(event, null, null);
+                    break;
+                }
+            }
+        }
     }
 
     private void checkNotifications(){

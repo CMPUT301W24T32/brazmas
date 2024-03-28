@@ -51,7 +51,7 @@
             android:name=".views.AdministratorHome"
             android:exported="false" />
         <activity
-            android:name=".views.AttendeeOrganizerHome"
+            android:name=".views.UserHome"
             android:exported="false" />
         <activity
             android:name=".views.EditProfileActivity"
