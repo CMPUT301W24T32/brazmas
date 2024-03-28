@@ -96,7 +96,7 @@ public class AnnouncementRecyclerViewAdapter extends RecyclerView.Adapter<Announ
 
         public AnnouncementViewHolder(@NonNull View itemView) {
             super(itemView);
-            announcementTitle = itemView.findViewById(R.id.announcement_title_tv);
+            announcementTitle = itemView.findViewById(R.id.announcement_title_tv2);
             announcementDescription = itemView.findViewById(R.id.announcementDescriptionText);
             // Set the click listener for the itemView
             itemView.setOnClickListener(new View.OnClickListener() {

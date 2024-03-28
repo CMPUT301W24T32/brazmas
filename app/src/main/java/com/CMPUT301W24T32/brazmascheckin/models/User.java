@@ -14,12 +14,12 @@ public class User {
     private ArrayList<String> signedUpEvents;
     private ArrayList<String> checkInEvents;
     private String ID;
-
     private String profilePicture;
     private String defaultProfilePicture;
     private ArrayList<String> organizedEvents;
-
+    private long lastAnnouncementCheck;
     private boolean geoLocationEnabled = false;
+
 
 
 
@@ -35,8 +35,10 @@ public class User {
      * @param checkedInEvents List of events the user has checked-in to
      */
     public User(String firstName, String lastName, ArrayList<String> signedUpEvents, String ID,
+                String profilePicture,String defaultProfilePicture, ArrayList<String> organizedEvents, boolean geoLocationEnabled, long lastAnnouncementCheck) {
                 String profilePicture,String defaultProfilePicture, ArrayList<String> organizedEvents, boolean geoLocationEnabled,
                 ArrayList<String> checkedInEvents) {
+
         this.firstName = firstName;
         this.lastName = lastName;
         this.signedUpEvents = signedUpEvents;
@@ -45,6 +47,7 @@ public class User {
         this.organizedEvents = organizedEvents;
         this.geoLocationEnabled = geoLocationEnabled;
         this.defaultProfilePicture = defaultProfilePicture;
+        this.lastAnnouncementCheck = lastAnnouncementCheck;
         this.checkInEvents = checkedInEvents;
     }
 
@@ -239,6 +242,13 @@ public class User {
         this.defaultProfilePicture = defaultProfilePicture;
     }
 
+    public long getLastAnnouncementCheck() {
+        return lastAnnouncementCheck;
+    }
+
+    public void setLastAnnouncementCheck(long lastAnnouncementCheck) {
+        this.lastAnnouncementCheck = lastAnnouncementCheck;
+    }
     public ArrayList<String> getCheckInEvents() {
         return checkInEvents;
     }
