@@ -21,6 +21,7 @@ import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.helper.EventRecyclerViewAdapter;
+import com.CMPUT301W24T32.brazmascheckin.models.Announcement;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -136,6 +137,9 @@ public class UserHome extends AppCompatActivity {
 
         showAllEvents();
         // filters for all events
+
+        checkNotifications();
+
         allEventsButton.setOnClickListener(view -> {
             mode = ViewEventFragment.ATTENDEE_VIEW;
             showAllEvents();
@@ -331,5 +335,36 @@ public class UserHome extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    private void checkNotifications(){
+        userController.getUser(deviceID, user -> {
+            ArrayList<String> signedUp = user.getSignedUpEvents();
+            eventController.addSnapshotListener(new SnapshotListener<Event>() {
+                @Override
+                public void snapshotListenerCallback(ArrayList<Event> events) {
+                    for(Event event: events) {
+                        if(signedUp.contains(event.getID())){
+                            //Toast.makeText(getBaseContext(), "Unable to connect to the database", Toast.LENGTH_LONG).show();
+                            ArrayList<Announcement> announcements = event.getAnnouncements();
+                            if (announcements != null) {
+                                for(Announcement a: announcements){
+                                    if (a.getTimeCreated() > user.getLastAnnouncementCheck()){
+                                        Toast.makeText(getBaseContext(), "check your announcements update for" + event.getName(), Toast.LENGTH_LONG).show();
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    //do soon**********8
+                }
+            });
+
+        }, null);
     }
 }

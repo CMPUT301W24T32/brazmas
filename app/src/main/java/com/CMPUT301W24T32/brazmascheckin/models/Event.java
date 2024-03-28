@@ -30,6 +30,8 @@ public class Event implements Serializable {
     private String shareQRCode;
     private String organizer;
 
+    private ArrayList<Announcement> announcements;
+
     private Boolean geoLocationEnabled = false;
     private HashMap<String, Location> userLocationPairs;
 
@@ -58,7 +60,7 @@ public class Event implements Serializable {
     public Event(String ID, String name, Date date, String description, HashMap<String, Integer> checkIns,
                  ArrayList<String> signUps, int attendeeLimit, String posterID, String QRCodeID,
                  String shareQRCodeID, String organizer, boolean geoLocationEnabled, Location eventLocation,
-                 HashMap<String, Location> userLocationPairs) {
+                 HashMap<String, Location> userLocationPairs, ArrayList<Announcement> announcements) {
         this.ID = ID;
         this.name = name;
         this.date = date;
@@ -74,6 +76,7 @@ public class Event implements Serializable {
         this.eventLocation = eventLocation;
         this.userLocationPairs = userLocationPairs;
         this.nextMilestone = 1;
+        this.announcements = announcements;
     }
 
     /**
@@ -414,5 +417,17 @@ public class Event implements Serializable {
 
     public void setNextMilestone(int nextMilestone) {
         this.nextMilestone = nextMilestone;
+    }
+
+    public ArrayList<Announcement> getAnnouncements() {
+        return announcements;
+    }
+
+    /**
+     * setter for the announcements
+     * @param announcements
+     */
+    public void setAnnouncements(ArrayList<Announcement> announcements) {
+        this.announcements = announcements;
     }
 }

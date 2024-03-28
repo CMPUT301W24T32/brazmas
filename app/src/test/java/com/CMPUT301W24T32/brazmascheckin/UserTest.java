@@ -16,6 +16,8 @@ public class UserTest {
     public void setup() {
         ArrayList<String> signedUpEvents = new ArrayList<>();
         ArrayList<String> organizedEvents = new ArrayList<>();
+        // fix this for new fields
+        //user = new User("John", "Doe", signedUpEvents, "123", "profilePicture.jpg", organizedEvents,);
 //        user = new User("John", "Doe", signedUpEvents, "123", "profilePicture.jpg", organizedEvents, null);
     }
 

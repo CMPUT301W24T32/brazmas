@@ -36,6 +36,12 @@
             android:name=".views.AddEventActivity"
             android:exported="false" />
         <activity
+            android:name=".views.AdministratorBrowseImages"
+            android:exported="false" />
+        <activity
+            android:name=".views.AdministratorBrowseProfiles"
+            android:exported="false" />
+        <activity
             android:name=".views.CameraActivity"
             android:exported="false" />
         <activity

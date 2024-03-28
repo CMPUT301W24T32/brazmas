@@ -144,6 +144,8 @@ public class ViewEventFragment extends DialogFragment {
             displayImage(e.getPoster());
         }
 
+        displayQRCode(e.getQRCode(), QRCode, false);
+        displayQRCode(e.getShareQRCode(), shareQRCode, true);
         if(e.getQRCode() != null && !e.getQRCode().isEmpty()) {
             displayQRCode(e.getQRCode(), QRCode, false);
         }
