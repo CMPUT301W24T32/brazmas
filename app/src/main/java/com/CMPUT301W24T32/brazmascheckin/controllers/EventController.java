@@ -194,4 +194,25 @@ public class EventController {
             // Handle failure
         });
     }
+
+    public void getAllEvents(GetSuccessListener<List<Event>> successListener, GetFailureListener
+                             failureListener) {
+        eventsRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            ArrayList<Event> events = new ArrayList<>();
+            for(DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                Event event = documentSnapshot.toObject(Event.class);
+                if(event != null && event.getGeoLocationEnabled()) {
+                    events.add(event);
+                }
+            }
+            if(successListener != null) {
+                successListener.onSuccess(events);
+            }
+        })
+                .addOnFailureListener(e -> {
+                    if(failureListener != null) {
+                        failureListener.onFailure(e);
+                    }
+                });
+    }
 }
