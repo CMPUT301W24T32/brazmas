@@ -136,6 +136,7 @@ public class EditProfileActivity extends AppCompatActivity {
             if (posterID != null) {
                 user.setProfilePicture(posterID);
             }
+
             userController.setUser(user,null,null);
         },null);
     }
@@ -187,7 +188,8 @@ public class EditProfileActivity extends AppCompatActivity {
                 && data.getData() != null && user.getProfilePicture() == null) {
             imageUri = data.getData();
                 //so that the profile can be removed after adding a new one
-                user.setProfilePicture("hold");
+                String posterID = uploadFile();
+                user.setProfilePicture(posterID);
                 userController.setUser(user,null,null);
 
             profilePicture.setImageURI(imageUri);
