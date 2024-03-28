@@ -24,6 +24,9 @@
         android:theme="@style/Theme.BrazmasCheckIn"
         tools:targetApi="31">
         <activity
+            android:name=".views.SignUpActivity"
+            android:exported="false" />
+        <activity
             android:name=".views.ViewAttendeesActivity"
             android:exported="false" />
         <activity
