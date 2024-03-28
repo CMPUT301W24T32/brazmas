@@ -69,12 +69,13 @@ public class ProfileActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_profile);
 
+        configureViews();
+        configureControllers();
         // Allows the app to switch between activities
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setSelectedItemId(R.id.bottom_profile);
 
-        configureViews();
-        configureControllers();
+
 
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             /**
@@ -234,7 +235,6 @@ public class ProfileActivity extends AppCompatActivity {
             }
         }
     }
-
 
 }
 

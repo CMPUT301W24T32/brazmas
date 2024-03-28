@@ -127,7 +127,6 @@ public class ViewEventFragment extends DialogFragment {
         shareQRCode = view.findViewById(R.id.view_event_share_QR_iv);
         shareQRCodeLabel = view.findViewById(R.id.view_event_share_qr_code_tv);
 
-        // information
 
         deviceID = DeviceID.getDeviceID(getContext());
 
