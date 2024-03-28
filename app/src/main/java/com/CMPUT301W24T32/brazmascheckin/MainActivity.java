@@ -75,12 +75,8 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Fields cannot be empty", Toast.LENGTH_SHORT).show();
                     } else {
                         User user = new User(
-                                firstName, lastName, new ArrayList<String>(), null, null,null,
-                                new ArrayList<String>(), false
-                        );
-                        user.setFirstName(firstName);
-                        user.setLastName(lastName);
-                        user.setID(deviceID);
+                                firstName, lastName, new ArrayList<String>(), deviceID, new ArrayList<String>(), false, 0, null,null, new ArrayList<String>());
+
 
                         // creating random pfp
                         String firstLetter = String.valueOf(firstName.charAt(0));

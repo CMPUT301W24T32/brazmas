@@ -12,12 +12,13 @@
         android:id="@+id/event_text_view_admin"
         android:layout_width="match_parent"
         android:layout_height="70dp"
+        android:backgroundTint="@color/lightPink"
         android:ems="10"
         android:text="Events"
         android:textSize="45sp"
         android:gravity="center"
         android:background="#673AB7"
-        android:textColor="#FFFFFF"/>
+        android:textColor="@color/black"/>
 
 
     <EditText
@@ -25,7 +26,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="14"
-        android:hint="search"
+        android:hint="Search"
+        android:textColor="@color/black"
         android:layout_marginTop="8dp"/>
 
 
@@ -47,6 +49,27 @@
         android:scrollbars="vertical"
         android:scrollbarStyle="outsideOverlay"
         android:scrollbarThumbVertical="@android:color/darker_gray"/>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:id="@+id/admin_home_bnv"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/admin_bar"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="30dp"
+        android:elevation="2dp"
+        app:menu="@menu/admin_menu"
+
+        app:itemIconSize="30dp"
+        app:itemTextColor="@drawable/item_selector"
+
+        app:itemIconTint="@drawable/item_selector"
+        app:itemRippleColor="@android:color/transparent"
+        app:labelVisibilityMode="unlabeled"/>
 
 
 </LinearLayout>

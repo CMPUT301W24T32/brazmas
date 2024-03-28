@@ -41,6 +41,7 @@ import com.CMPUT301W24T32.brazmascheckin.helper.Location;
 import com.CMPUT301W24T32.brazmascheckin.helper.OrphanedQRCodeFinder;
 import com.CMPUT301W24T32.brazmascheckin.helper.QRCodeGenerator;
 import com.CMPUT301W24T32.brazmascheckin.helper.QRCodeSpinnerAdapter;
+import com.CMPUT301W24T32.brazmascheckin.models.Announcement;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 
 import java.util.ArrayList;
@@ -309,7 +310,7 @@ public class AddEventActivity extends AppCompatActivity {
                     desc, checkIns, signUps,
                     limit, posterID, "",
                     "", "",
-                    geoLocationEnabled, location, new HashMap<>());
+                    geoLocationEnabled, location, new HashMap<>(), new ArrayList<Announcement>());
             addEvent(event, generateNewQRCode);
         }
     }

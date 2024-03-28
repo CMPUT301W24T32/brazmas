@@ -12,13 +12,14 @@ public class User {
     private String firstName;
     private String lastName;
     private ArrayList<String> signedUpEvents;
+    private ArrayList<String> checkInEvents;
     private String ID;
-
     private String profilePicture;
     private String defaultProfilePicture;
     private ArrayList<String> organizedEvents;
-
+    private long lastAnnouncementCheck;
     private boolean geoLocationEnabled = false;
+
 
 
 
@@ -31,9 +32,12 @@ public class User {
      * @param profilePicture Reference to the image
      * @param organizedEvents List of events the user is organizing
      * @param geoLocationEnabled If geolocation is enabled
+     * @param checkedInEvents List of events the user has checked-in to
      */
     public User(String firstName, String lastName, ArrayList<String> signedUpEvents, String ID,
-                String profilePicture,String defaultProfilePicture, ArrayList<String> organizedEvents, boolean geoLocationEnabled) {
+                ArrayList<String> organizedEvents, boolean geoLocationEnabled, long lastAnnouncementCheck, String profilePicture,String defaultProfilePicture,
+                ArrayList<String> checkedInEvents) {
+
         this.firstName = firstName;
         this.lastName = lastName;
         this.signedUpEvents = signedUpEvents;
@@ -42,6 +46,8 @@ public class User {
         this.organizedEvents = organizedEvents;
         this.geoLocationEnabled = geoLocationEnabled;
         this.defaultProfilePicture = defaultProfilePicture;
+        this.lastAnnouncementCheck = lastAnnouncementCheck;
+        this.checkInEvents = checkedInEvents;
     }
 
     /**
@@ -51,14 +57,16 @@ public class User {
      * @param lastName Last name of user
      * @param signedUpEvents Events the user has signed up for
      * @param geoLocationEnabled If geolocation is enabled
+     * @param checkedInEvents List of events the user has checked-in to
      */
     public User(String ID, String firstName, String lastName, ArrayList<String>
-                    signedUpEvents, boolean geoLocationEnabled) {
+                    signedUpEvents, boolean geoLocationEnabled, ArrayList<String> checkedInEvents) {
         this.ID = ID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.signedUpEvents = signedUpEvents;
         this.geoLocationEnabled = geoLocationEnabled;
+        this.checkInEvents = checkedInEvents;
     }
 
     /**
@@ -232,4 +240,30 @@ public class User {
     public void setDefaultProfilePicture(String defaultProfilePicture) {
         this.defaultProfilePicture = defaultProfilePicture;
     }
+
+    public long getLastAnnouncementCheck() {
+        return lastAnnouncementCheck;
+    }
+
+    public void setLastAnnouncementCheck(long lastAnnouncementCheck) {
+        this.lastAnnouncementCheck = lastAnnouncementCheck;
+    }
+    public ArrayList<String> getCheckInEvents() {
+        return checkInEvents;
+    }
+
+    public void setCheckInEvents(ArrayList<String> checkInEvents) {
+        this.checkInEvents = checkInEvents;
+    }
+
+    public void setOrganizedEvents(ArrayList<String> organizedEvents) {
+        this.organizedEvents = organizedEvents;
+    }
+
+    public void checkIn(String eventID) {
+        if(eventID != null) {
+            checkInEvents.add(eventID);
+        }
+    }
+
 }

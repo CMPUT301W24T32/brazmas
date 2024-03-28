@@ -1,6 +1,9 @@
 package com.CMPUT301W24T32.brazmascheckin.models;
 
-import java.util.Date;
+
+import com.CMPUT301W24T32.brazmascheckin.helper.Date;
+
+import java.io.Serializable;
 
 /**
  * Represents an announcement related to a specific event.
@@ -8,12 +11,16 @@ import java.util.Date;
  * description, date, and associated event ID. It also provides methods for sending
  * notifications related to the announcement.
  */
-public class Announcement {
+public class Announcement implements Serializable {
 
     private String name;
     private String description;
     private Date date;
-    private String eventID;
+
+    private String eventID; //not needed field
+    private long timeCreated;
+
+
 
     public void sendNotification(){
 
@@ -25,11 +32,12 @@ public class Announcement {
      * @param date The date of the announcement.
      * @ eventID The ID of the event related to the announcement.
      */
-    public Announcement(String name, String description, Date date, String eventID) {
+    public Announcement(String name, String description, Date date, String eventID, long timeCreated) {
         this.name = name;
         this.description = description;
         this.date = date;
         this.eventID = eventID;
+        this.timeCreated = timeCreated;
     }
 
     /**
@@ -102,4 +110,8 @@ public class Announcement {
     public void setEventID(String eventID) {
         this.eventID = eventID;
     }
+
+    public long getTimeCreated() {return timeCreated;}
+
+    public void setTimeCreated(long timeCreated) {this.timeCreated = timeCreated;}
 }

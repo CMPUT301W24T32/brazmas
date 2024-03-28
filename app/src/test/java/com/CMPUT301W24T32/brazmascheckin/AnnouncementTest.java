@@ -4,9 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import com.CMPUT301W24T32.brazmascheckin.helper.Date;
 import com.CMPUT301W24T32.brazmascheckin.models.Announcement;
 
-import java.util.Date;
 
 public class AnnouncementTest {
     private Announcement announcement;
@@ -15,7 +15,7 @@ public class AnnouncementTest {
     @Before
     public void setUp() {
         date = new Date();
-        announcement = new Announcement("Test Announcement", "This is a test announcement", date, "event1");
+        //announcement = new Announcement("Test Announcement", "This is a test announcement", date, "event1", );
     }
 
     @Test

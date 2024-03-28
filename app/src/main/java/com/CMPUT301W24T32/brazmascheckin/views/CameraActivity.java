@@ -20,10 +20,12 @@ import androidx.core.app.ActivityCompat;
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.SetFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.helper.Location;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
+import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -161,14 +163,14 @@ public class CameraActivity extends AppCompatActivity {
                         if (checkLocationPermissions()) {
                             fusedLocationProviderClient.getLastLocation().addOnSuccessListener(location -> {
                                 Location l = new Location(location.getLatitude(), location.getLongitude());
-                                checkIntoEvent(builder, event, l);
+                                checkIntoEvent(builder, event, l, user);
                             });
                         } else {
                             Toast.makeText(CameraActivity.this, "Checked into event without location", Toast.LENGTH_SHORT).show();
-                            checkIntoEvent(builder, event, null);
+                            checkIntoEvent(builder, event, null, user);
                         }
                     } else {
-                        checkIntoEvent(builder, event, null);
+                        checkIntoEvent(builder, event, null, user);
                     }
                 }, e -> Toast.makeText(CameraActivity.this, "Unable to check into event", Toast.LENGTH_SHORT).show());
             }
@@ -183,12 +185,19 @@ public class CameraActivity extends AppCompatActivity {
      * @param event the event to heck into
      * @param location the location of the check-in
      */
-    private void checkIntoEvent(AlertDialog.Builder builder, Event event, Location location) {
+    private void checkIntoEvent(AlertDialog.Builder builder, Event event, Location location, User user) {
         event.checkIn(deviceID, location);
         eventController.setEvent(event, () -> {
             builder.setTitle("Successfully checked in!");
             builder.setMessage(event.getName());
             builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss()).show();
+            user.checkIn(event.getID());
+            userController.setUser(user, null, new SetFailureListener() {
+                @Override
+                public void onSetFailure(Exception e) {
+                    Toast.makeText(CameraActivity.this, "Unable to register location", Toast.LENGTH_SHORT).show();
+                }
+            });
         }, e -> Toast.makeText(CameraActivity.this, "Unable to check into event", Toast.LENGTH_SHORT).show());
     }
 
