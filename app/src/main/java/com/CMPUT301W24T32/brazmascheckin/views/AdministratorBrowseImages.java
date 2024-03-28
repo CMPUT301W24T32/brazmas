@@ -30,6 +30,8 @@ public class AdministratorBrowseImages extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_administrator_image);
 
+        // bottom navigation bar
+
         gridView = findViewById(R.id.gridView);
         imageUrlsWithType = new ArrayList<>(); // Initialize the list for URLs and types
         imageAdapter = new ImageAdapter(imageUrlsWithType, this); // Update adapter
