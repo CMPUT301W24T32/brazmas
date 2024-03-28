@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -17,9 +18,12 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.GetFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
+import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.helper.Location;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
@@ -33,18 +37,26 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class ViewMapActivity extends AppCompatActivity {
-    private UserController userController;
     private MapView mapView;
     private Button chooseLocationBtn;
     private Context ctx;
+    private String deviceID;
+    private UserController userController;
+    private EventController eventController;
+    private ImageController imageController;
     public static final String EXTRA_LOCATION_PAIRS = "user_location_pair";
     public static final String EXTRA_EVENT = "event";
     public static final String EXTRA_MODE = "mode";
     public static final int VIEW_ATTENDEES = 0;
     public static final int CHOOSE_LOCATION = 1;
+    public static final int VIEW_ATTENDEE_CHECK_INS = 2;
+    public static final int VIEW_ALL_EVENTS = 3;
+    public static final int VIEW_ORGANIZED_EVENTS = 4;
     public static final String EXTRA_PREV_LOCATION = "previous_location";
     public static final String RESULT_LOCATION = "result_location";
 
@@ -57,6 +69,7 @@ public class ViewMapActivity extends AppCompatActivity {
 
         // default configuration
         configureActivity();
+        configureControllers();
 
         Intent i = getIntent();
 
@@ -73,6 +86,18 @@ public class ViewMapActivity extends AppCompatActivity {
                 Location previousLocation = (Location) i.getSerializableExtra(EXTRA_PREV_LOCATION);
                 chooseLocationBtn.setVisibility(View.VISIBLE);
                 chooseLocation(previousLocation);
+                break;
+            case VIEW_ATTENDEE_CHECK_INS:
+                chooseLocationBtn.setVisibility(View.GONE);
+                showAttendeeCheckIns();
+                break;
+            case VIEW_ALL_EVENTS:
+                chooseLocationBtn.setVisibility(View.GONE);
+                showAllEvents();
+                break;
+            case VIEW_ORGANIZED_EVENTS:
+                chooseLocationBtn.setVisibility(View.GONE);
+                showOrganizedEvents();
                 break;
         }
 
@@ -94,6 +119,14 @@ public class ViewMapActivity extends AppCompatActivity {
         chooseLocationBtn = findViewById(R.id.view_map_done_btn);
         IMapController mapController = mapView.getController();
         mapController.setZoom(3);
+
+        deviceID = DeviceID.getDeviceID(this);
+    }
+
+    private void configureControllers() {
+        userController = new UserController(this);
+        eventController = new EventController(this);
+        imageController = new ImageController(this);
     }
 
     /**
@@ -189,6 +222,68 @@ public class ViewMapActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(ctx, "Choose a location for the event", Toast.LENGTH_SHORT).show();
             }
+        });
+    }
+
+    private void showAttendeeCheckIns() {
+        userController.getUser(deviceID, user -> {
+            ArrayList<String> checkIns = user.getCheckInEvents();
+            for(String eventID : checkIns) {
+                eventController.getEvent(eventID, event -> {
+                    HashMap<String, Location> checkInLocationPairs = event.getUserLocationPairs();
+                    Location checkInLocation = checkInLocationPairs.get(deviceID);
+                    Marker m = new Marker(mapView);
+                    GeoPoint point = new GeoPoint(checkInLocation.getLatitude(),
+                            checkInLocation.getLongitude());
+                    m.setPosition(point);
+                    m.setTitle(event.getName());
+                    m.setSnippet(event.getDescription());
+
+                    // TODO: add image
+
+                    mapView.getOverlays().add(m);
+                }, e -> Toast.makeText(ViewMapActivity.this,
+                        "Unable to retrieve check-in location for event " + eventID,
+                        Toast.LENGTH_SHORT).show());
+            }
+        }, e -> Toast.makeText(ViewMapActivity.this, "Unable to retrieve user data", Toast.LENGTH_SHORT).show());
+    }
+
+    private void showAllEvents() {
+        eventController.getAllEvents(events -> {
+            for(Event event : events) {
+                Location eventLocation = event.getEventLocation();
+                Marker m = new Marker(mapView);
+                GeoPoint point = new GeoPoint(eventLocation.getLatitude(),
+                        eventLocation.getLongitude());
+                m.setPosition(point);
+                m.setTitle(event.getName());
+                m.setSnippet(eventLocation.getLatitude() + " <br> " + eventLocation.getLongitude());
+                mapView.getOverlays().add(m);
+            }
+        }, e -> Toast.makeText(ViewMapActivity.this, "Unable to retrieve all events", Toast.LENGTH_SHORT).show());
+    }
+
+    private void showOrganizedEvents() {
+        userController.getUser(deviceID, user -> {
+            ArrayList<String> organizedEvents = user.getOrganizedEvents();
+            for(String eventID : organizedEvents) {
+                eventController.getEvent(eventID, event -> {
+                    Location eventLocation = event.getEventLocation();
+                    Marker m = new Marker(mapView);
+                    GeoPoint p = new GeoPoint(eventLocation.getLatitude(), eventLocation.getLongitude());
+                    m.setPosition(p);
+                    m.setTitle(event.getID());
+                    m.setSnippet(event.getDescription());
+                    mapView.getOverlays().add(m);
+                }, e -> {
+                    Toast.makeText(ViewMapActivity.this,
+                            "Unable to retrieve check-in location for event " + eventID,
+                            Toast.LENGTH_SHORT).show();
+                });
+            }
+        }, e -> {
+            Toast.makeText(ViewMapActivity.this, "Unable to retrieve user data", Toast.LENGTH_SHORT).show();
         });
     }
 }
