@@ -185,7 +185,8 @@ public class ViewMapActivity extends AppCompatActivity {
                 }
                 imageController.getImage(ImageController.PROFILE_PICTURE, profilePicture,
                         byteArray -> {
-                            Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                            Bitmap rawBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                            Bitmap bitmap = Bitmap.createScaledBitmap(rawBitmap, 100, 100, false);
                             BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
                                     bitmap);
                             attendeeMarker.setIcon(bitmapDrawable);

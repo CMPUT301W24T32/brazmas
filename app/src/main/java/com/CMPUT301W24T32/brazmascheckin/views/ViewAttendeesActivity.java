@@ -28,10 +28,7 @@ import java.util.HashMap;
 public class ViewAttendeesActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private AttendeeRecyclerViewAdapter recyclerViewAdapter;
-    private Button shareButton;
-    private Button mapButton;
     private Button notifyButton;
-    private LinearLayout organizerActionsLinearLayout;
 
     private ArrayList<User> userDataList;
     private ArrayList<Integer> userCheckIns;
@@ -58,12 +55,12 @@ public class ViewAttendeesActivity extends AppCompatActivity {
         configureControllers(event);
     }
 
+    /**
+     * Assigns the views and adapters required for the activity; sets the visibility based on state.
+     */
     private void configureViews() {
         userDataList = new ArrayList<>();
-        shareButton = findViewById(R.id.view_attendees_share_btn);
-        mapButton = findViewById(R.id.view_attendees_map_btn);
         notifyButton = findViewById(R.id.view_attendees_notify_btn);
-        organizerActionsLinearLayout = findViewById(R.id.view_attendees_organizer_action_ll);
         recyclerView = findViewById(R.id.view_attendees_attendee_rv);
 
         if(mode == CHECK_IN_MODE) {
@@ -72,11 +69,8 @@ public class ViewAttendeesActivity extends AppCompatActivity {
                     userCheckIns, CHECK_IN_MODE);
 
         } else if (mode == SIGN_UP_MODE) {
-            organizerActionsLinearLayout.setVisibility(View.GONE);
             recyclerViewAdapter = new AttendeeRecyclerViewAdapter(this, userDataList,
                     SIGN_UP_MODE);
-            mapButton.setVisibility(View.GONE);
-            shareButton.setVisibility(View.GONE);
             notifyButton.setVisibility(View.GONE);
         }
 
@@ -84,6 +78,10 @@ public class ViewAttendeesActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
+    /**
+     * Configures the controllers required by the activity.
+     * @param event the event for which attendees are being viewed
+     */
     private void configureControllers(Event event) {
         eventController = new EventController(this);
         userController = new UserController(this);
