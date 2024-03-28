@@ -35,8 +35,7 @@ public class User {
      * @param checkedInEvents List of events the user has checked-in to
      */
     public User(String firstName, String lastName, ArrayList<String> signedUpEvents, String ID,
-                String profilePicture,String defaultProfilePicture, ArrayList<String> organizedEvents, boolean geoLocationEnabled, long lastAnnouncementCheck) {
-                String profilePicture,String defaultProfilePicture, ArrayList<String> organizedEvents, boolean geoLocationEnabled,
+                ArrayList<String> organizedEvents, boolean geoLocationEnabled, long lastAnnouncementCheck, String profilePicture,String defaultProfilePicture,
                 ArrayList<String> checkedInEvents) {
 
         this.firstName = firstName;
