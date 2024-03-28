@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id= "@+id/admin_event"
+        android:icon="@drawable/admin_event_24"
+        android:title="Event"/>
+
+    <item
+        android:id= "@+id/admin_profile"
+        android:icon="@drawable/admin_profile_24"
+        android:title="Person"/>
+
+    <item
+        android:id= "@+id/admin_image"
+        android:icon="@drawable/admin_image_24"
+        android:title="Image"/>
+
+
+
+</menu>
