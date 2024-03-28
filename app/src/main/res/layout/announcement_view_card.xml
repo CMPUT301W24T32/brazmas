@@ -11,6 +11,8 @@
         android:id="@+id/announcement_title_tv2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:fontFamily="sans-serif-condensed-medium"
         android:text="Announcement Name"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -20,6 +22,8 @@
         android:id="@+id/announcementDescriptionText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:fontFamily="sans-serif-condensed"
         android:text="@string/description"
         android:layout_marginBottom="8dp"/>
 

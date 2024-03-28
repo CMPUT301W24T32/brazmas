@@ -12,41 +12,12 @@
         android:id="@+id/view_attendees_attendee_rv"
         />
 
-    <LinearLayout
-        android:id="@+id/view_attendees_organizer_action_ll"
+    <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/view_attendees_attendee_rv"
-        android:orientation="horizontal"
-        android:layout_centerHorizontal="true"
-        >
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/view_attendees_map_btn"
-            android:text="@string/map"
-            android:layout_margin="10dp"
-            />
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/view_attendees_share_btn"
-            android:text="@string/share"
-            android:layout_margin="10dp"
-            />
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/view_attendees_notify_btn"
-            android:text="@string/notify"
-            android:layout_margin="10dp"
-            />
-
-    </LinearLayout>
-
+        android:id="@+id/view_attendees_notify_btn"
+        android:text="@string/notify"
+        android:layout_margin="10dp"
+        />
 </RelativeLayout>

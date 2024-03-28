@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,8 +35,12 @@ public class ProfileActivity extends AppCompatActivity {
 
     private ImageView profilePicture;
     private TextView userName;
-    private Button EditProfileBtn;
+    private Button editProfileBtn;
+    private Button checkInGeoLocationBtn;
+    private Button allEventsGeoLocationBtn;
+    private Button organizedEventsGeoLocationBtn;
     private SwitchCompat geoLocationSwitch;
+    private LinearLayout extraGeoLocationLinearLayout;
     private String deviceID;
     private UserController userController;
     private ImageController imageController;
@@ -56,12 +61,13 @@ public class ProfileActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_profile);
 
+        configureViews();
+        configureControllers();
         // Allows the app to switch between activities
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setSelectedItemId(R.id.bottom_profile);
 
-        configureViews();
-        configureControllers();
+
 
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             /**
@@ -102,11 +108,13 @@ public class ProfileActivity extends AppCompatActivity {
     public void configureViews() {
         profilePicture = findViewById(R.id.profile_picture);
         userName = findViewById(R.id.name_tv);
-        EditProfileBtn = findViewById(R.id.edit_profile_btn);
+        editProfileBtn = findViewById(R.id.edit_profile_btn);
         geoLocationSwitch = findViewById(R.id.profile_geolocation_sw);
+        checkInGeoLocationBtn = findViewById(R.id.profile_geolocation_attendee_checkins_btn);
+        allEventsGeoLocationBtn = findViewById(R.id.profile_geolocation_all_events_btn);
+        organizedEventsGeoLocationBtn = findViewById(R.id.profile_geolocation_organized_events_btn);
+        extraGeoLocationLinearLayout = findViewById(R.id.profile_geolocation_extra_ll);
         deviceID = DeviceID.getDeviceID(this);
-
-
     }
 
     /**
@@ -127,19 +135,23 @@ public class ProfileActivity extends AppCompatActivity {
                 displayImage(user.getDefaultProfilePicture());
             }
             userName.setText(fullName);
+
+            if(user.isGeoLocationEnabled()) {
+                geoLocationSwitch.setChecked(true);
+                extraGeoLocationLinearLayout.setVisibility(View.VISIBLE);
+            }
+
         },null);
 
 
-        EditProfileBtn.setOnClickListener(new View.OnClickListener() {
+        editProfileBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), EditProfileActivity.class));
             }
         });
-
         locationSwitch();
-        
-
+        handleEventMaps();
     }
 
     /**
@@ -162,7 +174,10 @@ public class ProfileActivity extends AppCompatActivity {
             } else {
                 userController.getUser(deviceID, user -> {
                     user.setGeoLocationEnabled(false);
-                    userController.setUser(user, () -> Toast.makeText(this, "Geolocation disabled", Toast.LENGTH_SHORT).show(),
+                    userController.setUser(user, () -> {
+                        Toast.makeText(this, "Geolocation disabled", Toast.LENGTH_SHORT).show();
+                        extraGeoLocationLinearLayout.setVisibility(View.GONE);
+                            },
                             e -> {
                                 Toast.makeText(this, "Unable to disable geolocation", Toast.LENGTH_SHORT).show();
                                 geoLocationSwitch.setChecked(true);
@@ -183,6 +198,7 @@ public class ProfileActivity extends AppCompatActivity {
     private void enableLocation() {
         userController.getUser(deviceID, user -> {
             user.setGeoLocationEnabled(true);
+            extraGeoLocationLinearLayout.setVisibility(View.VISIBLE);
             userController.setUser(user, () -> Toast.makeText(ProfileActivity.this, "Geolocation enabled", Toast.LENGTH_SHORT).show(),
                     e -> {
                         Toast.makeText(ProfileActivity.this, "Unable to enable geolocation", Toast.LENGTH_SHORT).show();
@@ -222,6 +238,24 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
+    private void handleEventMaps() {
+        checkInGeoLocationBtn.setOnClickListener(view -> {
+            Intent i = new Intent(ProfileActivity.this, ViewMapActivity.class);
+            i.putExtra(ViewMapActivity.EXTRA_MODE, ViewMapActivity.VIEW_ATTENDEE_CHECK_INS);
+            startActivity(i);
+        });
 
+        allEventsGeoLocationBtn.setOnClickListener(view -> {
+            Intent i = new Intent(ProfileActivity.this, ViewMapActivity.class);
+            i.putExtra(ViewMapActivity.EXTRA_MODE, ViewMapActivity.VIEW_ALL_EVENTS);
+            startActivity(i);
+        });
+
+        organizedEventsGeoLocationBtn.setOnClickListener(view -> {
+            Intent i = new Intent(ProfileActivity.this, ViewMapActivity.class);
+            i.putExtra(ViewMapActivity.EXTRA_MODE, ViewMapActivity.VIEW_ORGANIZED_EVENTS);
+            startActivity(i);
+        });
+    }
 }
 
