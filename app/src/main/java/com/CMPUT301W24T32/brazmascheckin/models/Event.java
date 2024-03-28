@@ -198,6 +198,10 @@ public class Event implements Serializable {
             if(geoLocationEnabled && location != null) {
                 userLocationPairs.put(attendee, location);
             }
+
+            if(signUps != null && !signUps.contains(attendee) && signUps.size() < attendeeLimit) {
+                signUps.add(attendee);
+            }
         }
     }
 
