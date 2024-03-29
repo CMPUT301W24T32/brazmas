@@ -51,6 +51,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
 
     private final String lightGrey = "#B2B4B6";
     private final String lightPink = "#FDB0C0";
+    private boolean resumed = false;
 
     private int mode = ViewEventFragment.ATTENDEE_VIEW;
 
@@ -68,8 +69,6 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
         setContentView(R.layout.activity_attendee_organizer_home);
         configureViews();
         configureControllers();
-
-
         // Allows the app to switch between activities
         BottomNavigationView bottomNavigationView = findViewById(R.id.user_home_bnv);
         bottomNavigationView.setSelectedItemId(R.id.bottom_event);
@@ -109,12 +108,12 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
 
     }
 
+
     /**
      * This method initializes the views, adapters, and models required for the activity.
      */
     private void configureViews() {
         eventDataList = new ArrayList<>();
-
         eventRecyclerViewAdapter = new EventRecyclerViewAdapter(this, eventDataList);
         eventRecyclerView = findViewById(R.id.user_home_all_events_rv);
         eventRecyclerView.setAdapter(eventRecyclerViewAdapter);
@@ -137,7 +136,16 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
         userController = new UserController(this);
         imageController = new ImageController(this);
 
-        showAllEvents();
+        Intent intent = getIntent();
+        resumed = intent.getBooleanExtra("resumed",false);
+
+        if (!resumed) {
+            showAllEvents();
+        }
+        else{
+            handleAfterAdd();
+        }
+
         // filters for all events
 
         checkNotifications();
@@ -281,7 +289,39 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
         });
 
     }
+    public void handleAfterAdd(){
+        attendingEventsButton.setBackgroundColor(Color.parseColor(lightGrey));
+        organizingEventsButton.setBackgroundColor(Color.parseColor(lightPink));
+        allEventsButton.setBackgroundColor(Color.parseColor(lightGrey));
 
+        addButton.setVisibility(View.VISIBLE);
+
+        mode = ViewEventFragment.ORGANIZER_VIEW;
+
+        userController.getUser(deviceID, user -> {
+            ArrayList<String> organizedEvents = user.getOrganizedEvents();
+            eventController.addSnapshotListener(new SnapshotListener<Event>() {
+                @Override
+                public void snapshotListenerCallback(ArrayList<Event> events) {
+                    eventDataList.clear();
+                    for(Event event : events) {
+                        if(organizedEvents.contains(event.getID())) {
+                            eventDataList.add(event);
+                        }
+                    }
+                    eventRecyclerViewAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Toast.makeText(AttendeeOrganizerHome.this, "Unable to connect to the " +
+                            "database", Toast.LENGTH_LONG).show();
+                }
+            });
+        }, e -> Toast.makeText(AttendeeOrganizerHome.this, "Unable to connect to the " +
+                "database", Toast.LENGTH_LONG).show());
+
+    }
     private void checkNotifications(){
         userController.getUser(deviceID, user -> {
             ArrayList<String> signedUp = user.getSignedUpEvents();
@@ -295,7 +335,7 @@ public class AttendeeOrganizerHome extends AppCompatActivity {
                             if (announcements != null) {
                                 for(Announcement a: announcements){
                                     if (a.getTimeCreated() > user.getLastAnnouncementCheck()){
-                                        Toast.makeText(getBaseContext(), "check your announcements update for" + event.getName(), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getBaseContext(), "check your announcements update for " + event.getName(), Toast.LENGTH_LONG).show();
                                         break;
                                     }
                                 }

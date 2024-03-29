@@ -371,7 +371,9 @@ public class AddEventActivity extends AppCompatActivity {
             user.createEvent(newID);
             userController.setUser(user, null ,null);
         }, null), null);
-        finish();
+        Intent intent = new Intent(AddEventActivity.this, AttendeeOrganizerHome.class);
+        intent.putExtra("resumed",true);
+        startActivity(intent);
     }
 
     /**
@@ -406,7 +408,9 @@ public class AddEventActivity extends AppCompatActivity {
                 user.createEvent(ID);
                 userController.setUser(user, null, null);
             }, null);
-            finish();
+            Intent intent = new Intent(AddEventActivity.this, AttendeeOrganizerHome.class);
+            intent.putExtra("resumed",true);
+            startActivity(intent);
         }, new AddFailureListener() {
             @Override
             public void onAddFailure(Exception e) {
