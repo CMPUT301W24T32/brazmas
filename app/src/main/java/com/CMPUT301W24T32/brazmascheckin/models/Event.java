@@ -37,6 +37,8 @@ public class Event implements Serializable {
 
     private Location eventLocation;
 
+    private int nextMilestone;
+
 
     /**
      * Constructs a new instance of the Event class with the full information for an event.
@@ -73,6 +75,7 @@ public class Event implements Serializable {
         this.geoLocationEnabled = geoLocationEnabled;
         this.eventLocation = eventLocation;
         this.userLocationPairs = userLocationPairs;
+        this.nextMilestone = 1;
         this.announcements = announcements;
     }
 
@@ -105,6 +108,7 @@ public class Event implements Serializable {
         this.organizer = organizer;
         this.geoLocationEnabled = geoLocationEnabled;
         this.userLocationPairs = userLocationPairs;
+        this.nextMilestone = 1;
     }
 
     /**
@@ -193,6 +197,10 @@ public class Event implements Serializable {
 
             if(geoLocationEnabled && location != null) {
                 userLocationPairs.put(attendee, location);
+            }
+
+            if(signUps != null && !signUps.contains(attendee) && signUps.size() < attendeeLimit) {
+                signUps.add(attendee);
             }
         }
     }
@@ -405,6 +413,14 @@ public class Event implements Serializable {
      */
     public void setUserLocationPairs(HashMap<String, Location> userLocationPairs) {
         this.userLocationPairs = userLocationPairs;
+    }
+
+    public int getNextMilestone() {
+        return nextMilestone;
+    }
+
+    public void setNextMilestone(int nextMilestone) {
+        this.nextMilestone = nextMilestone;
     }
 
     public ArrayList<Announcement> getAnnouncements() {

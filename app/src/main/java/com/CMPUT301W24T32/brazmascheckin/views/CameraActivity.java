@@ -59,7 +59,6 @@ public class CameraActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_camera);
         eventController = new EventController(this);
         userController = new UserController(this);
@@ -99,7 +98,7 @@ public class CameraActivity extends AppCompatActivity {
                     return true;
                 }
                 if (id == R.id.bottom_event) {
-                    startActivity(new Intent(getApplicationContext(), AttendeeOrganizerHome.class));
+                    startActivity(new Intent(getApplicationContext(), UserHome.class));
                     overridePendingTransition(0, 0);
                     return true;
                 }

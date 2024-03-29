@@ -24,6 +24,9 @@
         android:theme="@style/Theme.BrazmasCheckIn"
         tools:targetApi="31">
         <activity
+            android:name=".views.SignUpActivity"
+            android:exported="false" />
+        <activity
             android:name=".views.ViewAttendeesActivity"
             android:exported="false" />
         <activity
@@ -31,6 +34,12 @@
             android:exported="false" />
         <activity
             android:name=".views.AddEventActivity"
+            android:exported="false" />
+        <activity
+            android:name=".views.AdministratorBrowseImages"
+            android:exported="false" />
+        <activity
+            android:name=".views.AdministratorBrowseProfiles"
             android:exported="false" />
         <activity
             android:name=".views.CameraActivity"
@@ -45,7 +54,7 @@
             android:name=".views.AdministratorHome"
             android:exported="false" />
         <activity
-            android:name=".views.AttendeeOrganizerHome"
+            android:name=".views.UserHome"
             android:exported="false" />
         <activity
             android:name=".views.EditProfileActivity"

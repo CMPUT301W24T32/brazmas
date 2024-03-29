@@ -58,7 +58,6 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_profile);
 
         configureViews();
@@ -92,7 +91,7 @@ public class ProfileActivity extends AppCompatActivity {
                     return true;
                 }
                 if (id == (R.id.bottom_event)) {
-                    startActivity(new Intent(getApplicationContext(), AttendeeOrganizerHome.class));
+                    startActivity(new Intent(getApplicationContext(), UserHome.class));
                     overridePendingTransition(0, 0);
                     return true;
                 }

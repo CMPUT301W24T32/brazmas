@@ -7,9 +7,6 @@ import android.view.MenuItem;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -49,7 +46,6 @@ public class AnnouncementActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_announcement);
 
         // setting recycler view
@@ -85,7 +81,7 @@ public class AnnouncementActivity extends AppCompatActivity {
                     return true;
                 }
                 if (id == (R.id.bottom_event)){
-                    startActivity(new Intent(getApplicationContext(), AttendeeOrganizerHome.class));
+                    startActivity(new Intent(getApplicationContext(), UserHome.class));
                     overridePendingTransition(0,0);
                     return true;
                 }
@@ -117,12 +113,13 @@ public class AnnouncementActivity extends AppCompatActivity {
             userController.setUser(user, null ,null);
 
             ArrayList<String> signedUp = user.getSignedUpEvents();
+            ArrayList<String> checkIns = user.getCheckInEvents();
             eventController.addSnapshotListener(new SnapshotListener<Event>() {
                 @Override
                 public void snapshotListenerCallback(ArrayList<Event> events) {
                     announcementDataList.clear();
                     for(Event event: events) {
-                        if(signedUp.contains(event.getID())){
+                        if(signedUp.contains(event.getID()) || checkIns.contains(event.getID())){
                             //Toast.makeText(getBaseContext(), "Unable to connect to the database", Toast.LENGTH_LONG).show();
                             ArrayList<Announcement> announcements = event.getAnnouncements();
                             if (announcements != null) {
