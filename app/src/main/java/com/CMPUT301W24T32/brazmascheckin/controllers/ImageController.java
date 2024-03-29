@@ -143,6 +143,34 @@ public class ImageController {
                 });
     }
 
+    public void getImageURL(String TYPE, String fileID, GetSuccessListener<String> successListener,
+                            AddFailureListener failureListener) {
+        StorageReference imageReference;
+        if(TYPE.equals(EVENT_POSTER)) {
+            imageReference = posterReference.child(fileID);
+        } else if (TYPE.equals(PROFILE_PICTURE)) {
+            imageReference = profilePictureReference.child(fileID);
+        } else if (TYPE.equals(QR_CODE)) {
+            imageReference = qrCodeReference.child(fileID);
+        } else if (TYPE.equals(SHARE_QR_CODE)) {
+            imageReference = shareqrCodeReference.child(fileID);
+        } else {
+            imageReference = null;
+            return;
+        }
+        imageReference.getDownloadUrl()
+                .addOnSuccessListener(uri -> {
+                    String imageURL = uri.toString();
+                    if(successListener != null) {
+                        successListener.onSuccess(imageURL);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if(failureListener != null) {
+                        failureListener.onAddFailure(e);
+                    }
+                });
+    }
     /**
      * Deletes an image from Firebase Storage based on the specified type and file ID.
      *

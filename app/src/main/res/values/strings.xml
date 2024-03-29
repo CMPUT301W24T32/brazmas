@@ -37,4 +37,5 @@
     <string name="check_in_map">Check-In Map</string>
     <string name="all_events">All Events</string>
     <string name="organized_events">Organized Events</string>
+    <string name="share_qr_code_button_text">Share</string>
 </resources>

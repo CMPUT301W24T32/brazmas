@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -46,6 +47,7 @@ public class ViewEventFragment extends DialogFragment {
     private Button checkedInAttendeesBtn;
     private Button signedUpAttendeesBtn;
     private Button geoLocationBtn;
+    private Button sharePromoQRCode;
     private CheckBox signedUpCB;
     private ImageView QRCode;
     private ImageView shareQRCode;
@@ -126,6 +128,7 @@ public class ViewEventFragment extends DialogFragment {
         QRCode = view.findViewById(R.id.view_event_QR_iv);
         shareQRCode = view.findViewById(R.id.view_event_share_QR_iv);
         shareQRCodeLabel = view.findViewById(R.id.view_event_share_qr_code_tv);
+        sharePromoQRCode = view.findViewById(R.id.share_promo_qr_code_btn);
 
 
         deviceID = DeviceID.getDeviceID(getContext());
@@ -166,6 +169,7 @@ public class ViewEventFragment extends DialogFragment {
             shareQRCode.setVisibility(View.GONE);
             shareqrCodeTitle.setVisibility(View.GONE);
             qrCodeTitle.setVisibility(View.GONE);
+            sharePromoQRCode.setVisibility(View.GONE);
 
         }
     }
@@ -198,6 +202,16 @@ public class ViewEventFragment extends DialogFragment {
             intent.putExtra(ViewMapActivity.EXTRA_EVENT, e);
             intent.putExtra(ViewMapActivity.EXTRA_MODE, ViewMapActivity.VIEW_ATTENDEES);
             startActivity(intent);
+        });
+        sharePromoQRCode.setOnClickListener(view -> {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            imageController.getImageURL("SHARE_QR_CODE",e.getShareQRCode(), imageURL -> {
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(Intent.EXTRA_TEXT, imageURL);
+                startActivity(Intent.createChooser(shareIntent, "Share QR Code"));
+            }, error -> {
+                Log.d("access error", "cannot access ");
+            });
         });
     }
 

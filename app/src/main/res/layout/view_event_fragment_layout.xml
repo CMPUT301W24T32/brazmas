@@ -182,5 +182,19 @@
             android:contentDescription="@string/event_qr_code"
             android:layout_marginTop="20dp" />
 
+        <Button
+            android:id="@+id/share_promo_qr_code_btn"
+            android:layout_width="300dp"
+            android:layout_height="60dp"
+            android:backgroundTint="@color/lightPink"
+            android:textColor="@color/black"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:text="@string/share_qr_code_button_text"
+            android:layout_below="@id/view_event_share_QR_iv"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            />
+
+
     </RelativeLayout>
 </ScrollView>
