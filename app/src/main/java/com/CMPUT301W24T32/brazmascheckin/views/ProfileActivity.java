@@ -131,7 +131,7 @@ public class ProfileActivity extends AppCompatActivity {
                 displayImage(user.getProfilePicture());
             }
             else{
-                displayImage(user.getDefaultProfilePicture());
+                displayDefaultImage(user.getDefaultProfilePicture());
             }
             userName.setText(fullName);
 
@@ -217,6 +217,19 @@ public class ProfileActivity extends AppCompatActivity {
     private void displayImage(String posterID) {
         if (posterID != null) {
             imageController.getImage(ImageController.PROFILE_PICTURE, posterID, bytes -> {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                profilePicture.setImageBitmap(bitmap);
+            }, null);
+        }
+    }
+
+    /**
+     * This method retrieves the default poster image from the database and displays it in the view.
+     * @param posterID the ID of the image in the database
+     */
+    private void displayDefaultImage(String posterID){
+        if (posterID != null) {
+            imageController.getImage(ImageController.DEFAULT_PROFILE_PICTURE_PATH, posterID, bytes -> {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 profilePicture.setImageBitmap(bitmap);
             }, null);

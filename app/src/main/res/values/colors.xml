@@ -5,4 +5,9 @@
     <color name="darkGrey">#555454</color>
     <color name="lightGrey">#B2B4B6</color>
     <color name="lightPink">#F7CFE5</color>
+    <color name ="sage">#8A9A5B</color>
+    <color name="teal">#036C5F</color>
+    <color name="purple">#C8A4D4</color>
+    <color name="jade_green">#2BAF6A</color>
+
 </resources>
