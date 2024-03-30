@@ -23,17 +23,32 @@ import com.CMPUT301W24T32.brazmascheckin.models.User;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class SignUpActivity extends AppCompatActivity {
     private UserController userController;
     private ImageController imageController;
     private String deviceID;
     private Uri imageUri;
+    public ArrayList<Integer> colors;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        colors = new ArrayList<>();
+
+        int sage = 0xFF8A9A5B;
+        int teal = 0xFF036C5F;
+        int light_pink = 0xFFF7CFE5;
+        int purple = 0xFFC8A4D4;
+        int jade_green = 0xFF2BAF6A;
+
+        colors.add(sage);
+        colors.add(teal);
+        colors.add(light_pink);
+        colors.add(purple);
+        colors.add(jade_green);
 
         TextView firstNameEditText = findViewById(R.id.sign_up_firstname_tv);
         TextView lastNameEditText = findViewById(R.id.sign_up_lastname_tv);
@@ -58,8 +73,8 @@ public class SignUpActivity extends AppCompatActivity {
 
                 // creating random pfp
                 String firstLetter = String.valueOf(firstName.charAt(0));
-                int color = ContextCompat.getColor(getBaseContext(),R.color.darkGrey);
-                Bitmap bitmap = textAsBitmap(firstLetter,45,color);
+                int color = ContextCompat.getColor(getBaseContext(),R.color.black);
+                Bitmap bitmap = textAsBitmap(firstLetter,70,color);
                 imageUri = getImageUri(getBaseContext(),bitmap);
                 user.setDefaultProfilePicture(uploadFile());
 
@@ -85,16 +100,24 @@ public class SignUpActivity extends AppCompatActivity {
      * @return the Bitmap
      */
     public Bitmap textAsBitmap(String text, float textSize, int textColor) {
+        
+        Random random = new Random();
+       int randomIndex = random.nextInt(colors.size());
+        
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setTextSize(textSize);
         paint.setColor(textColor);
         paint.setTextAlign(Paint.Align.LEFT);
+        
         float baseline = -paint.ascent(); // ascent() is negative
-        int width = (int) (paint.measureText(text) + 0.5f); // round
-        int height = (int) (baseline + paint.descent() + 0.5f);
+        int width = (int) (paint.measureText(text) + 60); // round
+        int height = (int) (baseline + paint.descent() + 40);
         Bitmap image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        
         Canvas canvas = new Canvas(image);
-        canvas.drawText(text, 0, baseline, paint);
+        int color = colors.get(randomIndex);
+        canvas.drawColor(color);
+        canvas.drawText(text, 30, baseline + 20, paint);
         return image;
     }
 
@@ -121,7 +144,7 @@ public class SignUpActivity extends AppCompatActivity {
         String fileID = String.valueOf(System.currentTimeMillis());
 
         if (imageUri != null) {
-            imageController.uploadImage(ImageController.PROFILE_PICTURE, fileID, imageUri,
+            imageController.uploadImage(ImageController.DEFAULT_PROFILE_PICTURE_PATH, fileID, imageUri,
                     object -> Toast.makeText(this, "Image uploaded!", Toast.LENGTH_SHORT).show(), e -> {
                     });
         } else {

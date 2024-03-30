@@ -18,6 +18,7 @@ public class ImageController {
     private StorageReference qrCodeReference;
     private StorageReference profilePictureReference;
     private StorageReference shareqrCodeReference;
+    private StorageReference defaultProfilePictureReference;
     private Context context;
     private static final String POSTER_PATH = "posters";
     private static final String QR_CODE_PATH = "qr_codes";
@@ -27,6 +28,7 @@ public class ImageController {
     public static final String EVENT_POSTER = "EVENT_POSTER";
     public static final String QR_CODE ="QR_CODE";
     public static final String SHARE_QR_CODE = "SHARE_QR_CODE";
+    public static final String DEFAULT_PROFILE_PICTURE_PATH = "default_profile_pictures";
 
     /**
      * Constructs a new instance of the Image Controller.
@@ -39,6 +41,7 @@ public class ImageController {
         qrCodeReference = FirestoreDB.getStorageReference(QR_CODE_PATH);
         profilePictureReference = FirestoreDB.getStorageReference(PROFILE_PICTURE_PATH);
         shareqrCodeReference = FirestoreDB.getStorageReference(SHARE_QR_CODE_PATH);
+        defaultProfilePictureReference = FirestoreDB.getStorageReference(DEFAULT_PROFILE_PICTURE_PATH);
     }
 
     public void uploadImage(String TYPE, String fileID,
@@ -49,6 +52,8 @@ public class ImageController {
             fileReference = posterReference.child(fileID);
         } else if (TYPE.equals(PROFILE_PICTURE)) {
             fileReference = profilePictureReference.child(fileID);
+        } else if (TYPE.equals(DEFAULT_PROFILE_PICTURE_PATH)){
+                fileReference = defaultProfilePictureReference.child(fileID);
         } else {
             fileReference = null;
             //TODO: add proper error checking
@@ -126,6 +131,8 @@ public class ImageController {
             imageReference = qrCodeReference.child(fileID);
         } else if (TYPE.equals(SHARE_QR_CODE)) {
             imageReference = shareqrCodeReference.child(fileID);
+        } else if (TYPE.equals(DEFAULT_PROFILE_PICTURE_PATH)){
+            imageReference = defaultProfilePictureReference.child(fileID);
         } else {
             imageReference = null;
             return;
