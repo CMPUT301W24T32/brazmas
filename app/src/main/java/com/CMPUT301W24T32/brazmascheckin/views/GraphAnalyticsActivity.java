@@ -23,6 +23,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * This class displays the event analytics for the organizer's events.
+ */
+
+//TODO: need to cite the library and https://www.youtube.com/watch?v=WdsmQ3Zyn84
+
 public class GraphAnalyticsActivity extends AppCompatActivity {
 
     private List<String> xValues = Arrays.asList("Checked In", "Signed Up");
@@ -52,13 +58,19 @@ public class GraphAnalyticsActivity extends AppCompatActivity {
         Log.d(TAG, "Checked In: " + checkedIn);
         Log.d(TAG, "Signed Up: " + signedUp);
 
+        // Find the maximum value among checked-in and signed-up users
+        int maxValue = Math.max(checkedIn, signedUp);
+
+        // Configure YAxis
         // Configure YAxis
         YAxis yAxis = barChart.getAxisLeft();
         yAxis.setAxisMinimum(0f);
-        yAxis.setAxisMaximum(Math.max(checkedIn, signedUp) + 10); // Adding some padding for better visualization
+        yAxis.setAxisMaximum(maxValue + 1); // Adjust padding for better visualization
         yAxis.setAxisLineWidth(2f);
         yAxis.setAxisLineColor(Color.BLACK);
-        yAxis.setLabelCount(10);
+        yAxis.setGranularity(1f); // Set granularity to 1 to force whole number values
+        yAxis.setGranularityEnabled(true);
+        yAxis.setLabelCount(maxValue + 2, true); // Set label count to maxValue + 2 to include 0 and maxValue
 
         // Configure BarDataSet
         BarDataSet dataSet = new BarDataSet(entries, "Event Analytics");
