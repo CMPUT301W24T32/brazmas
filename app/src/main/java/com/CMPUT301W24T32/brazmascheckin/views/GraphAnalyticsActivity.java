@@ -1,9 +1,12 @@
 package com.CMPUT301W24T32.brazmascheckin.views;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
@@ -20,14 +23,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class GraphAnalyticsFragment extends AppCompatActivity {
+public class GraphAnalyticsActivity extends AppCompatActivity {
 
     private List<String> xValues = Arrays.asList("Checked In", "Signed Up");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_statistics_graph);
+        setContentView(R.layout.analytics_graph);
 
         // Retrieve the event object passed to the fragment
         Event event = (Event) getIntent().getSerializableExtra("event");
@@ -45,6 +48,9 @@ public class GraphAnalyticsFragment extends AppCompatActivity {
         ArrayList<BarEntry> entries = new ArrayList<>();
         entries.add(new BarEntry(0, checkedIn)); // checked in
         entries.add(new BarEntry(1, signedUp)); // signed up
+
+        Log.d(TAG, "Checked In: " + checkedIn);
+        Log.d(TAG, "Signed Up: " + signedUp);
 
         // Configure YAxis
         YAxis yAxis = barChart.getAxisLeft();

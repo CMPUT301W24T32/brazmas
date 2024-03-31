@@ -60,7 +60,7 @@
             android:name=".views.EditProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".views.GraphAnalyticsFragment"
+            android:name=".views.GraphAnalyticsActivity"
             android:exported="false" />
         <activity
             android:name=".views.CaptureAct"
