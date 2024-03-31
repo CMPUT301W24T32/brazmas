@@ -218,8 +218,9 @@ public class ViewEventFragment extends DialogFragment {
         });
 
         eventAnalytics.setOnClickListener(view -> {
-            // GraphAnalyticsFragment activity
+            // GraphAnalyticsFragment activity, pass current event
             Intent intent = new Intent(getActivity(), GraphAnalyticsFragment.class);
+            intent.putExtra("event", e);
             startActivity(intent);
         });
     }

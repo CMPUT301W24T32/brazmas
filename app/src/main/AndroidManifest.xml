@@ -60,6 +60,9 @@
             android:name=".views.EditProfileActivity"
             android:exported="false" />
         <activity
+            android:name=".views.GraphAnalyticsFragment"
+            android:exported="false" />
+        <activity
             android:name=".views.CaptureAct"
             android:screenOrientation="portrait"
             android:stateNotNeeded="true"
