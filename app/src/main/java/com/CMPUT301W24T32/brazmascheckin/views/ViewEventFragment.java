@@ -1,3 +1,4 @@
+
 package com.CMPUT301W24T32.brazmascheckin.views;
 
 import android.app.AlertDialog;
@@ -48,6 +49,7 @@ public class ViewEventFragment extends DialogFragment {
     private Button signedUpAttendeesBtn;
     private Button geoLocationBtn;
     private Button sharePromoQRCode;
+    private Button eventAnalytics;
     private CheckBox signedUpCB;
     private ImageView QRCode;
     private ImageView shareQRCode;
@@ -129,7 +131,7 @@ public class ViewEventFragment extends DialogFragment {
         shareQRCode = view.findViewById(R.id.view_event_share_QR_iv);
         shareQRCodeLabel = view.findViewById(R.id.view_event_share_qr_code_tv);
         sharePromoQRCode = view.findViewById(R.id.share_promo_qr_code_btn);
-
+        eventAnalytics = view.findViewById(R.id.statistics_button);
 
         deviceID = DeviceID.getDeviceID(getContext());
 
@@ -170,6 +172,7 @@ public class ViewEventFragment extends DialogFragment {
             shareqrCodeTitle.setVisibility(View.GONE);
             qrCodeTitle.setVisibility(View.GONE);
             sharePromoQRCode.setVisibility(View.GONE);
+            eventAnalytics.setVisibility(View.GONE);
 
         }
     }
@@ -212,6 +215,13 @@ public class ViewEventFragment extends DialogFragment {
             }, error -> {
                 Log.d("access error", "cannot access ");
             });
+        });
+
+        eventAnalytics.setOnClickListener(view -> {
+            // GraphAnalyticsFragment activity, pass current event
+            Intent intent = new Intent(getActivity(), GraphAnalyticsActivity.class);
+            intent.putExtra("event", e);
+            startActivity(intent);
         });
     }
 
@@ -262,7 +272,7 @@ public class ViewEventFragment extends DialogFragment {
             eventController.setEvent(event, null, null);
         }, e -> {
 
-                });
+        });
 
         userController.getUser(deviceID, user -> {
             ArrayList<String> signUps = user.getSignedUpEvents();
