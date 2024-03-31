@@ -19,7 +19,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class StatisiticsGraphActivity extends AppCompatActivity {
+/**
+ * This method is used to display the analytics regarding attendance of events for the organizer.
+ */
+
+// TODO: need to cite https://www.youtube.com/watch?v=WdsmQ3Zyn84 and the github library
+
+public class GraphAnalyticsFragment extends AppCompatActivity {
 
     private List<String> xValues = Arrays.asList("Checked In", "Signed Up");
 

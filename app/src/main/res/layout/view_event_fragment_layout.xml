@@ -202,7 +202,7 @@
             android:backgroundTint="@color/lightPink"
             android:textColor="@color/black"
             android:fontFamily="sans-serif-condensed-medium"
-            android:text="Statistics"
+            android:text="Event Analytics"
             android:layout_below="@id/share_promo_qr_code_btn"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="20dp"/>
