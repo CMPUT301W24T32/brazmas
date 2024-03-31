@@ -20,6 +20,7 @@ import com.CMPUT301W24T32.brazmascheckin.controllers.GetFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
+import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.CMPUT301W24T32.brazmascheckin.views.AdministratorHome;
 import com.CMPUT301W24T32.brazmascheckin.views.SignUpActivity;
@@ -35,6 +36,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+
     private UserController userController;
     private AdminController adminController;
     private String deviceID;
@@ -46,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
 
         // getting device ID and storing it in a string
         deviceID = DeviceID.getDeviceID(this);
-        userController = new UserController(this);
-        adminController = new AdminController(this);
+        userController = new UserController(FirestoreDB.getDatabaseInstance());
+        adminController = new AdminController(FirestoreDB.getDatabaseInstance());
 
         // control flow of different types of users
         adminController.getAdmin(deviceID, object -> {

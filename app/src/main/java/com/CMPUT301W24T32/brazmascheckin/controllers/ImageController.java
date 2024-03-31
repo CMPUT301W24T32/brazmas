@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
@@ -19,7 +20,6 @@ public class ImageController {
     private StorageReference profilePictureReference;
     private StorageReference shareqrCodeReference;
     private StorageReference defaultProfilePictureReference;
-    private Context context;
     private static final String POSTER_PATH = "posters";
     private static final String QR_CODE_PATH = "qr_codes";
     private static final String PROFILE_PICTURE_PATH = "profile_pictures";
@@ -33,15 +33,14 @@ public class ImageController {
     /**
      * Constructs a new instance of the Image Controller.
      *
-     * @param context the context of the view where the controller is instantiated.
+     * @param storage Dependency Injection of FirebaseStorage
      */
-    public ImageController(Context context) {
-        this.context = context;
-        posterReference = FirestoreDB.getStorageReference(POSTER_PATH);
-        qrCodeReference = FirestoreDB.getStorageReference(QR_CODE_PATH);
-        profilePictureReference = FirestoreDB.getStorageReference(PROFILE_PICTURE_PATH);
-        shareqrCodeReference = FirestoreDB.getStorageReference(SHARE_QR_CODE_PATH);
-        defaultProfilePictureReference = FirestoreDB.getStorageReference(DEFAULT_PROFILE_PICTURE_PATH);
+    public ImageController(FirebaseStorage storage) {
+        posterReference = FirestoreDB.getStorageReference(storage, POSTER_PATH);
+        qrCodeReference = FirestoreDB.getStorageReference(storage, QR_CODE_PATH);
+        profilePictureReference = FirestoreDB.getStorageReference(storage, PROFILE_PICTURE_PATH);
+        shareqrCodeReference = FirestoreDB.getStorageReference(storage, SHARE_QR_CODE_PATH);
+        defaultProfilePictureReference = FirestoreDB.getStorageReference(storage, DEFAULT_PROFILE_PICTURE_PATH);
     }
 
     public void uploadImage(String TYPE, String fileID,

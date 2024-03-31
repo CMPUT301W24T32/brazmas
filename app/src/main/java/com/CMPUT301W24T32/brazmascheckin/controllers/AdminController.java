@@ -5,22 +5,21 @@ import android.content.Context;
 import com.CMPUT301W24T32.brazmascheckin.models.Admin;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * Controller responsible for managing interactions with the Firestore Database for admin-related operations.
  */
 public class AdminController {
-    private Context context;
     private CollectionReference adminsRef;
 
     /**
      * Constructs a new instance of the Admin Controller.
      *
-     * @param context the context of the view where the controller is instantiated.
+     * @param database Dependency Injection for FirebaseFirestore database
      */
-    public AdminController(Context context) {
-        this.context = context;
-        adminsRef = FirestoreDB.getAdminsRef();
+    public AdminController(FirebaseFirestore database) {
+        this.adminsRef = FirestoreDB.getAdminsRef(database);
     }
 
     /**

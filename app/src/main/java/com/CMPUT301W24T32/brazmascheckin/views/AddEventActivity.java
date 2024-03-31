@@ -43,6 +43,7 @@ import com.CMPUT301W24T32.brazmascheckin.helper.QRCodeGenerator;
 import com.CMPUT301W24T32.brazmascheckin.helper.QRCodeSpinnerAdapter;
 import com.CMPUT301W24T32.brazmascheckin.models.Announcement;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
+import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -165,9 +166,9 @@ public class AddEventActivity extends AppCompatActivity {
      * method to configure controllers
      */
     private void configureControllers() {
-        eventController = new EventController(this);
-        imageController = new ImageController(this);
-        userController = new UserController(this);
+        eventController = new EventController(FirestoreDB.getDatabaseInstance());
+        imageController = new ImageController(FirestoreDB.getStorageInstance());
+        userController = new UserController(FirestoreDB.getDatabaseInstance());
         addButton.setOnClickListener(v -> {
             retrieveInput(this);
         });

@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
@@ -23,7 +22,7 @@ import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.helper.EventRecyclerViewAdapter;
 import com.CMPUT301W24T32.brazmascheckin.models.Announcement;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
-import com.CMPUT301W24T32.brazmascheckin.models.User;
+import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -131,9 +130,9 @@ public class UserHome extends AppCompatActivity {
      * This method defines the controllers for the views of the activity.
      */
     private void configureControllers() {
-        eventController = new EventController(this);
-        userController = new UserController(this);
-        imageController = new ImageController(this);
+        eventController = new EventController(FirestoreDB.getDatabaseInstance());
+        userController = new UserController(FirestoreDB.getDatabaseInstance());
+        imageController = new ImageController(FirestoreDB.getStorageInstance());
 
         showAllEvents();
         // filters for all events

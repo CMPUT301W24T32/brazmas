@@ -15,6 +15,7 @@ import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
 import com.CMPUT301W24T32.brazmascheckin.helper.EventRecyclerViewAdapter;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
+import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
@@ -95,7 +96,7 @@ public class AdministratorHome extends AppCompatActivity {
      * This method defines the controllers for the views of the activity.
      */
     private void configureControllers() {
-        eventController = new EventController(this);
+        eventController = new EventController(FirestoreDB.getDatabaseInstance());
 
         showAllEvents();
 

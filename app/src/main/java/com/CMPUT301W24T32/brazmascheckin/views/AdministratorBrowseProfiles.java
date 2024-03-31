@@ -9,20 +9,17 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteSuccessListener;
 
-import com.CMPUT301W24T32.brazmascheckin.controllers.GetFailureListener;
-import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteFailureListener;
-import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
+import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.CMPUT301W24T32.brazmascheckin.helper.AdminProfileRecyclerViewAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -105,7 +102,7 @@ public class AdministratorBrowseProfiles extends AppCompatActivity {
      * This method defines the controllers for the views of the activity.
      */
     private void configureControllers() {
-        userController = new UserController(this);
+        userController = new UserController(FirestoreDB.getDatabaseInstance());
 
         showAllUsers();
 
