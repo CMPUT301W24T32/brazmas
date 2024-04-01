@@ -1,7 +1,9 @@
 package com.CMPUT301W24T32.brazmascheckin;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
 import static org.mockito.Mockito.*;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -41,21 +43,15 @@ public class EventControllerIntegrationTest {
     private DocumentReference mockDocumentRef;
 
     private EventController eventController;
-    private FirestoreDB mockDB;
 
     @Before
     public void setUp() {
-//        MockitoAnnotations.initMocks(this);
         mockDatabase = mock(FirebaseFirestore.class);
         mockCollectionRef = mock(CollectionReference.class);
         mockDocumentRef = mock(DocumentReference.class);
-        mockDB = mock(FirestoreDB.class);
-//
-//        FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext());
 
         when(mockDatabase.collection(anyString())).thenReturn(mockCollectionRef);
         when(mockCollectionRef.document(anyString())).thenReturn(mockDocumentRef);
-
 
         eventController = new EventController(mockDatabase);
     }
@@ -79,13 +75,8 @@ public class EventControllerIntegrationTest {
         Event mockEvent = mock(Event.class);
         Task mockTask = mock(Task.class);
 
-        // Configure mockDocumentRef behavior
         when(mockDocumentRef.getId()).thenReturn("mock_event_id");
-
-        // Configure mockTask behavior for add operation
         when(mockCollectionRef.add(any(Event.class))).thenReturn(mockTask);
-
-        // Configure mockTask behavior for addOnSuccessListener to do nothing
         when(mockTask.addOnSuccessListener(any())).thenReturn(mockTask);
 
         // Configure mockTask behavior for addOnFailureListener to execute the failure listener callback
@@ -99,12 +90,7 @@ public class EventControllerIntegrationTest {
         AtomicBoolean failureListenerInvoked = new AtomicBoolean(false);
 
         // Call the method under test
-        eventController.addEvent(mockEvent, null, failure -> {
-            // Assert failure handling logic here
-            failureListenerInvoked.set(true);
-        });
-
-        // Assert that the failure listener was invoked
+        eventController.addEvent(mockEvent, null, failure -> failureListenerInvoked.set(true));
         assertTrue(failureListenerInvoked.get());
     }
 
@@ -112,11 +98,7 @@ public class EventControllerIntegrationTest {
     public void testAddEvent_SuccessListener() {
         Event mockEvent = mock(Event.class);
         Task<DocumentReference> mockTask = mock(Task.class);
-
-        // Configure mockDocumentRef behavior
         when(mockDocumentRef.getId()).thenReturn("mock_event_id");
-
-        // Configure mockTask behavior for add operation
         when(mockCollectionRef.add(any(Event.class))).thenReturn(mockTask);
 
         // Configure mockTask behavior for addOnSuccessListener to execute the success listener callback
@@ -144,34 +126,57 @@ public class EventControllerIntegrationTest {
 
     @Test
     public void testSetEvent_Success() {
-        Event mockEvent = new Event();
+        Event mockEvent = mock(Event.class);
+        Task mockTask = mock(Task.class);
 
-        // Simulate successful setting of an event
-        // Assuming that set method doesn't return anything (void)
+        when(mockDocumentRef.set(any(Event.class))).thenReturn(mockTask);
 
-        // Call the method under test
-        eventController.setEvent(mockEvent, new SetSuccessListener() {
-            @Override
-            public void onSetSuccess() {
-                // Assert the success logic here
-                assert(true); // Success
-            }
-        }, new SetFailureListener() {
-            @Override
-            public void onSetFailure(Exception e) {
-                // Assert failure logic here
-                assert(false); // Failure should not occur in this test
-            }
-        });
-
-        // Verify that set method was called on mockDocumentRef
+        eventController.setEvent(mockEvent, () -> assertTrue(true), e -> fail());
         verify(mockDocumentRef).set(mockEvent);
     }
 
+    @Test
+    public void testSetEvent_Failure() {
+        Event mockEvent = mock(Event.class);
+        Task<Void> mockTask = mock(Task.class);
 
+        when(mockDocumentRef.set(any(Event.class))).thenReturn(mockTask);
 
+        // Configure mockTask behavior for addOnFailureListener to execute the failure listener callback
+        when(mockTask.addOnFailureListener(any())).thenAnswer(invocation -> {
+            OnFailureListener listener = invocation.getArgument(0);
+            listener.onFailure(new Exception("Mock failure"));
+            return mockTask;
+        });
 
+        // Call the method under test
+        eventController.setEvent(mockEvent, () -> fail(), e -> assertTrue(true));
 
+        // Verify that the set method was called on the mockDocumentRef
+        verify(mockDocumentRef).set(mockEvent);
+    }
 
+    @Test
+    public void testGetEvent_Success() {
+        Event mockEvent = mock(Event.class);
+        String eventId = "mock_event_id";
+        Task mockTask = mock(Task.class);
 
+        when(mockDocumentRef.get()).thenReturn(mockTask);
+        when(mockCollectionRef.add(any(Event.class))).thenReturn(mockTask);
+        when(mockTask.addOnSuccessListener(any())).thenReturn(mockTask);
+        when(mockTask.addOnFailureListener(any())).thenReturn(mockTask);
+
+        eventController.addEvent(mockEvent, null, null);
+
+        eventController.getEvent(eventId,
+                event -> {
+                    // Assert that the event is retrieved successfully
+                    assertEquals(mockEvent, event);
+                },
+                e -> {
+                    // Handle failure case if needed
+                    fail("Failure callback should not be invoked");
+                });
+    }
 }

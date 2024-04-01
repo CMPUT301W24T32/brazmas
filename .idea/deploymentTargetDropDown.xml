@@ -21,6 +21,18 @@
           <timeTargetWasSelectedWithDropDown value="2024-03-28T18:37:23.656399300Z" />
         </State>
       </entry>
+      <entry key="testAddEvent_SuccessListener()">
+        <State />
+      </entry>
+      <entry key="testGetEvent_Success()">
+        <State />
+      </entry>
+      <entry key="testSetEvent_Failure()">
+        <State />
+      </entry>
+      <entry key="testSetEvent_Success()">
+        <State />
+      </entry>
     </value>
   </component>
 </project>
