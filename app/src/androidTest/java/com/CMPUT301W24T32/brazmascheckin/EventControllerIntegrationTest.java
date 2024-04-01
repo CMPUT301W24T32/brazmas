@@ -8,6 +8,8 @@ import androidx.test.core.app.ApplicationProvider;
 
 import com.CMPUT301W24T32.brazmascheckin.controllers.AddSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
+import com.CMPUT301W24T32.brazmascheckin.controllers.SetFailureListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.SetSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -138,6 +140,32 @@ public class EventControllerIntegrationTest {
 
         // Assert that the success listener was invoked
         assertTrue(successListenerInvoked.get());
+    }
+
+    @Test
+    public void testSetEvent_Success() {
+        Event mockEvent = new Event();
+
+        // Simulate successful setting of an event
+        // Assuming that set method doesn't return anything (void)
+
+        // Call the method under test
+        eventController.setEvent(mockEvent, new SetSuccessListener() {
+            @Override
+            public void onSetSuccess() {
+                // Assert the success logic here
+                assert(true); // Success
+            }
+        }, new SetFailureListener() {
+            @Override
+            public void onSetFailure(Exception e) {
+                // Assert failure logic here
+                assert(false); // Failure should not occur in this test
+            }
+        });
+
+        // Verify that set method was called on mockDocumentRef
+        verify(mockDocumentRef).set(mockEvent);
     }
 
 

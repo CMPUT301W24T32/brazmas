@@ -215,30 +215,7 @@ public class EventController {
                 });
     }
 
-    public void testSetEvent_Success() {
-        Event mockEvent = new Event();
 
-        // Simulate successful setting of an event
-        // Assuming that set method doesn't return anything (void)
-
-        // Call the method under test
-        eventController.setEvent(mockEvent, new SetSuccessListener() {
-            @Override
-            public void onSetSuccess() {
-                // Assert the success logic here
-                assert(true); // Success
-            }
-        }, new SetFailureListener() {
-            @Override
-            public void onSetFailure(Exception e) {
-                // Assert failure logic here
-                assert(false); // Failure should not occur in this test
-            }
-        });
-
-        // Verify that set method was called on mockDocumentRef
-        verify(mockDocumentRef).set(mockEvent);
-    }
 
 
 
