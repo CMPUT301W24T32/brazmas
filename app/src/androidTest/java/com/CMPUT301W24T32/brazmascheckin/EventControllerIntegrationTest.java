@@ -15,11 +15,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
-
+@RunWith(MockitoJUnitRunner.class)
 public class EventControllerIntegrationTest {
-    private EventController eventController;
+
     @Mock
     private FirebaseFirestore mockDatabase;
     @Mock
@@ -27,18 +30,22 @@ public class EventControllerIntegrationTest {
     @Mock
     private DocumentReference mockDocumentRef;
 
+    @InjectMocks
+    private EventController eventController;
+
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
 //        mockDatabase = mock(FirebaseFirestore.class);
-        mockCollectionRef = mock(CollectionReference.class);
-        mockDocumentRef = mock(DocumentReference.class);
-
-        FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext());
+//        mockCollectionRef = mock(CollectionReference.class);
+//        mockDocumentRef = mock(DocumentReference.class);
+//
+//        FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext());
 
         when(mockDatabase.collection("events")).thenReturn(mockCollectionRef);
         when(mockCollectionRef.document(anyString())).thenReturn(mockDocumentRef);
 
-        eventController = new EventController(mockDatabase);
+//        eventController = new EventController(mockDatabase);
     }
 
     @Test
