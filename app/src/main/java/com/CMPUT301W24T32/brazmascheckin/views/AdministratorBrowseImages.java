@@ -21,7 +21,6 @@ import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.helper.ImageAdapter;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,7 +81,7 @@ public class AdministratorBrowseImages extends AppCompatActivity {
         imageAdapter = new ImageAdapter(imageUrlsWithType, this); // Update adapter
         gridView.setAdapter(imageAdapter);
 
-        imageController = new ImageController(this);
+        imageController = new ImageController(FirestoreDB.getStorageInstance());
 
         fetchImagesFromController();
 

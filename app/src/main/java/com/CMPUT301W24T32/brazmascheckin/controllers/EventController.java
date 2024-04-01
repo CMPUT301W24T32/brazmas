@@ -6,6 +6,7 @@ import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -17,16 +18,14 @@ import java.util.List;
  */
 public class EventController {
     private CollectionReference eventsRef;
-    private Context context;
 
     /**
      * Constructs a new instance of the Event Controller.
      *
-     * @param context the context of the view where the controller is instantiated.
+     * @param database Dependency Injection of FirebaseFirestore database
      */
-    public EventController(Context context) {
-        this.context = context;
-        eventsRef = FirestoreDB.getEventsRef();
+    public EventController(FirebaseFirestore database) {
+        this.eventsRef = FirestoreDB.getEventsRef(database);
     }
 
     /**

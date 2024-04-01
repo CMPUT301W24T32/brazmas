@@ -17,7 +17,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -27,11 +26,8 @@ import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
-import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.storage.StorageReference;
+
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -47,7 +43,6 @@ public class EditProfileActivity extends AppCompatActivity {
     private Button doneBtn;
     private EditText firstName;
     private EditText lastName;
-    private StorageReference storageRef;
     private Uri imageUri;
     private final int IMG_REQ = 300;
     private UserController userController;
@@ -65,7 +60,6 @@ public class EditProfileActivity extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_edit_profile);
         configureViews();
         configureControllers();
@@ -81,7 +75,7 @@ public class EditProfileActivity extends AppCompatActivity {
         lastName = findViewById(R.id.last_name_et);
         changeProfileBtn = findViewById(R.id.change_profile_picture_btn);
         removeProfileBtn = findViewById(R.id.remove_profile_picture_btn);
-        storageRef = FirestoreDB.getStorageReference("uploads");
+//        storageRef = FirestoreDB.getStorageReference("uploads");
         deviceID = DeviceID.getDeviceID(this);
         doneBtn = findViewById(R.id.done_btn);
         changeProfileBtn.setOnClickListener(view1 -> openFileChooser());
@@ -92,8 +86,8 @@ public class EditProfileActivity extends AppCompatActivity {
      */
 
     public void configureControllers() {
-        userController = new UserController(this);
-        imageController = new ImageController(this);
+        userController = new UserController(FirestoreDB.getDatabaseInstance());
+        imageController = new ImageController(FirestoreDB.getStorageInstance());
         colors = new ArrayList<>();
 
 
@@ -317,7 +311,7 @@ public class EditProfileActivity extends AppCompatActivity {
      * @return String of the fileid
      */
     private String uploadDefaultFile() {
-        imageController = new ImageController(this);
+        imageController = new ImageController(FirestoreDB.getStorageInstance());
         String fileID = String.valueOf(System.currentTimeMillis());
 
         if (imageUri != null) {

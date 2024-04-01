@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,6 +17,7 @@ import com.CMPUT301W24T32.brazmascheckin.helper.AnnouncementRecyclerViewAdapter;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.models.Announcement;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
+import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
@@ -104,8 +104,8 @@ public class AnnouncementActivity extends AppCompatActivity {
      * configures the controllers
      */
     public void configureControllers(){
-        eventController = new EventController(this);
-        userController = new UserController(this);
+        eventController = new EventController(FirestoreDB.getDatabaseInstance());
+        userController = new UserController(FirestoreDB.getDatabaseInstance());
         String deviceID = DeviceID.getDeviceID(this);
         // change these from null
         userController.getUser(deviceID, user -> {

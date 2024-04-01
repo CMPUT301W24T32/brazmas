@@ -19,6 +19,7 @@ import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
+import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
 
 import java.io.ByteArrayOutputStream;
@@ -54,7 +55,7 @@ public class SignUpActivity extends AppCompatActivity {
         TextView lastNameEditText = findViewById(R.id.sign_up_lastname_tv);
         Button submitButton = findViewById(R.id.sign_up_submit_btn);
 
-        userController = new UserController(this);
+        userController = new UserController(FirestoreDB.getDatabaseInstance());
         deviceID = DeviceID.getDeviceID(this);
 
         submitButton.setOnClickListener(view -> {
@@ -140,7 +141,7 @@ public class SignUpActivity extends AppCompatActivity {
      * @return String of the fileid
      */
     private String uploadFile() {
-        imageController = new ImageController(this);
+        imageController = new ImageController(FirestoreDB.getStorageInstance());
         String fileID = String.valueOf(System.currentTimeMillis());
 
         if (imageUri != null) {

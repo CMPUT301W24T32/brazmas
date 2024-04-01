@@ -28,6 +28,7 @@ import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
+import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 
 import java.util.ArrayList;
 
@@ -91,9 +92,9 @@ public class ViewEventFragment extends DialogFragment {
         getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.view_event_fragment_layout,null);
-        eventController = new EventController(getContext());
-        userController = new UserController(getContext());
-        imageController = new ImageController(getContext());
+        eventController = new EventController(FirestoreDB.getDatabaseInstance());
+        userController = new UserController(FirestoreDB.getDatabaseInstance());
+        imageController = new ImageController(FirestoreDB.getStorageInstance());
         // retrieving from the bundle
         Bundle bundle = getArguments();
         Event e = (Event) bundle.getSerializable("Event");

@@ -13,7 +13,6 @@ import com.google.firebase.storage.StorageReference;
  * as well as methods for interacting with Firebase Storage and deleting events.
  */
 public class FirestoreDB {
-
     /**
      * This method provides an instance of the Firestore database.
      * @return the FirebaseFirestore database instance
@@ -26,24 +25,24 @@ public class FirestoreDB {
      * This method provides a reference to the "events" collection
      * @return a CollectionReference for the "events" collection
      */
-    public static CollectionReference getEventsRef() {
-        return getDatabaseInstance().collection("events");
+    public static CollectionReference getEventsRef(FirebaseFirestore database) {
+        return database.collection("events");
     }
 
     /**
      * This method provides a reference to the "users" collection
      * @return a CollectionReference for the "users" collection
      */
-    public static CollectionReference getUsersRef() {
-        return getDatabaseInstance().collection("users");
+    public static CollectionReference getUsersRef(FirebaseFirestore database) {
+        return database.collection("users");
     }
 
     /**
      * This method gets a reference from the administrator collection in the database.
      * @return the CollectionReference for the admin collection.
      */
-    public static CollectionReference getAdminsRef() {
-        return getDatabaseInstance().collection("admins");
+    public static CollectionReference getAdminsRef(FirebaseFirestore database) {
+        return database.collection("admins");
     }
 
     /**
@@ -59,8 +58,8 @@ public class FirestoreDB {
      * @param ref The specific path within Firebase Storage.
      * @return The StorageReference for the specified path.
      */
-    public static StorageReference getStorageReference(String ref) {
-        return getStorageInstance().getReference(ref);
+    public static StorageReference getStorageReference(FirebaseStorage storage, String ref) {
+        return storage.getReference(ref);
     }
 
     /**
@@ -72,47 +71,5 @@ public class FirestoreDB {
         return FirebaseDatabase.getInstance().getReference(ref);
     }
 
-    /**
-     * This method deletes an event along with its associated images from the database.
-     * @param eventID The ID of the event document in the "events" collection.
-     * @param posterID The ID of the poster image stored in Firebase Storage.
-     * @param qrCodeID The ID of the QR code image stored in Firebase Storage.
-     */
-    public static void deleteEvent(String eventID, String posterID, String qrCodeID) {
-        // Delete the event document from the "events" collection
-        getEventsRef().document(eventID)
-                .delete()
-                .addOnSuccessListener(aVoid -> {
-                    // Event document deleted successfully
-                })
-                .addOnFailureListener(e -> {
-                    // Handle any errors that occurred while deleting the event document
-                });
-
-        // Delete the poster image from the storage
-        deleteImageFromStorage(posterID);
-
-        // Delete the QR code image from the storage
-        deleteImageFromStorage(qrCodeID);
-    }
-
-    /**
-     * This method deletes an image from Firebase Storage.
-     * @param imageID The ID of the image to be deleted.
-     */
-    private static void deleteImageFromStorage(String imageID) {
-        if (imageID != null) {
-            StorageReference storage = getStorageReference("uploads");
-            StorageReference imageRef = storage.child(imageID);
-
-            imageRef.delete()
-                    .addOnSuccessListener(aVoid -> {
-                        // Image deleted successfully
-                    })
-                    .addOnFailureListener(exception -> {
-                        // Handle any errors that occurred while deleting the image
-                    });
-        }
-    }
 }
 

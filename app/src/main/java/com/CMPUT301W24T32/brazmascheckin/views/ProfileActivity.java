@@ -14,7 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
@@ -24,6 +23,7 @@ import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
+import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
@@ -120,8 +120,8 @@ public class ProfileActivity extends AppCompatActivity {
      * configure controllers for profile activity
      */
     public void configureControllers() {
-        userController = new UserController(this);
-        imageController = new ImageController(this);
+        userController = new UserController(FirestoreDB.getDatabaseInstance());
+        imageController = new ImageController(FirestoreDB.getStorageInstance());
 
         userController.getUser(deviceID, user ->{
             String firstName = user.getFirstName();

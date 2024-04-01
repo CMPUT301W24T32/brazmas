@@ -20,22 +20,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
-import com.CMPUT301W24T32.brazmascheckin.controllers.AddFailureListener;
-import com.CMPUT301W24T32.brazmascheckin.controllers.AdminController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteFailureListener;
-import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteSuccessListener;
+
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.GetFailureListener;
-import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
+
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
-import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
+import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 
 
 import java.util.ArrayList;
@@ -88,8 +81,8 @@ public class AdministratorViewEventFragment extends DialogFragment {
         getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.administrator_view_event_fragment_layout,null);
-        eventController = new EventController(getContext());
-        imageController = new ImageController(getContext());
+        eventController = new EventController(FirestoreDB.getDatabaseInstance());
+        imageController = new ImageController(FirestoreDB.getStorageInstance());
 
         // retrieving from the bundle
         Bundle bundle = getArguments();

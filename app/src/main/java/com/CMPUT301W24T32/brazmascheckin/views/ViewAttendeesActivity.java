@@ -19,9 +19,9 @@ import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.AttendeeRecyclerViewAdapter;
 import com.CMPUT301W24T32.brazmascheckin.models.Announcement;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
+import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
 
-import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -89,8 +89,8 @@ public class ViewAttendeesActivity extends AppCompatActivity implements AddAnnou
      * @param event the event for which attendees are being viewed
      */
     private void configureControllers(Event event) {
-        eventController = new EventController(this);
-        userController = new UserController(this);
+        eventController = new EventController(FirestoreDB.getDatabaseInstance());
+        userController = new UserController(FirestoreDB.getDatabaseInstance());
 
         eventController.addSingleSnapshotListener(event.getID(), new SnapshotListener<Event>() {
             @Override
@@ -134,7 +134,7 @@ public class ViewAttendeesActivity extends AppCompatActivity implements AddAnnou
         });
     }
     public void addAnnouncement(Announcement announcement) {
-        eventController = new EventController(this);
+        eventController = new EventController(FirestoreDB.getDatabaseInstance());
         event.getAnnouncements().add(announcement);
         eventController.setEvent(event,null,null);
 

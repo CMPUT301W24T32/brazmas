@@ -10,6 +10,7 @@ import com.CMPUT301W24T32.brazmascheckin.models.User;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -21,17 +22,16 @@ import java.util.ArrayList;
  * Controller responsible for managing CRUD interactions between the View and the database.
  */
 public class UserController {
-    private Context context;
+
     private CollectionReference usersRef;
 
     /**
      * Constructs a new instance of the UserController.
      *
-     * @param context the context of the view where the controller is instantiated.
+     * @param database Dependency Injection of FirebaseFirestore database
      */
-    public UserController(Context context) {
-        this.context = context;
-        usersRef = FirestoreDB.getUsersRef();
+    public UserController(FirebaseFirestore database) {
+        this.usersRef = FirestoreDB.getUsersRef(database);
     }
 
 

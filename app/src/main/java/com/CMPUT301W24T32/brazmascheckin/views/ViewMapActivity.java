@@ -7,10 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Point;
+
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -21,16 +18,13 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
-import com.CMPUT301W24T32.brazmascheckin.controllers.AddFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.GetFailureListener;
-import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.helper.Location;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
-import com.CMPUT301W24T32.brazmascheckin.models.User;
+import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -41,7 +35,6 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -120,7 +113,7 @@ public class ViewMapActivity extends AppCompatActivity {
         mapView.setScrollableAreaLimitLatitude(MapView.getTileSystem().getMaxLatitude(),
                 MapView.getTileSystem().getMinLatitude(), 0);
         mapView.setMinZoomLevel(3.0);
-        userController = new UserController(this);
+        userController = new UserController(FirestoreDB.getDatabaseInstance());
         chooseLocationBtn = findViewById(R.id.view_map_done_btn);
         IMapController mapController = mapView.getController();
         mapController.setZoom(3);
@@ -129,9 +122,9 @@ public class ViewMapActivity extends AppCompatActivity {
     }
 
     private void configureControllers() {
-        userController = new UserController(this);
-        eventController = new EventController(this);
-        imageController = new ImageController(this);
+        userController = new UserController(FirestoreDB.getDatabaseInstance());
+        eventController = new EventController(FirestoreDB.getDatabaseInstance());
+        imageController = new ImageController(FirestoreDB.getStorageInstance());
         geocoder = new Geocoder(this);
     }
 
