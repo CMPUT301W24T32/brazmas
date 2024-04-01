@@ -141,7 +141,6 @@ public class AdministratorViewEventFragment extends DialogFragment {
             deleteEventBtn.setOnClickListener(view -> {
                 // call the deleteEvent method of EventController
 
-
                 eventController.deleteEvent(e.getID(), () -> {
                     Toast.makeText(getContext(), "Event deleted successfully", Toast.LENGTH_SHORT).show();
                     dismiss();

@@ -27,20 +27,31 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
-//todo: No date -> plus add event name for toast and in announcement activity -> so for message store organizer name 2
-//todo: toast message if sent, else error message
+//TODO: No date -> plus add event name for toast and in announcement activity -> so for message store organizer name 2
+//TODO: toast message if sent, else error message
+
+/**
+ * This class is a fragment for adding an announcement for an event.
+ */
 
 public class AddAnnouncementFragment extends DialogFragment {
     private EditText editTitle;
     private EditText editDesc;
     private DatePicker datePicker;
 
+    /**
+     * This method is a listener interface to communicate added announcement.
+     */
     interface AddAnnouncementDialogListener{
         void addAnnouncement(Announcement announcement);
     }
 
     private AddAnnouncementDialogListener listener;
 
+    /**
+     * This method
+     * @param context
+     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -51,8 +62,13 @@ public class AddAnnouncementFragment extends DialogFragment {
         }
     }
 
-
-
+    /**
+     * This method is used to create the dialog shown by this fragment.
+     * @param savedInstanceState The last saved instance state of the Fragment,
+     * or null if this is a freshly created Fragment.
+     *
+     * @return
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -71,6 +87,9 @@ public class AddAnnouncementFragment extends DialogFragment {
         return builder.create();
     }
 
+    /**
+     * This method retrieves user input for creating the announcement.
+     */
     private void retrieveInput() {
         String title = editTitle.getText().toString();
         String desc = editDesc.getText().toString();
@@ -81,20 +100,22 @@ public class AddAnnouncementFragment extends DialogFragment {
         Date date = new Date(day, month, year);
         long time = System.currentTimeMillis();
         if(title.isEmpty() || desc.isEmpty()) {
+            // display the toast message if any field is empty
             Toast.makeText(getContext(), "Enter all text fields", Toast.LENGTH_SHORT).show();
         } else {
+            // add announcement with user input
             listener.addAnnouncement(new Announcement(title, desc, date, "hello", time));
         }
 
     }
 
+    /**
+     * This method configures views within the fragment.
+     * @param view the root view of the fragment.
+     */
     private void configureViews(View view) {
         editDesc = view.findViewById(R.id.add_announcement_desc_et);
         editTitle = view.findViewById(R.id.add_announcement_name_tv);
         datePicker = view.findViewById(R.id.add_announcement_date_dp);
-
-
     }
-
-
 }
