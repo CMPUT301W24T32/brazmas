@@ -31,6 +31,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.commands.AddEventCommand;
 import com.CMPUT301W24T32.brazmascheckin.controllers.AddFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
@@ -146,15 +147,12 @@ public class AddEventActivity extends AppCompatActivity {
     private void populateOrphanedQRCodeSpinner() {
         OrphanedQRCodeFinder qrCodeFinder = new OrphanedQRCodeFinder(imageController, eventController);
         qrCodeFinder.findAndProcessOrphanedQRCodes(orphanedQRCodeFileIDs -> {
-            Log.d("tag1", "OrphanedQRCodeSpinner size: "+orphanedQRCodeFileIDs.size());
             for (String fileID : orphanedQRCodeFileIDs) {
                 imageController.getImage("QR_CODE", fileID, bytes -> {
-                    Log.d("tag1", "file ID: "+fileID);
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                     listOfEventIDs.add(fileID);
                     listOfBitmaps.add(bitmap);
                     qrCodeAdapter.notifyDataSetChanged();
-                    Log.d("tag1", "count of qrcode adapter "+qrCodeAdapter.getCount());
                     qrCodeSpinner.setAdapter(qrCodeAdapter);
                 }, e -> {
                     Log.e("failure", "processOrphanesQRCodes: " + e.getMessage());
@@ -202,23 +200,6 @@ public class AddEventActivity extends AppCompatActivity {
             shareQRCodeClicked = true;
         });
    }
-
-    /**
-     * Method to generate a promotional QR Code for an event
-     * @param event event for which promo qr code is being generated
-     */
-
-    private void generateShareQRCode(Event event) {
-        Bitmap qrCodeBitmap = QRCodeGenerator.generateQRCode(event.getID()+"-SHARE-QRCODE");
-        byte[] imageData = QRCodeGenerator.getQRCodeByteArray(qrCodeBitmap);
-        String fileID = event.getID()+"-SHARE-QRCODE";
-        event.setShareQRCode(fileID);
-        imageController.uploadQRCode("SHARE",fileID, imageData, uri -> {
-            String QRCodeURI = uri.toString();
-        }, e -> {
-            Toast.makeText(this, "Unable to store share QR code", Toast.LENGTH_SHORT).show();
-        });
-    }
 
     private ActivityResultLauncher<Intent> viewMapLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -277,142 +258,50 @@ public class AddEventActivity extends AppCompatActivity {
      * @param context The context of the activity.
      */
     public void retrieveInput(Context context) {
-        String title = editName.getText().toString();
+        String name = editName.getText().toString();
         String desc = editDesc.getText().toString();
         String limitText = editLimit.getText().toString();
 
-        int limit = -1;
+        int attendeeLimit = -1;
         if (!limitText.isEmpty()) {
-            limit = Integer.parseInt(limitText);
+            attendeeLimit = Integer.parseInt(limitText);
         }
 
         int day = datePicker.getDayOfMonth();
         int month = datePicker.getMonth();
         int year = datePicker.getYear();
         Date date = new Date(day, month, year);
-        HashMap<String, Integer> checkIns = new HashMap<>();
-        ArrayList<String> signUps = new ArrayList<>();
-        String posterID = uploadFile();
         boolean geoLocationEnabled = geoLocationSwitch.isChecked();
 
-        if (title.isEmpty() || desc.isEmpty()) {
+        if (name.isEmpty() || desc.isEmpty()) {
             Toast.makeText(this, "Enter all text fields", Toast.LENGTH_SHORT).show();
-        } if (geoLocationEnabled && location == null) {
+        }
+        else if (geoLocationEnabled && location == null) {
             Toast.makeText(context, "Location enabled: Choose Location", Toast.LENGTH_SHORT).show();
         } else {
             String selectedOption = autoCompleteTextView.getText().toString();
-            boolean generateNewQRCode = selectedOption.equals("Generate new QR code");
+            boolean generateNewQRCode = selectedOption.equals("Generate new QR code"); // TODO: make this constant
 
             if(!geoLocationEnabled) {
                 location = null;
             }
 
-            Event event = new Event("", title, date,
-                    desc, checkIns, signUps,
-                    limit, posterID, "",
-                    "", "",
-                    geoLocationEnabled, location, new HashMap<>(), new ArrayList<Announcement>());
-            addEvent(event, generateNewQRCode);
-        }
-    }
+            String ID = null;
+            String qrCode = null;
 
-
-    /**
-     * Method to upload selected image file
-     * @return file ID generated based on current system time
-     */
-    private String uploadFile() {
-        String fileID = String.valueOf(System.currentTimeMillis());
-
-        if (imageUri != null) {
-            imageController.uploadImage(ImageController.EVENT_POSTER, fileID, imageUri,
-                    object -> Toast.makeText(this, "Image uploaded!", Toast.LENGTH_SHORT).show(), e -> {
-                    });
-        } else {
-            fileID = null;
-        }
-        return fileID;
-    }
-
-    /**
-     * This method adds an event to the database along with a generated QR code.
-     * @param event The event to be added.
-     */
-    public void addEvent(Event event, boolean generateNewQRCode) {
-        event.setOrganizer(deviceID);
-
-        //choice
-        if (generateNewQRCode) {
-            // Generate new QR code and add event
-            generateAndAddQRCode(event);
-        } else {
-            // Use existing QR code and add event
-            qrCodeSpinner.setVisibility(View.VISIBLE);
-            useExistingQRCode(event);
-        }
-
-    }
-
-    /**
-     * Function that allows user to select a qr code in database not associated with event
-     * @param event event for which function is assigning a qr code already in database
-     */
-    private void useExistingQRCode(Event event) {
-        String selectQRCodeFileID = (String) qrCodeSpinner.getSelectedItem();
-        String newID = selectQRCodeFileID.substring(0, selectQRCodeFileID.indexOf('-'));
-        event.setID(newID);
-        event.setQRCode(selectQRCodeFileID);
-
-        //generate share QR code
-        if (shareQRCodeClicked) {
-            generateShareQRCode(event);
-        }
-        
-        eventController.setEvent(event, () -> userController.getUser(deviceID, user -> {
-            user.createEvent(newID);
-            userController.setUser(user, null ,null);
-        }, null), null);
-        finish();
-    }
-
-    /**
-     * Function to generate a new qr code and add it to the database
-     * @param event event for which qr code is being generated
-     */
-    private void generateAndAddQRCode(Event event) {
-        eventController.addEvent(event, ID -> {
-            event.setID(ID);
-
-            //generate share QR code
-            if (shareQRCodeClicked) {
-                generateShareQRCode(event);
+            if(!generateNewQRCode) {
+                qrCode = (String) qrCodeSpinner.getSelectedItem();
+                ID = qrCode.substring(0, qrCode.indexOf('-'));
             }
 
-            // Generate and upload QR code
-            Bitmap bitmap = QRCodeGenerator.generateQRCode(ID);
-            byte[] imageData = QRCodeGenerator.getQRCodeByteArray(bitmap);
-
-            String fileID = event.getID() + "-QRCODE";
-
-            imageController.uploadQRCode("CHECK-IN",fileID, imageData, uri -> {
-                String QRCodeURI = uri.toString();
-                event.setQRCode(fileID);
-                eventController.setEvent(event, null, e -> Toast.makeText(AddEventActivity.this, "no qr", Toast.LENGTH_SHORT).show());
-            }, e -> {
-                Toast.makeText(this, "Unable to store QR code", Toast.LENGTH_SHORT).show();
-            });
-
-            // Update user information and finish activity
-            userController.getUser(deviceID, user -> {
-                user.createEvent(ID);
-                userController.setUser(user, null, null);
-            }, null);
+            AddEventCommand addEventCommand = new AddEventCommand(
+                    eventController, imageController, userController,
+                    ID, name, desc, attendeeLimit, date,
+                    geoLocationEnabled, qrCode,
+                    imageUri, shareQRCodeClicked, deviceID,
+                    location, this);
+            addEventCommand.execute();
             finish();
-        }, new AddFailureListener() {
-            @Override
-            public void onAddFailure(Exception e) {
-                // Handle failure
-            }
-        });
+        }
     }
 }

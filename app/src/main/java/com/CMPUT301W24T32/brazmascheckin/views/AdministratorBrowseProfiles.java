@@ -12,8 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteSuccessListener;
-
 
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteFailureListener;
@@ -109,12 +107,9 @@ public class AdministratorBrowseProfiles extends AppCompatActivity {
         //TODO: need to implement long click or slide feature to delete a user
 
         // set click listener for recyclerView items
-        profileRecyclerViewAdapter.setOnItemClickListener(new AdminProfileRecyclerViewAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                User clickedUser = userDataList.get(position);
-                showConfirmationDialog(clickedUser);
-            }
+        profileRecyclerViewAdapter.setOnItemClickListener(position -> {
+            User clickedUser = userDataList.get(position);
+            showConfirmationDialog(clickedUser);
         });
     }
 
@@ -139,12 +134,9 @@ public class AdministratorBrowseProfiles extends AppCompatActivity {
 
     private void deleteUser(User user) {
 
-        userController.deleteUser(user, new DeleteSuccessListener() {
-            @Override
-            public void onDeleteSuccess() {
-                // profile deleted successfuly
-                Toast.makeText(AdministratorBrowseProfiles.this, "Profile deleted", Toast.LENGTH_SHORT).show();
-            }
+        userController.deleteUser(user, () -> {
+            // profile deleted successfully
+            Toast.makeText(AdministratorBrowseProfiles.this, "Profile deleted", Toast.LENGTH_SHORT).show();
         }, new DeleteFailureListener() {
             @Override
             public void onDeleteFailure(Exception e) {
@@ -157,12 +149,9 @@ public class AdministratorBrowseProfiles extends AppCompatActivity {
     private void showConfirmationDialog(User user) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you sure you want to delete this profile?");
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // User confirmed, delete the profile
-                deleteUser(user);
-            }
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            // User confirmed, delete the profile
+            deleteUser(user);
         });
         builder.setNegativeButton("No", null); // Do nothing if user cancels
         builder.show();
