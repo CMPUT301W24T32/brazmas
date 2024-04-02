@@ -39,6 +39,10 @@ public class Event implements Serializable {
 
     private int nextMilestone;
 
+    public Event(String ID) {
+        this.ID = ID;
+    }
+
 
     /**
      * Constructs a new instance of the Event class with the full information for an event.

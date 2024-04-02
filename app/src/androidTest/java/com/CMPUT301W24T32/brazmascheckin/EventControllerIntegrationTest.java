@@ -2,6 +2,7 @@ package com.CMPUT301W24T32.brazmascheckin;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 import static junit.framework.TestCase.fail;
 import static org.mockito.Mockito.*;
@@ -12,6 +13,7 @@ import com.CMPUT301W24T32.brazmascheckin.controllers.AddSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SetFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SetSuccessListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -20,7 +22,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.util.Consumer;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,8 +36,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.BiConsumer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EventControllerIntegrationTest {
@@ -126,34 +137,34 @@ public class EventControllerIntegrationTest {
 
     @Test
     public void testSetEvent_Success() {
-        Event mockEvent = mock(Event.class);
+        Event event = new Event("mock_event_Id");
         Task mockTask = mock(Task.class);
+        when(mockTask.addOnSuccessListener(any())).thenReturn(mockTask);
+        when(mockTask.addOnFailureListener(any())).thenReturn(mockTask);
 
         when(mockDocumentRef.set(any(Event.class))).thenReturn(mockTask);
-
-        eventController.setEvent(mockEvent, () -> assertTrue(true), e -> fail());
-        verify(mockDocumentRef).set(mockEvent);
+        eventController.setEvent(event, () -> assertTrue(true), e-> fail());
+        verify(mockDocumentRef).set(event);
     }
 
     @Test
     public void testSetEvent_Failure() {
-        Event mockEvent = mock(Event.class);
+        Event event = new Event("mock_event_Id");
         Task<Void> mockTask = mock(Task.class);
 
         when(mockDocumentRef.set(any(Event.class))).thenReturn(mockTask);
+        when(mockTask.addOnSuccessListener(any())).thenReturn(mockTask);
+        when(mockTask.addOnFailureListener(any())).thenReturn(mockTask);
 
-        // Configure mockTask behavior for addOnFailureListener to execute the failure listener callback
         when(mockTask.addOnFailureListener(any())).thenAnswer(invocation -> {
             OnFailureListener listener = invocation.getArgument(0);
             listener.onFailure(new Exception("Mock failure"));
             return mockTask;
         });
 
-        // Call the method under test
-        eventController.setEvent(mockEvent, () -> fail(), e -> assertTrue(true));
+        eventController.setEvent(event, () -> fail(), e -> assertTrue(true));
 
-        // Verify that the set method was called on the mockDocumentRef
-        verify(mockDocumentRef).set(mockEvent);
+        verify(mockDocumentRef).set(event);
     }
 
     @Test
@@ -178,5 +189,77 @@ public class EventControllerIntegrationTest {
                     // Handle failure case if needed
                     fail("Failure callback should not be invoked");
                 });
+    }
+
+    @Test
+    public void testGetEvent_Failure() {
+        String eventId = "mock_event_id";
+        Task mockTask = mock(Task.class);
+
+        when(mockDocumentRef.get()).thenReturn(mockTask);
+        when(mockTask.addOnSuccessListener(any())).thenReturn(mockTask);
+
+        when(mockTask.addOnFailureListener(any())).thenAnswer(invocation -> {
+            OnFailureListener listener = invocation.getArgument(0);
+            listener.onFailure(new Exception("Mock failure"));
+            return mockTask;
+        });
+
+        AtomicBoolean failureListenerInvoked = new AtomicBoolean(false);
+
+        eventController.getEvent(eventId,
+                event -> {
+                    fail("Success callback should not be invoked");
+                },
+                e -> {
+                    failureListenerInvoked.set(true);
+                });
+
+        assertTrue(failureListenerInvoked.get());
+    }
+
+    @Test
+    public void testDeleteEvent_Success() {
+        String eventId = "mock_event_id";
+        Task<Void> mockTask = mock(Task.class);
+
+        when(mockDocumentRef.delete()).thenReturn(mockTask);
+
+        when(mockTask.addOnSuccessListener(any())).thenAnswer(invocation -> {
+            OnSuccessListener<Void> listener = invocation.getArgument(0);
+            listener.onSuccess(null);
+            return mockTask;
+        });
+
+        AtomicBoolean successListenerInvoked = new AtomicBoolean(false);
+
+        eventController.deleteEvent(eventId,
+                () -> successListenerInvoked.set(true),
+                e -> fail("Failure callback should not be invoked"));
+
+        assertTrue(successListenerInvoked.get());
+    }
+
+    @Test
+    public void testDeleteEvent_Failure() {
+        String eventId = "mock_event_id";
+        Task<Void> mockTask = mock(Task.class);
+
+        when(mockDocumentRef.delete()).thenReturn(mockTask);
+
+        when(mockTask.addOnFailureListener(any())).thenAnswer(invocation -> {
+            OnFailureListener listener = invocation.getArgument(0);
+            listener.onFailure(new Exception("Mock failure"));
+            return mockTask;
+        });
+
+        AtomicBoolean failureListenerInvoked = new AtomicBoolean(false);
+
+        eventController.deleteEvent(eventId,
+                () -> fail("Success callback should not be invoked"),
+                e -> failureListenerInvoked.set(true));
+
+        // Assert that the failure listener was invoked
+        assertTrue(failureListenerInvoked.get());
     }
 }
