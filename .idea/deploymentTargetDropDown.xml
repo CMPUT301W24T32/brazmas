@@ -2,6 +2,9 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="AddEventTests">
+        <State />
+      </entry>
       <entry key="app">
         <State>
           <targetSelectedWithDropDown>
@@ -18,19 +21,16 @@
           <timeTargetWasSelectedWithDropDown value="2024-03-28T18:37:23.656399300Z" />
         </State>
       </entry>
+      <entry key="successfulAddEvent()">
+        <State />
+      </entry>
+      <entry key="swipes()">
+        <State />
+      </entry>
       <entry key="testAddSnapshotListener_Success()">
         <State />
       </entry>
-      <entry key="testDeleteEvent_Success()">
-        <State />
-      </entry>
-      <entry key="testGetEvent_Failure()">
-        <State />
-      </entry>
-      <entry key="testSetEvent_Failure()">
-        <State />
-      </entry>
-      <entry key="testSetEvent_Success()">
+      <entry key="testShowAllEvents()">
         <State />
       </entry>
     </value>
