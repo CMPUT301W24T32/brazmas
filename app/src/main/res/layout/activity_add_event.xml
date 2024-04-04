@@ -130,7 +130,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/orphaned_qr_code_spinner"
             android:layout_below="@id/add_event_select_qr_code"
-            android:visibility="invisible"
+            android:visibility="gone"
             />
 
         <Button
