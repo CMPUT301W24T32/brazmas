@@ -98,7 +98,7 @@ public class AdminProfileRecyclerViewAdapter extends RecyclerView.Adapter<AdminP
             super(itemView);
 
             // initializes the views
-            name = itemView.findViewById(R.id.admin_view_profile_name_tv);
+            name = itemView.findViewById(R.id.admin_view_profile_name_tv_admin);
 
             // set the click listener for the itemView
             itemView.setOnClickListener(new View.OnClickListener() {

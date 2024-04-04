@@ -75,8 +75,6 @@ public class ImageAdapter extends BaseAdapter {
             holder.gridCaption.setText("Profile Picture");
         }
 
-
-
         holder.gridImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
