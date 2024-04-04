@@ -27,7 +27,7 @@
       <entry key="swipes()">
         <State />
       </entry>
-      <entry key="testAddSnapshotListener_Success()">
+      <entry key="testAddEventWithoutName()">
         <State />
       </entry>
       <entry key="testShowAllEvents()">
