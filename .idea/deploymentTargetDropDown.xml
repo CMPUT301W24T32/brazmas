@@ -24,7 +24,7 @@
       <entry key="attendBelowLimit()">
         <State />
       </entry>
-      <entry key="swipes()">
+      <entry key="checkAttendeeList()">
         <State />
       </entry>
       <entry key="testAddEventWithoutName()">
