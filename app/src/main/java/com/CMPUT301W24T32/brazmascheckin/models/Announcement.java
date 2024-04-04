@@ -15,7 +15,7 @@ public class Announcement implements Serializable {
 
     private String name;
     private String description;
-    private Date date;
+    //private Date date;
 
     private String eventID; //not needed field
     private long timeCreated;
@@ -29,13 +29,14 @@ public class Announcement implements Serializable {
      * This constructor is for creating an Announcement object.
      * @param name The name of announcement.
      * @param description The description of announcement.
-     * @param date The date of the announcement.
+     * .
      * @ eventID The ID of the event related to the announcement.
      */
-    public Announcement(String name, String description, Date date, String eventID, long timeCreated) {
+    //public Announcement(String name, String description, Date date, String eventID, long timeCreated) {
+    public Announcement(String name, String description, String eventID, long timeCreated) {
         this.name = name;
         this.description = description;
-        this.date = date;
+       // this.date = date;
         this.eventID = eventID;
         this.timeCreated = timeCreated;
     }
@@ -83,17 +84,17 @@ public class Announcement implements Serializable {
      * To get the date of the announcement.
      * @return The date of announcement.
      */
-    public Date getDate() {
-        return date;
-    }
+    //public Date getDate() {
+        //return date;
+    //}
 
     /**
      * To set the date of announcement.
      * @param date the date which announcement will be set to.
      */
-    public void setDate(Date date) {
-        this.date = date;
-    }
+    //public void setDate(Date date) {
+        //this.date = date;
+    //}
 
     /**
      * To get the event ID of announcement.

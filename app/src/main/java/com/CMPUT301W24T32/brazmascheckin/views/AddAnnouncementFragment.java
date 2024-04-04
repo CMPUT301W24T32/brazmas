@@ -33,7 +33,6 @@ import java.util.HashMap;
 public class AddAnnouncementFragment extends DialogFragment {
     private EditText editTitle;
     private EditText editDesc;
-    private DatePicker datePicker;
 
     interface AddAnnouncementDialogListener{
         void addAnnouncement(Announcement announcement);
@@ -62,9 +61,9 @@ public class AddAnnouncementFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder
                 .setView(view)
-                .setTitle("Add an Announcement")
+                .setTitle("Send Announcement")
                 .setNegativeButton("Cancel",null)
-                .setPositiveButton("Add", (dialog, which) -> {
+                .setPositiveButton("Send", (dialog, which) -> {
                     retrieveInput();
                 });
 
@@ -75,15 +74,12 @@ public class AddAnnouncementFragment extends DialogFragment {
         String title = editTitle.getText().toString();
         String desc = editDesc.getText().toString();
 
-        int day = datePicker.getDayOfMonth();
-        int month = datePicker.getMonth() ;
-        int year = datePicker.getYear();
-        Date date = new Date(day, month, year);
+
         long time = System.currentTimeMillis();
         if(title.isEmpty() || desc.isEmpty()) {
             Toast.makeText(getContext(), "Enter all text fields", Toast.LENGTH_SHORT).show();
         } else {
-            listener.addAnnouncement(new Announcement(title, desc, date, "hello", time));
+            listener.addAnnouncement(new Announcement(title, desc, "hello", time));
         }
 
     }
@@ -91,7 +87,7 @@ public class AddAnnouncementFragment extends DialogFragment {
     private void configureViews(View view) {
         editDesc = view.findViewById(R.id.add_announcement_desc_et);
         editTitle = view.findViewById(R.id.add_announcement_name_tv);
-        datePicker = view.findViewById(R.id.add_announcement_date_dp);
+
 
 
     }
