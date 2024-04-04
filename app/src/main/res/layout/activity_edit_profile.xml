@@ -6,24 +6,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".views.ProfileActivity">
-
-    <ImageView
-        android:id="@+id/profile_picture_edit"
-        android:layout_width="214dp"
-        android:layout_height="202dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="71dp"
-        android:layout_marginEnd="98dp"
-        android:contentDescription="TODO"
-        tools:srcCompat="@tools:sample/avatars" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/profile_picture_edit_card"
+        app:cardCornerRadius="100dp"
+        android:layout_width="200dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="125dp"
+        android:layout_height="200dp">
+        <ImageView
+            android:id="@+id/profile_picture_edit"
+            android:scaleType="centerCrop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="TODO"
+            tools:srcCompat="@tools:sample/avatars" />
+    </androidx.cardview.widget.CardView>
 
     <EditText
         android:id="@+id/first_name_et"
         android:layout_width="168dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/profile_picture_edit"
+        android:layout_below="@+id/profile_picture_edit_card"
         android:layout_centerInParent="true"
         android:layout_marginTop="26dp"
         android:fontFamily="sans-serif-condensed-medium"
@@ -45,8 +48,8 @@
         android:id="@+id/change_profile_picture_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/profile_picture_edit"
-        android:layout_alignEnd="@+id/profile_picture_edit"
+        android:layout_below="@+id/profile_picture_edit_card"
+        android:layout_alignEnd="@+id/profile_picture_edit_card"
         android:layout_marginTop="-44dp"
         android:layout_marginEnd="-10dp"
         android:clickable="true"
@@ -74,12 +77,12 @@
         android:id="@+id/remove_profile_picture_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/profile_picture_edit"
-        android:layout_alignEnd="@+id/profile_picture_edit"
-        android:layout_marginTop="-41dp"
-        android:layout_marginEnd="166dp"
-        android:clickable="true"
+        android:layout_below="@+id/profile_picture_edit_card"
+        android:layout_alignStart="@+id/profile_picture_edit_card"
+        android:layout_marginStart="-10dp"
+        android:layout_marginTop="-44dp"
         android:backgroundTint="@color/lightPink"
+        android:clickable="true"
         android:contentDescription="TODO"
         android:focusable="true"
         app:srcCompat="@drawable/sharp_remove_black_36" />
