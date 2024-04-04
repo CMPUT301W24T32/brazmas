@@ -14,8 +14,8 @@
         android:text="Images"
         android:textSize="45sp"
         android:gravity="center"
-        android:background="#673AB7"
-        android:textColor="@color/white"/>
+        android:background="@color/lightPink"
+        android:textColor="@color/black"/>
 
     <GridView
         android:id="@+id/gridView"
