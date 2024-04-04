@@ -245,9 +245,6 @@ public class UserHome extends AppCompatActivity {
                                 eventDataList.add(event);
                             }
 
-//                            if(organizedEvents.contains(event.getID())) {
-//                                handleAttendanceAlerts(event);
-//                            }
                         }
                         eventRecyclerViewAdapter.notifyDataSetChanged();
                     }
@@ -349,7 +346,7 @@ public class UserHome extends AppCompatActivity {
                             if (announcements != null) {
                                 for(Announcement a: announcements){
                                     if (a.getTimeCreated() > user.getLastAnnouncementCheck()){
-                                        Toast.makeText(getBaseContext(), "check your announcements update for" + event.getName(), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getBaseContext(), "Event update for " + event.getName(), Toast.LENGTH_LONG).show();
                                         break;
                                     }
                                 }
@@ -360,7 +357,7 @@ public class UserHome extends AppCompatActivity {
 
                 @Override
                 public void onError(Exception e) {
-                    //do soon**********8
+                   Toast.makeText(UserHome.this, "Unable to connect to the " + "database", Toast.LENGTH_LONG).show();
                 }
             });
 

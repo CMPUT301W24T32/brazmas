@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -122,11 +123,20 @@ public class ProfileActivity extends AppCompatActivity {
     public void configureControllers() {
         userController = new UserController(FirestoreDB.getDatabaseInstance());
         imageController = new ImageController(FirestoreDB.getStorageInstance());
-
         userController.getUser(deviceID, user ->{
             String firstName = user.getFirstName();
             String lastName = user.getLastName();
             String fullName = firstName + " " + lastName;
+
+            Object lock = new Object();
+            synchronized (lock){
+                try {
+                    lock.wait(600);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
             if (user.getProfilePicture() != null) {
                 displayImage(user.getProfilePicture());
             }
@@ -140,7 +150,7 @@ public class ProfileActivity extends AppCompatActivity {
                 extraGeoLocationLinearLayout.setVisibility(View.VISIBLE);
             }
 
-        },null);
+        },e -> Toast.makeText(ProfileActivity.this, "Unable to connect to the " + "database", Toast.LENGTH_LONG).show());
 
 
         editProfileBtn.setOnClickListener(new View.OnClickListener() {
@@ -219,7 +229,7 @@ public class ProfileActivity extends AppCompatActivity {
             imageController.getImage(ImageController.PROFILE_PICTURE, posterID, bytes -> {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 profilePicture.setImageBitmap(bitmap);
-            }, null);
+            }, e -> Toast.makeText(ProfileActivity.this, "Unable to connect to the " + "database", Toast.LENGTH_LONG).show());
         }
     }
 
@@ -232,7 +242,7 @@ public class ProfileActivity extends AppCompatActivity {
             imageController.getImage(ImageController.DEFAULT_PROFILE_PICTURE_PATH, posterID, bytes -> {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 profilePicture.setImageBitmap(bitmap);
-            }, null);
+            }, e -> Toast.makeText(ProfileActivity.this, "Unable to connect to the " + "database", Toast.LENGTH_LONG).show());
         }
     }
 
