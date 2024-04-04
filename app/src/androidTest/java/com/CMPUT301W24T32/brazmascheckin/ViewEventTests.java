@@ -37,7 +37,6 @@ import java.util.HashMap;
 public class ViewEventTests {
     @Rule
     public ActivityScenarioRule<UserHome> scenario = new ActivityScenarioRule<>(UserHome.class);
-
     private UserController userController;
     private EventController eventController;
 
