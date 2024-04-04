@@ -156,6 +156,9 @@ public class AdminProfileRecyclerViewAdapter extends RecyclerView.Adapter<AdminP
         }
 
         private void displayImage(String posterID) {
+            // while image is loading
+            profilePicture.setImageResource(R.drawable.admin_profile_24);
+
             if (posterID != null) {
                 imageController.getImage(ImageController.PROFILE_PICTURE, posterID, bytes -> {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
@@ -164,6 +167,9 @@ public class AdminProfileRecyclerViewAdapter extends RecyclerView.Adapter<AdminP
             }
         }
         private void displayDefaultImage(String posterID){
+            // while image is loading
+            profilePicture.setImageResource(R.drawable.admin_profile_24);
+
             if (posterID != null) {
                 imageController.getImage(ImageController.DEFAULT_PROFILE_PICTURE_PATH, posterID, bytes -> {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
