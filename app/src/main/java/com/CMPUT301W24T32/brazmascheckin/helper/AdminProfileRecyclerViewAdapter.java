@@ -6,15 +6,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
 
 import java.util.ArrayList;
+import com.bumptech.glide.Glide;  // just like browse images for admin
 
 /**
  * This class is the adapter for the RecyclerView of user profiles.
@@ -89,6 +92,7 @@ public class AdminProfileRecyclerViewAdapter extends RecyclerView.Adapter<AdminP
      */
     public class AdminProfileViewHolder extends RecyclerView.ViewHolder {
         private TextView name;
+        private ImageView profilePicture;
 
         /**
          * This method constructs a AdminProfileViewHolder.
@@ -99,6 +103,7 @@ public class AdminProfileRecyclerViewAdapter extends RecyclerView.Adapter<AdminP
 
             // initializes the views
             name = itemView.findViewById(R.id.admin_view_profile_name_tv_admin);
+            profilePicture = itemView.findViewById(R.id.profile_picture_admin);
 
             // set the click listener for the itemView
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -119,18 +124,24 @@ public class AdminProfileRecyclerViewAdapter extends RecyclerView.Adapter<AdminP
         public void bind(User user) {
             Log.d("AdminProfileAdapter", "Binding user: " + user.getFirstName() + " " + user.getLastName());
 
-            String firstName = user.getFirstName();
-            String lastName = user.getLastName();
+            String firstName = user.getFirstName() != null ? user.getFirstName() : "John";
+            String lastName = user.getLastName() != null ? user.getLastName() : "Doe";
+            String fullName = firstName + " " + lastName;
 
-            if (firstName == null) {
-                firstName = "John";
-            }
-            if (lastName == null) {
-                lastName = "Doe";
-            }
+            name.setText(fullName);
 
-            String firstLastName = firstName + " " + lastName;
-            name.setText(firstLastName);
+            // Load image using Glide
+            if (user.getProfilePicture() != null) {
+
+                Glide.with(itemView.getContext())
+                        .load(user.getProfilePicture())
+                        .placeholder(R.drawable.admin_profile_24) // Placeholder image while loading
+                        .error(R.drawable.admin_profile_24) // Error image if loading fails
+                        .into(profilePicture);
+            } else {
+                // Set a default image if no profile picture URL is available
+                profilePicture.setImageResource(R.drawable.admin_profile_24);
+            }
         }
     }
 }
