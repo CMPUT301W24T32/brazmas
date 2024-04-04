@@ -38,13 +38,39 @@ public class UserController {
         String ID = user.getID();
         usersRef.document(ID).set(user)
                 .addOnSuccessListener(temp -> {
-                    if(successListener != null) {
+                    if (successListener != null) {
                         successListener.onSetSuccess();
                     }
                 })
                 .addOnFailureListener(e -> {
-                    if(failureListener != null) {
+                    if (failureListener != null) {
                         failureListener.onSetFailure(e);
+                    }
+                });
+    }
+
+    /**
+     *
+     * @param user
+     * @param successListener
+     * @param failureListener
+     */
+    public void addUser(User user, AddSuccessListener<String> successListener,
+                         AddFailureListener failureListener) {
+        usersRef.add(user)
+                .addOnSuccessListener(documentReference -> {
+                    if (documentReference != null) {
+                        String ID = documentReference.getId();
+                        if (successListener != null) {
+                            successListener.onAddSuccess(ID);
+                        }
+                    } else if (failureListener != null) {
+                        failureListener.onAddFailure(null);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if (failureListener != null) {
+                        failureListener.onAddFailure(e);
                     }
                 });
     }

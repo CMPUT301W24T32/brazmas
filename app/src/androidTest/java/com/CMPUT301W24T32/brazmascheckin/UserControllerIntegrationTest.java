@@ -1,5 +1,6 @@
 package com.CMPUT301W24T32.brazmascheckin;
 
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static junit.framework.TestCase.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -11,7 +12,6 @@ import static org.mockito.Mockito.when;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -47,6 +47,20 @@ public class UserControllerIntegrationTest {
     }
 
     @Test
+    public void testAddUser_Success() {
+        User mockUser = mock(User.class);
+        when(mockDocumentRef.getId()).thenReturn("mock_event_id");
+        Task mockTask = mock(Task.class);
+        when(mockCollectionRef.add(any(User.class))).thenReturn(mockTask);
+        when(mockTask.addOnSuccessListener(any())).thenReturn(mockTask);
+        when(mockTask.addOnFailureListener(any())).thenReturn(mockTask);
+
+        userController.addUser(mockUser, object -> {
+            assert object.equals("mock_user_id");
+        }, null);
+    }
+
+    @Test
     public void testSetUser_Success() {
         User user = new User("mock_user_Id");
         Task mockTask = mock(Task.class);
@@ -77,6 +91,46 @@ public class UserControllerIntegrationTest {
 
         verify(mockDocumentRef).set(user);
     }
-    
+
+    @Test
+    public void testGetEvent_Success() {
+        User mockUser = mock(User.class);
+        String userId = "mock_user_id";
+        Task mockTask = mock(Task.class);
+
+        when(mockDocumentRef.get()).thenReturn(mockTask);
+        when(mockCollectionRef.add(any(User.class))).thenReturn(mockTask);
+        when(mockTask.addOnSuccessListener(any())).thenReturn(mockTask);
+        when(mockTask.addOnFailureListener(any())).thenReturn(mockTask);
+
+        userController.addUser(mockUser, null, null);
+
+        userController.getUser(userId,
+                user -> assertEquals(mockUser, user),
+                e -> fail("Failure callback should not be invoked"));
+    }
+
+    @Test
+    public void testGetUser_Failure() {
+        String userId = "mock_user_id";
+        Task mockTask = mock(Task.class);
+
+        when(mockDocumentRef.get()).thenReturn(mockTask);
+        when(mockTask.addOnSuccessListener(any())).thenReturn(mockTask);
+
+        when(mockTask.addOnFailureListener(any())).thenAnswer(invocation -> {
+            OnFailureListener listener = invocation.getArgument(0);
+            listener.onFailure(new Exception("Mock failure"));
+            return mockTask;
+        });
+
+        AtomicBoolean targetListenerInvoked = new AtomicBoolean(false);
+
+        userController.getUser(userId,
+                user -> fail("Success callback should not be invoked"),
+                e -> targetListenerInvoked.set(true));
+
+        assertTrue(targetListenerInvoked.get());
+    }
 
 }
