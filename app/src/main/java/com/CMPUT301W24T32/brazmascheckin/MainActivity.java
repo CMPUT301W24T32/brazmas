@@ -80,10 +80,6 @@ public class MainActivity extends AppCompatActivity {
         }, e -> {
 
             // manually create one
-//            Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
-//            startActivity(intent);
-//            finish();
-
             User user = new User(
                     "John", "Doe", new ArrayList<>(), null, new ArrayList<>(),
                     false, 0, null,
