@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -309,7 +310,11 @@ public class ViewEventFragment extends DialogFragment {
      */
     private void displayImage(String posterID) {
         if(posterID != null && !posterID.isEmpty()) {
-            imageController.getImage(ImageController.EVENT_POSTER, posterID,
+            String folder = ImageController.DEFAULT_EVENT_POSTER;
+            if(!posterID.equals("defaultPoster.png")) {
+                folder = ImageController.EVENT_POSTER;
+            }
+            imageController.getImage(folder, posterID,
                     bytes -> {
                         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                         eventPoster.setImageBitmap(bitmap);

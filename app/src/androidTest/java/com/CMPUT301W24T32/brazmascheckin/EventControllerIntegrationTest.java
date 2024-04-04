@@ -70,21 +70,17 @@ public class EventControllerIntegrationTest {
 
         when(mockDocumentRef.getId()).thenReturn("mock_event_id");
         when(mockCollectionRef.add(any(Event.class))).thenReturn(mockTask);
-        when(mockTask.addOnSuccessListener(any())).thenReturn(mockTask);
 
-        // Configure mockTask behavior for addOnFailureListener to execute the failure listener callback
+        when(mockTask.addOnSuccessListener(any())).thenReturn(mockTask);
         when(mockTask.addOnFailureListener(any())).thenAnswer(invocation -> {
             OnFailureListener listener = invocation.getArgument(0);
             listener.onFailure(new Exception());
             return mockTask;
         });
 
-        // Create a flag to track whether the failure listener is invoked
-        AtomicBoolean failureListenerInvoked = new AtomicBoolean(false);
-
-        // Call the method under test
-        eventController.addEvent(mockEvent, null, failure -> failureListenerInvoked.set(true));
-        assertTrue(failureListenerInvoked.get());
+        AtomicBoolean targetListenerInvoked = new AtomicBoolean(false); // need atomic for concurrency
+        eventController.addEvent(mockEvent, null, failure -> targetListenerInvoked.set(true));
+        assertTrue(targetListenerInvoked.get());
     }
 
     @Test
@@ -94,7 +90,6 @@ public class EventControllerIntegrationTest {
         when(mockDocumentRef.getId()).thenReturn("mock_event_id");
         when(mockCollectionRef.add(any(Event.class))).thenReturn(mockTask);
 
-        // Configure mockTask behavior for addOnSuccessListener to execute the success listener callback
         when(mockTask.addOnSuccessListener(any())).thenAnswer(invocation -> {
             OnSuccessListener<DocumentReference> listener = invocation.getArgument(0);
             DocumentReference documentReference = mock(DocumentReference.class);
@@ -103,18 +98,14 @@ public class EventControllerIntegrationTest {
             return mockTask;
         });
 
-        // Create a flag to track whether the success listener is invoked
-        AtomicBoolean successListenerInvoked = new AtomicBoolean(false);
+        AtomicBoolean targetListenerInvoked = new AtomicBoolean(false);
 
-        // Call the method under test
         eventController.addEvent(mockEvent, id -> {
-            // Assert success handling logic here
             assertEquals("mock_event_id", id);
-            successListenerInvoked.set(true);
+            targetListenerInvoked.set(true);
         }, null);
 
-        // Assert that the success listener was invoked
-        assertTrue(successListenerInvoked.get());
+        assertTrue(targetListenerInvoked.get());
     }
 
     @Test
@@ -163,14 +154,8 @@ public class EventControllerIntegrationTest {
         eventController.addEvent(mockEvent, null, null);
 
         eventController.getEvent(eventId,
-                event -> {
-                    // Assert that the event is retrieved successfully
-                    assertEquals(mockEvent, event);
-                },
-                e -> {
-                    // Handle failure case if needed
-                    fail("Failure callback should not be invoked");
-                });
+                event -> assertEquals(mockEvent, event),
+                e -> fail("Failure callback should not be invoked"));
     }
 
     @Test
@@ -187,17 +172,13 @@ public class EventControllerIntegrationTest {
             return mockTask;
         });
 
-        AtomicBoolean failureListenerInvoked = new AtomicBoolean(false);
+        AtomicBoolean targetListenerInvoked = new AtomicBoolean(false);
 
         eventController.getEvent(eventId,
-                event -> {
-                    fail("Success callback should not be invoked");
-                },
-                e -> {
-                    failureListenerInvoked.set(true);
-                });
+                event -> fail("Success callback should not be invoked"),
+                e -> targetListenerInvoked.set(true));
 
-        assertTrue(failureListenerInvoked.get());
+        assertTrue(targetListenerInvoked.get());
     }
 
     @Test
@@ -213,13 +194,13 @@ public class EventControllerIntegrationTest {
             return mockTask;
         });
 
-        AtomicBoolean successListenerInvoked = new AtomicBoolean(false);
+        AtomicBoolean targetListenerInvoked = new AtomicBoolean(false);
 
         eventController.deleteEvent(eventId,
-                () -> successListenerInvoked.set(true),
+                () -> targetListenerInvoked.set(true),
                 e -> fail("Failure callback should not be invoked"));
 
-        assertTrue(successListenerInvoked.get());
+        assertTrue(targetListenerInvoked.get());
     }
 
     @Test
@@ -235,13 +216,12 @@ public class EventControllerIntegrationTest {
             return mockTask;
         });
 
-        AtomicBoolean failureListenerInvoked = new AtomicBoolean(false);
+        AtomicBoolean targetListenerInvoked = new AtomicBoolean(false);
 
         eventController.deleteEvent(eventId,
                 () -> fail("Success callback should not be invoked"),
-                e -> failureListenerInvoked.set(true));
+                e -> targetListenerInvoked.set(true));
 
-        // Assert that the failure listener was invoked
-        assertTrue(failureListenerInvoked.get());
+        assertTrue(targetListenerInvoked.get());
     }
 }
