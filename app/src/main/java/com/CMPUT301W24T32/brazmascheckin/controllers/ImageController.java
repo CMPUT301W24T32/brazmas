@@ -20,12 +20,15 @@ public class ImageController {
     private StorageReference profilePictureReference;
     private StorageReference shareqrCodeReference;
     private StorageReference defaultProfilePictureReference;
+    private StorageReference defaultPosterReference;
     private static final String POSTER_PATH = "posters";
     private static final String QR_CODE_PATH = "qr_codes";
     private static final String PROFILE_PICTURE_PATH = "profile_pictures";
     private static final String SHARE_QR_CODE_PATH = "ShareQRCodes";
+    public static final String DEFAULT_EVENT_POSTER_PATH = "default_poster";
     public static final String PROFILE_PICTURE = "PROFILE_PICTURE";
     public static final String EVENT_POSTER = "EVENT_POSTER";
+    public static final String DEFAULT_EVENT_POSTER = "DEFAULT_EVENT_POSTER";
     public static final String QR_CODE ="QR_CODE";
     public static final String SHARE_QR_CODE = "SHARE_QR_CODE";
     public static final String DEFAULT_PROFILE_PICTURE_PATH = "default_profile_pictures";
@@ -41,6 +44,7 @@ public class ImageController {
         profilePictureReference = FirestoreDB.getStorageReference(storage, PROFILE_PICTURE_PATH);
         shareqrCodeReference = FirestoreDB.getStorageReference(storage, SHARE_QR_CODE_PATH);
         defaultProfilePictureReference = FirestoreDB.getStorageReference(storage, DEFAULT_PROFILE_PICTURE_PATH);
+        defaultPosterReference = FirestoreDB.getStorageReference(storage, DEFAULT_EVENT_POSTER_PATH);
     }
 
     public void uploadImage(String TYPE, String fileID,
@@ -132,6 +136,8 @@ public class ImageController {
             imageReference = shareqrCodeReference.child(fileID);
         } else if (TYPE.equals(DEFAULT_PROFILE_PICTURE_PATH)){
             imageReference = defaultProfilePictureReference.child(fileID);
+        } else if (TYPE.equals(DEFAULT_EVENT_POSTER)) {
+            imageReference = defaultPosterReference.child(fileID);
         } else {
             imageReference = null;
             return;
