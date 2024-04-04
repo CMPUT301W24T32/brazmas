@@ -175,7 +175,8 @@ public class ViewEventFragment extends DialogFragment {
             qrCodeTitle.setVisibility(View.GONE);
             sharePromoQRCode.setVisibility(View.GONE);
             eventAnalytics.setVisibility(View.GONE);
-
+        } else if (!e.getGeoLocationEnabled()) {
+            geoLocationBtn.setVisibility(View.GONE);
         }
     }
 
