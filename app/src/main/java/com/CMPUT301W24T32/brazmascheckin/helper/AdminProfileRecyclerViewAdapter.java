@@ -1,6 +1,8 @@
 package com.CMPUT301W24T32.brazmascheckin.helper;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,7 @@ import com.CMPUT301W24T32.brazmascheckin.models.User;
 
 import java.util.ArrayList;
 import com.bumptech.glide.Glide;  // just like browse images for admin
+import com.google.firebase.storage.FirebaseStorage;
 
 /**
  * This class is the adapter for the RecyclerView of user profiles.
@@ -28,6 +31,7 @@ public class AdminProfileRecyclerViewAdapter extends RecyclerView.Adapter<AdminP
     private ArrayList<User> users;
     private Context context;
     private OnItemClickListener onItemClickListener;
+    private ImageController imageController = new ImageController(FirebaseStorage.getInstance());
 
     /**
      * This method constructs a new AdminProfileRecyclerViewAdapter.
@@ -132,8 +136,15 @@ public class AdminProfileRecyclerViewAdapter extends RecyclerView.Adapter<AdminP
 
             // Load image using Glide
             if (user.getProfilePicture() != null) {
+                displayImage(user.getProfilePicture());
+            }
+            else {
+                displayDefaultImage(user.getDefaultProfilePicture());
+            }
 
-                Glide.with(itemView.getContext())
+
+
+                /*Glide.with(itemView.getContext())
                         .load(user.getProfilePicture())
                         .placeholder(R.drawable.admin_profile_24) // Placeholder image while loading
                         .error(R.drawable.admin_profile_24) // Error image if loading fails
@@ -141,6 +152,23 @@ public class AdminProfileRecyclerViewAdapter extends RecyclerView.Adapter<AdminP
             } else {
                 // Set a default image if no profile picture URL is available
                 profilePicture.setImageResource(R.drawable.admin_profile_24);
+            }*/
+        }
+
+        private void displayImage(String posterID) {
+            if (posterID != null) {
+                imageController.getImage(ImageController.PROFILE_PICTURE, posterID, bytes -> {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    profilePicture.setImageBitmap(bitmap);
+                }, null);
+            }
+        }
+        private void displayDefaultImage(String posterID){
+            if (posterID != null) {
+                imageController.getImage(ImageController.DEFAULT_PROFILE_PICTURE_PATH, posterID, bytes -> {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    profilePicture.setImageBitmap(bitmap);
+                }, null);
             }
         }
     }
