@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -46,6 +47,9 @@ public class UserControllerIntegrationTest {
         userController = new UserController(mockDatabase);
     }
 
+    /**
+     * Test for adding a user successfully.
+     */
     @Test
     public void testAddUser_Success() {
         User mockUser = mock(User.class);
@@ -60,6 +64,9 @@ public class UserControllerIntegrationTest {
         }, null);
     }
 
+    /**
+     * Test for setting a user successfully.
+     */
     @Test
     public void testSetUser_Success() {
         User user = new User("mock_user_Id");
@@ -72,6 +79,9 @@ public class UserControllerIntegrationTest {
         verify(mockDocumentRef).set(user);
     }
 
+    /**
+     * Test for setting a user failure.
+     */
     @Test
     public void testSetUser_Failure() {
         User user = new User("mock_user_Id");
@@ -92,6 +102,9 @@ public class UserControllerIntegrationTest {
         verify(mockDocumentRef).set(user);
     }
 
+    /**
+     * Test for getting a user successfully.
+     */
     @Test
     public void testGetEvent_Success() {
         User mockUser = mock(User.class);
@@ -110,6 +123,9 @@ public class UserControllerIntegrationTest {
                 e -> fail("Failure callback should not be invoked"));
     }
 
+    /**
+     * Test for getting a user failure.
+     */
     @Test
     public void testGetUser_Failure() {
         String userId = "mock_user_id";
@@ -133,4 +149,55 @@ public class UserControllerIntegrationTest {
         assertTrue(targetListenerInvoked.get());
     }
 
+    /**
+     * Test for deleting a user successfully.
+     */
+    @Test
+    public void testDeleteUser_Success() {
+        String userId = "mock_event_id";
+        User user = new User(userId);
+        Task<Void> mockTask = mock(Task.class);
+
+        when(mockDocumentRef.delete()).thenReturn(mockTask);
+
+        when(mockTask.addOnSuccessListener(any())).thenAnswer(invocation -> {
+            OnSuccessListener<Void> listener = invocation.getArgument(0);
+            listener.onSuccess(null);
+            return mockTask;
+        });
+
+        AtomicBoolean targetListenerInvoked = new AtomicBoolean(false);
+
+        userController.deleteUser(user,
+                () -> targetListenerInvoked.set(true),
+                e -> fail("Failure callback should not be invoked"));
+
+        assertTrue(targetListenerInvoked.get());
+    }
+
+    /**
+     * Test for deleting a user failure.
+     */
+    @Test
+    public void testDeleteUser_Failure() {
+        String userId = "mock_user_id";
+        User user = new User(userId);
+        Task<Void> mockTask = mock(Task.class);
+
+        when(mockDocumentRef.delete()).thenReturn(mockTask);
+
+        when(mockTask.addOnFailureListener(any())).thenAnswer(invocation -> {
+            OnFailureListener listener = invocation.getArgument(0);
+            listener.onFailure(new Exception("Mock failure"));
+            return mockTask;
+        });
+
+        AtomicBoolean targetListenerInvoked = new AtomicBoolean(false);
+
+        userController.deleteUser(user,
+                () -> fail("Success callback should not be invoked"),
+                e -> targetListenerInvoked.set(true));
+
+        assertTrue(targetListenerInvoked.get());
+    }
 }
