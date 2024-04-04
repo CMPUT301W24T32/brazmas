@@ -75,7 +75,9 @@ public class AddEventCommand implements Command{
     private void addEvent(Event event) {
         eventController.addEvent(event, ID -> {
             event.setID(ID);
-
+            if(generateShareQRCode) {
+                generateShareQRCode(event);
+            }
             if(event.getQRCode() == null) {
                 Bitmap bitmap = QRCodeGenerator.generateQRCode(ID);
                 byte[] imageData = QRCodeGenerator.getQRCodeByteArray(bitmap);
@@ -100,6 +102,9 @@ public class AddEventCommand implements Command{
     }
 
     private void reuseEvent(Event event) {
+        if(generateShareQRCode) {
+            generateShareQRCode(event);
+        }
         eventController.setEvent(event, () -> {
             userController.getUser(organizer, user -> {
                 user.createEvent(event.getID());
@@ -120,9 +125,9 @@ public class AddEventCommand implements Command{
         );
 
 
-        if(generateShareQRCode) {
-            generateShareQRCode(event);
-        }
+//        if(generateShareQRCode) {
+//            generateShareQRCode(event);
+//        }
 
         return event;
     }

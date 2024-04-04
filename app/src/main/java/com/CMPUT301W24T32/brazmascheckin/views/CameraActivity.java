@@ -146,7 +146,7 @@ public class CameraActivity extends AppCompatActivity {
                 viewEventFragment.show(getSupportFragmentManager(), "view_event_fragment");
             }
         }, e -> {
-            Toast.makeText(CameraActivity.this, "Unable to load event details", Toast.LENGTH_SHORT).show();
+            Toast.makeText(CameraActivity.this, "Unable to load event details a", Toast.LENGTH_SHORT).show();
         });
     }
 
