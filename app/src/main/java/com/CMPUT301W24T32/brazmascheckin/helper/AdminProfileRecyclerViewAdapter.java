@@ -141,37 +141,34 @@ public class AdminProfileRecyclerViewAdapter extends RecyclerView.Adapter<AdminP
             else {
                 displayDefaultImage(user.getDefaultProfilePicture());
             }
-
-
-
-                /*Glide.with(itemView.getContext())
-                        .load(user.getProfilePicture())
-                        .placeholder(R.drawable.admin_profile_24) // Placeholder image while loading
-                        .error(R.drawable.admin_profile_24) // Error image if loading fails
-                        .into(profilePicture);
-            } else {
-                // Set a default image if no profile picture URL is available
-                profilePicture.setImageResource(R.drawable.admin_profile_24);
-            }*/
         }
 
-        private void displayImage(String posterID) {
+        /**
+         * This method retrieves the profile picture image from the database and displays it in the view.
+         * @param profilePicID the ID of the image in the database
+         */
+        private void displayImage(String profilePicID) {
             // while image is loading
             profilePicture.setImageResource(R.drawable.admin_profile_24);
 
-            if (posterID != null) {
-                imageController.getImage(ImageController.PROFILE_PICTURE, posterID, bytes -> {
+            if (profilePicID != null) {
+                imageController.getImage(ImageController.PROFILE_PICTURE, profilePicID, bytes -> {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                     profilePicture.setImageBitmap(bitmap);
                 }, null);
             }
         }
-        private void displayDefaultImage(String posterID){
+
+        /**
+         * This method retrieves the default profile picture image from the database and displays it in the view.
+         * @param profilePicID the ID of the image in the database
+         */
+        private void displayDefaultImage(String profilePicID){
             // while image is loading
             profilePicture.setImageResource(R.drawable.admin_profile_24);
 
-            if (posterID != null) {
-                imageController.getImage(ImageController.DEFAULT_PROFILE_PICTURE_PATH, posterID, bytes -> {
+            if (profilePicID != null) {
+                imageController.getImage(ImageController.DEFAULT_PROFILE_PICTURE_PATH, profilePicID, bytes -> {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                     profilePicture.setImageBitmap(bitmap);
                 }, null);
