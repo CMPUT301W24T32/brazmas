@@ -180,45 +180,46 @@ public class EventControllerIntegrationTest {
 
         assertTrue(targetListenerInvoked.get());
     }
+ AtomicBoolean targetListenerInvoked = new AtomicBoolean(false);
 
-    @Test
-    public void testDeleteEvent_Success() {
-        String eventId = "mock_event_id";
-        Task<Void> mockTask = mock(Task.class);
+        @Test
+        public void testDeleteEvent_Success() {
+            String eventId = "mock_event_id";
+            Task<Void> mockTask = mock(Task.class);
 
-        when(mockDocumentRef.delete()).thenReturn(mockTask);
+            when(mockDocumentRef.delete()).thenReturn(mockTask);
 
-        when(mockTask.addOnSuccessListener(any())).thenAnswer(invocation -> {
-            OnSuccessListener<Void> listener = invocation.getArgument(0);
-            listener.onSuccess(null);
-            return mockTask;
-        });
+            when(mockTask.addOnSuccessListener(any())).thenAnswer(invocation -> {
+                OnSuccessListener<Void> listener = invocation.getArgument(0);
+                listener.onSuccess(null);
+                return mockTask;
+            });
 
-        AtomicBoolean targetListenerInvoked = new AtomicBoolean(false);
+            AtomicBoolean targetListenerInvoked = new AtomicBoolean(false);
 
-        eventController.deleteEvent(eventId,
-                () -> targetListenerInvoked.set(true),
-                e -> fail("Failure callback should not be invoked"));
+            eventController.deleteEvent(eventId,
+                    () -> targetListenerInvoked.set(true),
+                    e -> fail("Failure callback should not be invoked"));
 
-        assertTrue(targetListenerInvoked.get());
-    }
+            assertTrue(targetListenerInvoked.get());
+        }
 
-    @Test
-    public void testDeleteEvent_Failure() {
-        String eventId = "mock_event_id";
-        Task<Void> mockTask = mock(Task.class);
+        @Test
+        public void testDeleteEvent_Failure() {
+            String eventId = "mock_event_id";
+            Task<Void> mockTask = mock(Task.class);
 
-        when(mockDocumentRef.delete()).thenReturn(mockTask);
+            when(mockDocumentRef.delete()).thenReturn(mockTask);
 
-        when(mockTask.addOnFailureListener(any())).thenAnswer(invocation -> {
-            OnFailureListener listener = invocation.getArgument(0);
-            listener.onFailure(new Exception("Mock failure"));
-            return mockTask;
-        });
+            when(mockTask.addOnFailureListener(any())).thenAnswer(invocation -> {
+                OnFailureListener listener = invocation.getArgument(0);
+                listener.onFailure(new Exception("Mock failure"));
+                return mockTask;
+            });
 
-        AtomicBoolean targetListenerInvoked = new AtomicBoolean(false);
+            AtomicBoolean targetListenerInvoked = new AtomicBoolean(false);
 
-        eventController.deleteEvent(eventId,
+            eventController.deleteEvent(eventId,
                 () -> fail("Success callback should not be invoked"),
                 e -> targetListenerInvoked.set(true));
 
