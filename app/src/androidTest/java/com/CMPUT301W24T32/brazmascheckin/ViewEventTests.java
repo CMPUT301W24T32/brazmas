@@ -1,6 +1,7 @@
 package com.CMPUT301W24T32.brazmascheckin;
 
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isNotEnabled;
 
 import android.util.Log;
 import android.widget.Toast;
@@ -120,21 +121,6 @@ public class ViewEventTests {
         Espresso.onView(ViewMatchers.withText("Test Attend Event"))
                 .check(matches(ViewMatchers.isDisplayed()));
 
-//        try {
-//            Thread.sleep(3000);
-//        } catch (Exception e) {
-//
-//        }
-//
-//        Espresso.onView(ViewMatchers.withId(R.id.user_home_organizing_btn));
-
-        // move to another test
-//        Espresso.onView(ViewMatchers.withText("Test Attend Event")).perform(ViewActions.click());
-//        Espresso.onView(ViewMatchers.withId(R.id.view_event_see_signed_up_attendees_btn))
-//                        .perform(ViewActions.click());
-//        Espresso.onView(ViewMatchers.withText(user.getID())).check(matches(ViewMatchers.isDisplayed()));
-
-
         eventController.deleteEvent(mockAttendEvent.getID(), null, null);
     }
 
@@ -200,6 +186,69 @@ public class ViewEventTests {
         Espresso.onView(ViewMatchers.withText(user.getID())).check(matches(ViewMatchers.isDisplayed()));
 
 
+        Espresso.pressBack();
+        Espresso.pressBack();
+        try {
+
+            Thread.sleep(5000);
+        } catch (Exception e){
+
+        }
         eventController.deleteEvent(mockAttendEvent.getID(), null, null);
     }
+
+    @Test
+    public void signUpFullTest() {
+        Event mockAttendEvent = new Event(
+                null, "Test Attend Event",
+                new Date(11, 4, 2024),
+                "Event to test attending",
+                new HashMap<>(),
+                new ArrayList<>(),
+                0,
+                "default_poster.png",
+                null,
+                null,
+                user.getID(),
+                false,
+                null,
+                new HashMap<>(),
+                new ArrayList<>()
+        );
+
+
+        eventController.addEvent(mockAttendEvent, id -> {
+            mockAttendEvent.setID(id);
+            eventController.setEvent(mockAttendEvent, null, null);
+            ArrayList<String> events = new ArrayList<>();
+            events.add(id);
+            user.setEvent(events);
+            userController.setUser(user, null, null);
+
+        }, null);
+
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+
+        Espresso.onView(ViewMatchers.withId(R.id.user_home_organizing_btn)).perform(
+                ViewActions.click());
+
+        try {
+            Thread.sleep(3000);
+        } catch (Exception e) {
+
+        }
+        Espresso.onView(ViewMatchers.withText("Test Attend Event")).perform(ViewActions.click());
+        Espresso.onView(ViewMatchers.withId(R.id.view_event_signed_up_cb)).check(matches(isNotEnabled()));
+        eventController.deleteEvent(mockAttendEvent.getID(), null, null);
+    }
+
+    @Test
+
+
+
+
 }

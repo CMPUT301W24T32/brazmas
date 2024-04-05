@@ -27,7 +27,7 @@
       <entry key="checkAttendeeList()">
         <State />
       </entry>
-      <entry key="testAddEventWithoutName()">
+      <entry key="signUpFullTest()">
         <State />
       </entry>
       <entry key="testShowAllEvents()">

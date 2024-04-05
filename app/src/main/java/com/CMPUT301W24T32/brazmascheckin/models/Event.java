@@ -256,7 +256,11 @@ public class Event implements Serializable {
      * @return the list of users who have signed-up to attend the event
      */
     public ArrayList<String> getSignUps() {
-        return signUps;
+        if(signUps != null) {
+            return signUps;
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     /**
