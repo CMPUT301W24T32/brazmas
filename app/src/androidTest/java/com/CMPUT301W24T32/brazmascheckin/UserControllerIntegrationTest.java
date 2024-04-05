@@ -206,6 +206,7 @@ public class UserControllerIntegrationTest {
 
         when(mockDocumentRef.delete()).thenReturn(mockTask);
 
+        when(mockTask.addOnSuccessListener(any())).thenReturn(mockTask);
         when(mockTask.addOnFailureListener(any())).thenAnswer(invocation -> {
             OnFailureListener listener = invocation.getArgument(0);
             listener.onFailure(new Exception("Mock failure"));
