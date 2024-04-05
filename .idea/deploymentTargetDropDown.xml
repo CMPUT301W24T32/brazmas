@@ -2,39 +2,22 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="AddEventTests">
-        <State />
-      </entry>
-      <entry key="ViewEventTests">
-        <State />
-      </entry>
       <entry key="app">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\Ria Ahir\.android\avd\Pixel_2_API_30.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-03-28T18:37:23.656399300Z" />
-        </State>
-      </entry>
-<<<<<<< HEAD
-      <entry key="checkInTest()">
         <State />
       </entry>
-      <entry key="checkNoCheckIns()">
+      <entry key="testDeleteEvent_Failure()">
         <State />
       </entry>
-      <entry key="testCheckInMap()">
-=======
-      <entry key="checkAttendeeList()">
->>>>>>> 4f4b411123e36706939b6d2b4b81eba70c3132b9
+      <entry key="testDeleteUser_Failure()">
+        <State />
+      </entry>
+      <entry key="testDeleteUser_Success()">
+        <State />
+      </entry>
+      <entry key="testGetEvent_Failure()">
+        <State />
+      </entry>
+      <entry key="testSetUser_Failure()">
         <State />
       </entry>
     </value>

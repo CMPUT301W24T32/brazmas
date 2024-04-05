@@ -210,6 +210,7 @@ public class EventControllerIntegrationTest {
             Task<Void> mockTask = mock(Task.class);
 
             when(mockDocumentRef.delete()).thenReturn(mockTask);
+            when(mockTask.addOnSuccessListener(any())).thenReturn(mockTask);
 
             when(mockTask.addOnFailureListener(any())).thenAnswer(invocation -> {
                 OnFailureListener listener = invocation.getArgument(0);
@@ -220,9 +221,9 @@ public class EventControllerIntegrationTest {
             AtomicBoolean targetListenerInvoked = new AtomicBoolean(false);
 
             eventController.deleteEvent(eventId,
-                () -> fail("Success callback should not be invoked"),
-                e -> targetListenerInvoked.set(true));
+                    () -> fail("Success callback should not be invoked"),
+                    e -> targetListenerInvoked.set(true));
 
-        assertTrue(targetListenerInvoked.get());
+            assertTrue(targetListenerInvoked.get());
     }
 }
