@@ -103,7 +103,7 @@ public class AdministratorHome extends AppCompatActivity {
         // to access event details by clicking single event
         eventRecyclerViewAdapter.setOnItemClickListener(position -> {
             Event clickedEvent = eventDataList.get(position);
-            AdministratorViewEventFragment fragment = AdministratorViewEventFragment.sendEvent(clickedEvent);
+            AdministratorViewEventFragment fragment = AdministratorViewEventFragment.sendEvent(clickedEvent, 0);
             fragment.show(getSupportFragmentManager(), "Display Event");
         });
     }

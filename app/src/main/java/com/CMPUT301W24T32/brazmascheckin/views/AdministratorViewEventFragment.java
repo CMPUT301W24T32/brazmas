@@ -1,13 +1,12 @@
-
 package com.CMPUT301W24T32.brazmascheckin.views;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,59 +22,70 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
-
 import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
-
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
+import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
-
 
 import java.util.ArrayList;
 
 /**
- * This class is the fragment for the individual event view for Administrator
+ * This class is the fragment for the individual event view
  */
 public class AdministratorViewEventFragment extends DialogFragment {
+    private String deviceID;
     private TextView eventName;
     private TextView  eventDescription;
+
     private TextView eventDate;
-    private TextView eventCheckIns;
 
     private ImageView eventPoster;
-
-    // don't display them? but make sure they are removed when event is deleted
-    private TextView eventAnnouncements;
+    private TextView eventCheckIns;
+    private TextView qrCodeTitle;
+    private TextView shareqrCodeTitle;
     private Button checkedInAttendeesBtn;
     private Button signedUpAttendeesBtn;
+    private Button geoLocationBtn;
+    private Button sharePromoQRCode;
+    private Button eventAnalytics;
+    private Button deleteEventBtn;
     private CheckBox signedUpCB;
     private ImageView QRCode;
-
-    // controllers
+    private ImageView shareQRCode;
+    private TextView shareQRCodeLabel;
     private EventController eventController;
+    private UserController userController;
     private ImageController imageController;
-    private Button deleteEventBtn;
+
+    public static final String EXTRA_VIEW_MODE = "view_mode";
+    public static final int ADMIN_VIEW = 0;
+    private int mode;
 
     /**
-     * This method allows for the acceptance of bundle to access event data
-     * @param e event that has been selected by admin
-     * @return fragment, will contain event data
+     * This function allows me to accept a bundle so i can access event data
+     *
+     * @param e event
+     * @return fragment
      */
-    public static AdministratorViewEventFragment sendEvent(Event e) {
+    public static AdministratorViewEventFragment sendEvent(Event e, int viewMode) {
         Bundle args = new Bundle();
         args.putSerializable("Event", e);
+        args.putInt(EXTRA_VIEW_MODE, viewMode);
         AdministratorViewEventFragment fragment = new AdministratorViewEventFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
     /**
-     * This method creates the dialog box and sets all the text.
+     * This function creates the dialog box and sets all the texts
      * @param savedInstanceState The last saved instance state of the Fragment,
-     * if it exists.
+     * or null if this is a freshly created Fragment.
+     *
      * @return the builder
      */
     @NonNull
@@ -83,15 +93,18 @@ public class AdministratorViewEventFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.administrator_view_event_fragment_layout,null);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.view_event_fragment_layout,null);
         eventController = new EventController(FirestoreDB.getDatabaseInstance());
+        userController = new UserController(FirestoreDB.getDatabaseInstance());
         imageController = new ImageController(FirestoreDB.getStorageInstance());
-
         // retrieving from the bundle
         Bundle bundle = getArguments();
         Event e = (Event) bundle.getSerializable("Event");
-        configureViews(view, e);
-        configureControllers(e);
+        mode = bundle.getInt(EXTRA_VIEW_MODE, -1);
+
+        configureViews(view, e, mode);
+        configureControllers(e, getContext());
+        deviceID = DeviceID.getDeviceID(getContext());
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
@@ -100,87 +113,118 @@ public class AdministratorViewEventFragment extends DialogFragment {
     }
 
     /**
-     * This method configures the views required by the fragment.
+     * This method configures the views required by the fragment
      * @param view view of the fragment
      * @param e event to be displayed
      */
-    //TODO: decide what is actually shown to admin from the event details
-    private void configureViews(View view, Event e) {
+    private void configureViews(View view, Event e, int mode) {
+        // views
+        eventName = view.findViewById(R.id.view_event_name_tv);
+        eventDescription = view.findViewById(R.id.view_event_description_tv);
+        eventDate = view.findViewById(R.id.view_event_date_tv);
+        eventCheckIns = view.findViewById(R.id.view_event_social_tv);
+        qrCodeTitle = view.findViewById(R.id.view_event_check_in_qr_code_tv);
+        shareqrCodeTitle = view.findViewById(R.id.view_event_share_qr_code_tv);
+        eventPoster = view.findViewById(R.id.view_event_poster_iv);
+        checkedInAttendeesBtn = view.findViewById(R.id.view_event_see_checked_in_attendees_btn);
+        signedUpAttendeesBtn = view.findViewById(R.id.view_event_see_signed_up_attendees_btn);
+        geoLocationBtn = view.findViewById(R.id.view_event_map_btn);
+        deleteEventBtn = view.findViewById(R.id.delete_event_button);
+        signedUpCB = view.findViewById(R.id.view_event_signed_up_cb);
+        QRCode = view.findViewById(R.id.view_event_QR_iv);
+        shareQRCode = view.findViewById(R.id.view_event_share_QR_iv);
+        shareQRCodeLabel = view.findViewById(R.id.view_event_share_qr_code_tv);
+        sharePromoQRCode = view.findViewById(R.id.share_promo_qr_code_btn);
+        eventAnalytics = view.findViewById(R.id.statistics_button);
 
-        if (e != null) {
-            eventName = view.findViewById(R.id.view_event_name_tv_admin);
-            eventDescription = view.findViewById(R.id.view_event_description_tv_admin);
-            eventDate = view.findViewById(R.id.view_event_date_tv_admin);
-            eventAnnouncements = view.findViewById(R.id.view_event_announcement_tv1_admin);
-            eventCheckIns = view.findViewById(R.id.view_event_checkins_tv_admin);
-            eventName.setText(e.getName());
-            eventDate.setText(e.getDate().getPrettyDate());
-            eventDescription.setText(e.getDescription());
-            eventCheckIns.setText(String.valueOf(e.helperCount()));
-            eventPoster = view.findViewById(R.id.view_event_poster_iv_admin);
+        deviceID = DeviceID.getDeviceID(getContext());
 
-            deleteEventBtn = view.findViewById(R.id.view_event_delete_btn_admin);
+        eventName.setText(e.getName());
+        eventDate.setText(e.getDate().getPrettyDate());
+        eventDescription.setText(e.getDescription());
+        eventCheckIns.setText(String.valueOf(e.helperCount()));
+
+        ArrayList<String> signUps = e.getSignUps();
+        if (signUps.contains(deviceID)){
+            signedUpCB.setChecked(true);
+        }
+
+        if(e.getPoster() != null && !e.getPoster().isEmpty()) {
             displayImage(e.getPoster());
         }
-    }
 
-    /**
-     * This method configures the controllers required by the fragment.
-     * @param e the event selected by the admin
-     */
-    //TODO: decide what is the actually shown to the admin from the event details
-    private void configureControllers(Event e) {
+        displayQRCode(e.getQRCode(), QRCode, false);
+        displayQRCode(e.getShareQRCode(), shareQRCode, true);
+        if(e.getQRCode() != null && !e.getQRCode().isEmpty()) {
+            displayQRCode(e.getQRCode(), QRCode, false);
+        }
 
-        if (e != null) {
-            handleCheckedInNumber();
+        if(e.getShareQRCode() != null && !e.getShareQRCode().isEmpty()) {
+            displayQRCode(e.getShareQRCode(), shareQRCode, true);
+        } else {
+            shareQRCodeLabel.setVisibility(View.GONE);
+            shareQRCode.setVisibility(View.GONE);
+        }
 
-            deleteEventBtn.setOnClickListener(view -> {
-                // call the deleteEvent method of EventController
-
-                // need to delete event poster before deleting the actual event
-
-                if (!e.getPoster().equals("defaultPoster.png")) {  // so that the default poster doesn't get deleted
-                    imageController.deleteImage("EVENT_POSTER", e.getPoster(), new DeleteSuccessListener() {
-                        @Override
-                        public void onDeleteSuccess() {
-                            Log.d("ImageDeletion", "Event poster deleted successfully");
-                        }
-                    }, new DeleteFailureListener() {
-                        @Override
-                        public void onDeleteFailure(Exception e) {
-                            Log.e("ImageDeletion", "Failed to delete event poster: " + e.getMessage());
-                        }
-                    });
-                }
-
-                // does actual deletion of event
-                eventController.deleteEvent(e.getID(), () -> {
-                    Toast.makeText(getContext(), "Event deleted successfully", Toast.LENGTH_SHORT).show();
-                    dismiss();
-                }, e1 -> Toast.makeText(getContext(), "Failed to delete event", Toast.LENGTH_SHORT).show());
-            });
+        if(mode == ADMIN_VIEW) {
+            eventCheckIns.setVisibility(View.GONE);
+            checkedInAttendeesBtn.setVisibility(View.GONE);
+            signedUpAttendeesBtn.setVisibility(View.GONE);
+            geoLocationBtn.setVisibility(View.GONE);
+            QRCode.setVisibility(View.GONE);
+            shareQRCode.setVisibility(View.GONE);
+            shareqrCodeTitle.setVisibility(View.GONE);
+            qrCodeTitle.setVisibility(View.GONE);
+            sharePromoQRCode.setVisibility(View.GONE);
+            eventAnalytics.setVisibility(View.GONE);
+            signedUpCB.setVisibility(View.GONE);
+        } else {
+            if (!e.getGeoLocationEnabled()) {
+                geoLocationBtn.setVisibility(View.GONE);
+            }
+            if(e.getShareQRCode() == null) {
+                sharePromoQRCode.setVisibility(View.GONE);
+            }
         }
     }
 
     /**
-     * This method retrieves the poster image from the database and displays it in the view.
-     * @param posterID the ID of the image in the database
+     * This method configures the controllers required by the fragment
+     * @param e
      */
-    private void displayImage(String posterID) {
-        imageController.getImage(ImageController.EVENT_POSTER, posterID, bytes -> {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-            eventPoster.setImageBitmap(bitmap);
-        }, e -> {
+    private void configureControllers(Event e, Context context) {
+        handleCheckedInNumber(e.getID());
+        handleCheckBox(e.getID());
 
+        deleteEventBtn.setOnClickListener(view -> {
+            // call the deleteEvent method of EventController
+
+            // need to delete event poster before deleting the actual event
+
+            if (!e.getPoster().equals("defaultPoster.png")) {  // so that the default poster doesn't get deleted
+                imageController.deleteImage("EVENT_POSTER", e.getPoster(), new DeleteSuccessListener() {
+                    @Override
+                    public void onDeleteSuccess() {
+                        Log.d("ImageDeletion", "Event poster deleted successfully");
+                    }
+                }, new DeleteFailureListener() {
+                    @Override
+                    public void onDeleteFailure(Exception e) {
+                        Log.e("ImageDeletion", "Failed to delete event poster: " + e.getMessage());
+                    }
+                });
+            }
+
+            // does actual deletion of event
+            eventController.deleteEvent(e.getID(), () -> {
+                Toast.makeText(getContext(), "Event deleted successfully", Toast.LENGTH_SHORT).show();
+                dismiss();
+            }, e1 -> Toast.makeText(getContext(), "Failed to delete event", Toast.LENGTH_SHORT).show());
         });
     }
 
-    /**
-     * This method retrieves the amount of attendees checked into the event
-     * and displays it in the view.
-     */
-    private void handleCheckedInNumber() {
-        eventController.addSnapshotListener(new SnapshotListener<Event>() {
+    private void handleCheckedInNumber(String ID) {
+        eventController.addSingleSnapshotListener(ID, new SnapshotListener<Event>() {
             @Override
             public void snapshotListenerCallback(ArrayList<Event> events) {
                 Event event = events.get(0);
@@ -193,8 +237,12 @@ public class AdministratorViewEventFragment extends DialogFragment {
                     }
 
                     ArrayList<String> signUps = event.getSignUps();
-                    int signUpsCount = signUps.size();  // do I need this?
+                    int signUpsCount = signUps.size();
+                    int maxSignUps = event.getAttendeeLimit();
 
+                    if(maxSignUps != -1) {
+                        signedUpCB.setEnabled((signUpsCount + 1 <= maxSignUps) || (signUps.contains(deviceID)));
+                    }
                 }
             }
 
@@ -203,5 +251,94 @@ public class AdministratorViewEventFragment extends DialogFragment {
 
             }
         });
+    }
+
+    private void handleCheckBox(String ID) {
+        signedUpCB.setOnCheckedChangeListener((buttonView ,isChecked) -> {
+            if(isChecked) {
+                handleChecked(ID);
+            } else {
+                handleUnChecked(ID);
+            }
+        });
+    }
+
+    private void handleChecked(String ID) {
+        eventController.getEvent(ID, event -> {
+            ArrayList<String> signUps = event.getSignUps();
+            signUps.add(deviceID);
+            eventController.setEvent(event, null, null);
+        }, e -> {
+
+        });
+
+        userController.getUser(deviceID, user -> {
+            ArrayList<String> signUps = user.getSignedUpEvents();
+            signUps.add(ID);
+            userController.setUser(user, null, null);
+        }, e -> {
+
+        });
+    }
+
+    private void handleUnChecked(String ID) {
+        eventController.getEvent(ID, event -> {
+            ArrayList<String> signUps = event.getSignUps();
+            signUps.remove(deviceID);
+            eventController.setEvent(event, null, null);
+        }, e -> {
+
+        });
+
+
+        userController.getUser(deviceID, user -> {
+            ArrayList<String> signUps = user.getSignedUpEvents();
+            signUps.remove(ID);
+            userController.setUser(user, null, null);
+        }, e -> {
+
+        });
+    }
+
+    /**
+     * This method retrieves the poster image from the database and displays it in the view
+     * @param posterID the ID of the image in the database
+     */
+    private void displayImage(String posterID) {
+        if(posterID != null && !posterID.isEmpty()) {
+            String folder = ImageController.DEFAULT_EVENT_POSTER;
+            if(!posterID.equals("defaultPoster.png")) {
+                folder = ImageController.EVENT_POSTER;
+            }
+            imageController.getImage(folder, posterID,
+                    bytes -> {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        eventPoster.setImageBitmap(bitmap);
+                    }, e -> {
+
+                    });
+        }
+    }
+
+    /**
+     * This method retrieves the QR code from the database and displays it in the view
+     * @param code the ID of the QRC code in the database
+     */
+
+    private void displayQRCode(String code, ImageView QRCodeType, boolean share) {
+        if(code != null && !code.isEmpty()) {
+            String type;
+            if (share) {
+                type = ImageController.SHARE_QR_CODE;
+            } else {
+                type = ImageController.QR_CODE;
+            }
+            imageController.getImage(type, code, bytes -> {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                QRCodeType.setImageBitmap(bitmap);
+            }, e -> {
+
+            });
+        }
     }
 }
