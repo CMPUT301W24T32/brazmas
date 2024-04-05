@@ -207,6 +207,18 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="20dp"/>
 
+        <Button
+            android:id="@+id/delete_event_button"
+            android:layout_width="300dp"
+            android:layout_height="60dp"
+            android:backgroundTint="@color/lightPink"
+            android:textColor="@color/black"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:text="Delete Event"
+            android:layout_below="@id/share_promo_qr_code_btn"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"/>
+
 
     </RelativeLayout>
 </ScrollView>
