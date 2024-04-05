@@ -133,6 +133,11 @@ public class AddEventTests {
                 .perform(ViewActions.click());
 
         Espresso.onView(ViewMatchers.withId(R.id.user_home_organizing_btn));
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
         Espresso.onView(ViewMatchers.withId(R.id.user_home_all_events_rv))
                 .check(matches(hasDescendant(withText("Test Event"))));
     }
@@ -179,6 +184,11 @@ public class AddEventTests {
 
     @Test
     public void testAddEventOptionalLimit() {
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
         Espresso.onView(ViewMatchers.withId(R.id.user_home_organizing_btn))
                 .perform(ViewActions.click());
         Espresso.onView(ViewMatchers.withId(R.id.user_home_add_event_btn))
@@ -221,6 +231,11 @@ public class AddEventTests {
                 .perform(ViewActions.click());
 
         Espresso.onView(ViewMatchers.withId(R.id.user_home_organizing_btn));
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
         Espresso.onView(ViewMatchers.withId(R.id.user_home_all_events_rv))
                 .check(matches(hasDescendant(withText("Test Event"))));
     }

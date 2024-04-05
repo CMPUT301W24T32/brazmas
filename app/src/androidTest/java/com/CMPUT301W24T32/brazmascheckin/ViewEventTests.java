@@ -1,9 +1,13 @@
 package com.CMPUT301W24T32.brazmascheckin;
 
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.assertThat;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isNotEnabled;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+
+import static org.hamcrest.Matchers.equalTo;
 
 import android.util.Log;
 import android.widget.Toast;
@@ -21,6 +25,7 @@ import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.Date;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
+import com.CMPUT301W24T32.brazmascheckin.helper.Location;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
@@ -31,9 +36,14 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.Marker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
@@ -71,7 +81,7 @@ public class ViewEventTests {
     }
 
     @Test
-    public void attendBelowLimit() {
+    public void testSignUpBelowLimit() {
         Event mockAttendEvent = new Event(
                 null, "Test Attend Event",
                 new Date(11, 4, 2024),
@@ -123,11 +133,10 @@ public class ViewEventTests {
         Espresso.onView(ViewMatchers.withText("Test Attend Event"))
                 .check(matches(ViewMatchers.isDisplayed()));
 
-        eventController.deleteEvent(mockAttendEvent.getID(), null, null);
     }
 
     @Test
-    public void checkAttendeeList() {
+    public void testAttendeeList() {
         Event mockAttendEvent = new Event(
                 null, "Test Attend Event",
                 new Date(11, 4, 2024),
@@ -196,11 +205,10 @@ public class ViewEventTests {
         } catch (Exception e){
 
         }
-        eventController.deleteEvent(mockAttendEvent.getID(), null, null);
     }
 
     @Test
-    public void signUpFullTest() {
+    public void testSignUpFull() {
         Event mockAttendEvent = new Event(
                 null, "Test Attend Event",
                 new Date(11, 4, 2024),
@@ -245,11 +253,10 @@ public class ViewEventTests {
         }
         Espresso.onView(ViewMatchers.withText("Test Attend Event")).perform(ViewActions.click());
         Espresso.onView(ViewMatchers.withId(R.id.view_event_signed_up_cb)).check(matches(isNotEnabled()));
-        eventController.deleteEvent(mockAttendEvent.getID(), null, null);
     }
 
     @Test
-    public void checkInTest() {
+    public void testCheckIn() {
         Event mockAttendEvent = new Event(
                 null, "Test Check In Event",
                 new Date(11, 4, 2024),
@@ -297,13 +304,156 @@ public class ViewEventTests {
         }
 
         Espresso.onView(withId(R.id.user_home_organizing_btn)).perform(ViewActions.click());
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
         Espresso.onView(ViewMatchers.withText("Test Check In Event")).perform(ViewActions.click());
         Espresso.onView(withId(R.id.view_event_see_checked_in_attendees_btn)).perform(ViewActions.click());
         Espresso.onView(withText(user.getID())).check(matches(ViewMatchers.isDisplayed()));
-        eventController.deleteEvent(mockAttendEvent.getID(), null, null);
     }
 
+    @Test
+    public void testNoCheckIns() {
+        Event mockAttendEvent = new Event(
+                null, "Test Check In Event",
+                new Date(11, 4, 2024),
+                "Event to test attending",
+                new HashMap<>(),
+                new ArrayList<>(),
+                1,
+                "default_poster.png",
+                null,
+                null,
+                user.getID(),
+                false,
+                null,
+                new HashMap<>(),
+                new ArrayList<>()
+        );
 
+
+        eventController.addEvent(mockAttendEvent, id -> {
+            mockAttendEvent.setID(id);
+            eventController.setEvent(mockAttendEvent, null, null);
+            ArrayList<String> events = new ArrayList<>();
+            events.add(id);
+            user.setEvent(events);
+            userController.setUser(user, null, null);
+
+        }, null);
+
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+
+        Espresso.onView(withId(R.id.user_home_organizing_btn)).perform(ViewActions.click());
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+        Espresso.onView(ViewMatchers.withText("Test Check In Event")).perform(ViewActions.click());
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+        Espresso.onView(withId(R.id.view_event_social_tv)).check(matches(ViewMatchers.withText("0")));
+    }
+
+    @Test
+    public void testCheckInMap() {
+        Event mockAttendEvent = new Event(
+                null, "Test Map Event",
+                new Date(11, 4, 2024),
+                "Event to test attending",
+                new HashMap<>(),
+                new ArrayList<>(),
+                1,
+                "default_poster.png",
+                null,
+                null,
+                user.getID(),
+                true,
+                new Location( 53.5269,-113.5267),
+                new HashMap<>(),
+                new ArrayList<>()
+        );
+
+
+        eventController.addEvent(mockAttendEvent, id -> {
+            mockAttendEvent.setID(id);
+            eventController.setEvent(mockAttendEvent, null, null);
+            ArrayList<String> events = new ArrayList<>();
+            events.add(id);
+            user.setEvent(events);
+            userController.setUser(user, null, null);
+
+        }, null);
+
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+
+        mockAttendEvent.checkIn(user.getID(), new Location(51.0447, -114.0719));
+        user.checkIn(mockAttendEvent.getID());
+
+
+
+        eventController.setEvent(mockAttendEvent, null, null);
+        userController.setUser(user, null, null);
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+
+        Espresso.onView(withId(R.id.user_home_organizing_btn)).perform(ViewActions.click());
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+        Espresso.onView(withText("Test Map Event")).perform(ViewActions.click());
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+        Espresso.onView(withId(R.id.view_event_map_btn)).perform(ViewActions.click());
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+        Espresso.onView(withId(R.id.map)).check(matches(isDisplayed()))
+                .check((view, noViewFoundException) -> {
+                    if(view instanceof MapView) {
+                        MapView mapView = (MapView) view;
+                        int markerCount = countMarkers(mapView);
+                        assertThat(markerCount, equalTo(1));
+                    }
+                });
+    }
+
+    private int countMarkers(MapView mapView) {
+        int markerCount = 0;
+        if (mapView != null) {
+            List<Marker> mapMarkers = mapView.getOverlays().stream()
+                    .filter(overlay -> overlay instanceof Marker)
+                    .map(overlay -> (Marker) overlay)
+                    .collect(Collectors.toList());
+
+            markerCount = mapMarkers.size();
+        }
+        return markerCount;
+    }
 
 
 }
