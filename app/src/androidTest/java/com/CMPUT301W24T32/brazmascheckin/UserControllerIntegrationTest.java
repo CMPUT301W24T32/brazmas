@@ -16,9 +16,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,8 +32,6 @@ public class UserControllerIntegrationTest {
 
     private DocumentReference mockDocumentRef;
     private UserController userController;
-    QuerySnapshot mockQuerySnapshot;
-    DocumentSnapshot mockDocumentSnapshot;
 
     @Before
     public void setUp() {
@@ -63,6 +59,30 @@ public class UserControllerIntegrationTest {
             assert object.equals("mock_user_id");
         }, null);
     }
+
+    /**
+     * Test for adding user unsuccesfully
+     */
+    @Test
+    public void testAddUser_Failure() {
+        User mockUser = mock(User.class);
+        Task mockTask = mock(Task.class);
+
+        when(mockDocumentRef.getId()).thenReturn("mock_user_id");
+        when(mockCollectionRef.add(any(User.class))).thenReturn(mockTask);
+
+        when(mockTask.addOnSuccessListener(any())).thenReturn(mockTask);
+        when(mockTask.addOnFailureListener(any())).thenAnswer(invocation -> {
+            OnFailureListener listener = invocation.getArgument(0);
+            listener.onFailure(new Exception());
+            return mockTask;
+        });
+
+        AtomicBoolean targetListenerInvoked = new AtomicBoolean(false); // need atomic for concurrency
+        userController.addUser(mockUser, null, failure -> targetListenerInvoked.set(true));
+        assertTrue(targetListenerInvoked.get());
+    }
+
 
     /**
      * Test for setting a user successfully.
