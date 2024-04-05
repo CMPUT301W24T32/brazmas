@@ -138,17 +138,20 @@ public class AdministratorViewEventFragment extends DialogFragment {
                 // call the deleteEvent method of EventController
 
                 // need to delete event poster before deleting the actual event
-                imageController.deleteImage("EVENT_POSTER", e.getPoster(), new DeleteSuccessListener() {
-                    @Override
-                    public void onDeleteSuccess() {
-                        Log.d("ImageDeletion", "Event poster deleted successfully");
-                    }
-                }, new DeleteFailureListener() {
-                    @Override
-                    public void onDeleteFailure(Exception e) {
-                        Log.e("ImageDeletion", "Failed to delete event poster: " + e.getMessage());
-                    }
-                });
+
+                if (!e.getPoster().equals("defaultPoster.png")) {  // so that the default poster doesn't get deleted
+                    imageController.deleteImage("EVENT_POSTER", e.getPoster(), new DeleteSuccessListener() {
+                        @Override
+                        public void onDeleteSuccess() {
+                            Log.d("ImageDeletion", "Event poster deleted successfully");
+                        }
+                    }, new DeleteFailureListener() {
+                        @Override
+                        public void onDeleteFailure(Exception e) {
+                            Log.e("ImageDeletion", "Failed to delete event poster: " + e.getMessage());
+                        }
+                    });
+                }
 
                 // does actual deletion of event
                 eventController.deleteEvent(e.getID(), () -> {
