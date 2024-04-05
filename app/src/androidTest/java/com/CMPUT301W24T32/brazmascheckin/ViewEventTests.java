@@ -2,6 +2,8 @@ package com.CMPUT301W24T32.brazmascheckin;
 
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isNotEnabled;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import android.util.Log;
 import android.widget.Toast;
@@ -247,6 +249,59 @@ public class ViewEventTests {
     }
 
     @Test
+    public void checkInTest() {
+        Event mockAttendEvent = new Event(
+                null, "Test Check In Event",
+                new Date(11, 4, 2024),
+                "Event to test attending",
+                new HashMap<>(),
+                new ArrayList<>(),
+                1,
+                "default_poster.png",
+                null,
+                null,
+                user.getID(),
+                false,
+                null,
+                new HashMap<>(),
+                new ArrayList<>()
+        );
+
+
+        eventController.addEvent(mockAttendEvent, id -> {
+            mockAttendEvent.setID(id);
+            eventController.setEvent(mockAttendEvent, null, null);
+            ArrayList<String> events = new ArrayList<>();
+            events.add(id);
+            user.setEvent(events);
+            userController.setUser(user, null, null);
+
+        }, null);
+
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+
+        mockAttendEvent.checkIn(user.getID(), null);
+        user.checkIn(mockAttendEvent.getID());
+
+        eventController.setEvent(mockAttendEvent, null, null);
+        userController.setUser(user, null, null);
+
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+
+        Espresso.onView(withId(R.id.user_home_organizing_btn)).perform(ViewActions.click());
+        Espresso.onView(ViewMatchers.withText("Test Check In Event")).perform(ViewActions.click());
+        Espresso.onView(withId(R.id.view_event_see_checked_in_attendees_btn)).perform(ViewActions.click());
+        Espresso.onView(withText(user.getID())).check(matches(ViewMatchers.isDisplayed()));
+        eventController.deleteEvent(mockAttendEvent.getID(), null, null);
+    }
 
 
 
