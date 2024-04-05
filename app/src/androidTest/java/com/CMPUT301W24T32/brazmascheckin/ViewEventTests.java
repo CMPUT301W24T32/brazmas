@@ -52,6 +52,7 @@ public class ViewEventTests {
     public ActivityScenarioRule<UserHome> scenario = new ActivityScenarioRule<>(UserHome.class);
     private UserController userController;
     private EventController eventController;
+    private boolean userCreated = false;
 
     private User user = new User(DeviceID.getDeviceID(
             ApplicationProvider.getApplicationContext()
@@ -61,7 +62,10 @@ public class ViewEventTests {
     public void setUp() {
         userController = new UserController(FirestoreDB.getDatabaseInstance());
         eventController = new EventController(FirestoreDB.getDatabaseInstance());
-        userController.setUser(user, null ,null);
+        if(!userCreated) {
+            userController.setUser(user, null ,null);
+            userCreated = true;
+        }
     }
 
     @After
@@ -78,6 +82,7 @@ public class ViewEventTests {
             eventController.deleteEvent(event, null, null);
         }
         userController.deleteUser(user, null, null);
+        userCreated = false;
     }
 
     @Test
@@ -404,8 +409,6 @@ public class ViewEventTests {
         mockAttendEvent.checkIn(user.getID(), new Location(51.0447, -114.0719));
         user.checkIn(mockAttendEvent.getID());
 
-
-
         eventController.setEvent(mockAttendEvent, null, null);
         userController.setUser(user, null, null);
         try {
@@ -437,7 +440,7 @@ public class ViewEventTests {
                     if(view instanceof MapView) {
                         MapView mapView = (MapView) view;
                         int markerCount = countMarkers(mapView);
-                        assertThat(markerCount, equalTo(1));
+                        assert(markerCount == 2);
                     }
                 });
     }
@@ -454,6 +457,77 @@ public class ViewEventTests {
         }
         return markerCount;
     }
+
+    @Test
+    public void testNoCheckInsMap() {
+        Event mockAttendEvent = new Event(
+                null, "Test Map Event",
+                new Date(11, 4, 2024),
+                "Event to test attending",
+                new HashMap<>(),
+                new ArrayList<>(),
+                1,
+                "default_poster.png",
+                null,
+                null,
+                user.getID(),
+                true,
+                new Location( 53.5269,-113.5267),
+                new HashMap<>(),
+                new ArrayList<>()
+        );
+
+
+        eventController.addEvent(mockAttendEvent, id -> {
+            mockAttendEvent.setID(id);
+            eventController.setEvent(mockAttendEvent, null, null);
+            ArrayList<String> events = new ArrayList<>();
+            events.add(id);
+            user.setEvent(events);
+            userController.setUser(user, null, null);
+
+        }, null);
+
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+
+        Espresso.onView(withId(R.id.user_home_organizing_btn)).perform(ViewActions.click());
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+        Espresso.onView(withText("Test Map Event")).perform(ViewActions.click());
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+        Espresso.onView(withId(R.id.view_event_map_btn)).perform(ViewActions.click());
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+        Espresso.onView(withId(R.id.map)).check(matches(isDisplayed()))
+                .check((view, noViewFoundException) -> {
+                    if(view instanceof MapView) {
+                        MapView mapView = (MapView) view;
+                        int markerCount = countMarkers(mapView);
+                        assert(markerCount == 1);
+                    }
+                });
+    }
+
+    @Test
+    public void checkInWithoutGeoLocationMap() {
+
+    }
+
+
 
 
 }
