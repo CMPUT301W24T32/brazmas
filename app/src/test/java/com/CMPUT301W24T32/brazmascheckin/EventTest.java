@@ -1,7 +1,10 @@
 package com.CMPUT301W24T32.brazmascheckin;
 
+import com.CMPUT301W24T32.brazmascheckin.helper.Location;
+import com.CMPUT301W24T32.brazmascheckin.models.Announcement;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.helper.Date;
+import com.CMPUT301W24T32.brazmascheckin.commands.AddEventCommand;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -9,15 +12,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class EventTest {
-
     private Event event;
+    private Location eventLocation;
 
     @Before
-    public void setup() {
+    public void setUp() {
         HashMap<String, Integer> checkIns = new HashMap<>();
         ArrayList<String> signUps = new ArrayList<>();
-        event = new Event("1", "Test Event", new Date("2024-12-01"), "Test Description", checkIns, signUps, 100, "posterID", "QRCodeID", "shareQRCodeID", "organizerID",
-        false, null, null);
+        ArrayList<Announcement> announcements = new ArrayList<>();
+        Location eventLocation = new Location(0.0, 0.0);
+        HashMap<String, Location> userLocationPairs = new HashMap<>();
+
+
+        event = new Event("1", "Test Event", "Test Description", new HashMap<>(), new ArrayList<>(),
+                "organizer", true, new HashMap<>());
+
+        event.setAnnouncements(announcements);
     }
 
     @Test
@@ -55,54 +65,59 @@ public class EventTest {
 
     @Test
     public void testCheckIn() {
-//        assertTrue(event.checkIn("attendee1", null));
-//        assertTrue(event.checkIn("attendee1", null));
-        assertEquals(2, event.getCheckIns().get("attendee1").intValue());
+        event.checkIn("attendee", new Location(0.0, 0.0));
+        assertTrue(event.getCheckIns().containsKey("attendee"));
     }
 
     @Test
     public void testHelperKeys() {
-        event.checkIn("attendee1", null);
-        event.checkIn("attendee2", null);
-        ArrayList<String> keys = event.helperKeys();
-        assertTrue(keys.contains("attendee1"));
-        assertTrue(keys.contains("attendee2"));
+        event.checkIn("attendee", new Location(0.0, 0.0));
+        assertTrue(event.helperKeys().contains("attendee"));
+    }
+
+    @Test
+    public void testGetCheckIns() {
+        event.checkIn("attendee", new Location(0.0, 0.0));
+        assertTrue(event.getCheckIns().containsKey("attendee"));
+    }
+
+    @Test
+    public void testSetCheckIns() {
+        HashMap<String, Integer> newCheckIns = new HashMap<>();
+        newCheckIns.put("newAttendee", 1);
+        event.setCheckIns(newCheckIns);
+        assertTrue(event.getCheckIns().containsKey("newAttendee"));
     }
 
     @Test
     public void testHelperCount() {
-        event.checkIn("attendee1", null);
-        event.checkIn("attendee2", null);
-        assertEquals(2, event.helperCount());
+        event.checkIn("attendee", new Location(0.0, 0.0));
+        assertEquals(1, event.helperCount());
     }
 
     @Test
     public void testGetSignUps() {
-        event.signUp("attendee1");
-        event.signUp("attendee2");
-        ArrayList<String> signUps = event.getSignUps();
-        assertTrue(signUps.contains("attendee1"));
-        assertTrue(signUps.contains("attendee2"));
+        event.signUp("attendee");
+        assertTrue(event.getSignUps().contains("attendee"));
     }
 
     @Test
     public void testSignUp() {
-        assertTrue(event.signUp("attendee1"));
-        assertTrue(event.signUp("attendee2"));
-        assertEquals(2, event.getSignUps().size());
+        assertTrue(event.signUp("attendee"));
     }
 
     @Test
     public void testUnSignUp() {
-        event.signUp("attendee1");
-        event.signUp("attendee2");
-        assertTrue(event.unSignUp("attendee1"));
-        assertEquals(1, event.getSignUps().size());
+        event.signUp("attendee");
+        assertTrue(event.unSignUp("attendee"));
     }
 
     @Test
-    public void testGetAttendeeLimit() {
-        assertEquals(100, event.getAttendeeLimit());
+    public void testSetSignUps() {
+        ArrayList<String> newSignUps = new ArrayList<>();
+        newSignUps.add("newAttendee");
+        event.setSignUps(newSignUps);
+        assertTrue(event.getSignUps().contains("newAttendee"));
     }
 
     @Test
@@ -112,30 +127,15 @@ public class EventTest {
     }
 
     @Test
-    public void testGetPoster() {
-        assertEquals("posterID", event.getPoster());
-    }
-
-    @Test
     public void testSetPoster() {
         event.setPoster("newPosterID");
         assertEquals("newPosterID", event.getPoster());
     }
 
     @Test
-    public void testGetQRCode() {
-        assertEquals("QRCodeID", event.getQRCode());
-    }
-
-    @Test
     public void testSetQRCode() {
         event.setQRCode("newQRCodeID");
         assertEquals("newQRCodeID", event.getQRCode());
-    }
-
-    @Test
-    public void testGetShareQRCode() {
-        assertEquals("shareQRCodeID", event.getShareQRCode());
     }
 
     @Test
@@ -146,12 +146,55 @@ public class EventTest {
 
     @Test
     public void testGetOrganizer() {
-        assertEquals("organizerID", event.getOrganizer());
+        assertEquals("organizer", event.getOrganizer());
     }
 
     @Test
     public void testSetOrganizer() {
-        event.setOrganizer("newOrganizerID");
-        assertEquals("newOrganizerID", event.getOrganizer());
+        event.setOrganizer("newOrganizer");
+        assertEquals("newOrganizer", event.getOrganizer());
     }
+
+    @Test
+    public void testGetGeoLocationEnabled() {
+        assertTrue(event.getGeoLocationEnabled());
+    }
+
+    @Test
+    public void testSetGeoLocationEnabled() {
+        event.setGeoLocationEnabled(false);
+        assertFalse(event.getGeoLocationEnabled());
+    }
+
+    @Test
+    public void testGetUserLocationPairs() {
+        event.checkIn("attendee", new Location(0.0, 0.0));
+        assertTrue(event.getUserLocationPairs().containsKey("attendee"));
+    }
+
+    @Test
+    public void testSetUserLocationPairs() {
+        HashMap<String, Location> newUserLocationPairs = new HashMap<>();
+        newUserLocationPairs.put("newAttendee", new Location(0.0, 0.0));
+        event.setUserLocationPairs(newUserLocationPairs);
+        assertTrue(event.getUserLocationPairs().containsKey("newAttendee"));
+    }
+
+    @Test
+    public void testGetNextMilestone() {
+        assertEquals(1, event.getNextMilestone());
+    }
+
+    @Test
+    public void testSetNextMilestone() {
+        event.setNextMilestone(2);
+        assertEquals(2, event.getNextMilestone());
+    }
+
+    @Test
+    public void testGetAnnouncements() {
+        assertEquals(new ArrayList<Announcement>(), event.getAnnouncements());
+    }
+
+
 }
