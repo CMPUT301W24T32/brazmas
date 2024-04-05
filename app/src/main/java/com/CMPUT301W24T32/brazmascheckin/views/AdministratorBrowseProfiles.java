@@ -4,6 +4,7 @@ package com.CMPUT301W24T32.brazmascheckin.views;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -16,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteFailureListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteSuccessListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
@@ -34,6 +37,8 @@ public class AdministratorBrowseProfiles extends AppCompatActivity {
     private AdminProfileRecyclerViewAdapter profileRecyclerViewAdapter;
     private RecyclerView profileRecyclerView;
     private UserController userController;
+    private ImageController imageController;
+
 
     /**
      * This method initializes the browse profiles admin activity.
@@ -102,6 +107,7 @@ public class AdministratorBrowseProfiles extends AppCompatActivity {
      */
     private void configureControllers() {
         userController = new UserController(FirestoreDB.getDatabaseInstance());
+        imageController = new ImageController(FirestoreDB.getStorageInstance());
 
         showAllUsers();
 
@@ -133,8 +139,64 @@ public class AdministratorBrowseProfiles extends AppCompatActivity {
         });
     }
 
-    private void deleteUser(User user) {
+    private void deleteUserProfilePic(User user) {
+        // Delete the profile picture first
+        String profilePicID = user.getProfilePicture();
 
+        // Check if the user has a custom profile picture
+        if (profilePicID != null && !profilePicID.isEmpty()) {
+            // If custom profile picture exists, attempt to delete it
+            imageController.deleteImage("PROFILE_PICTURE", profilePicID, new DeleteSuccessListener() {
+                @Override
+                public void onDeleteSuccess() {
+                    Log.d("ImageDeletion", "Custom profile picture deleted successfully");
+                    // If deletion is successful, continue to delete the user data
+                    deleteUserData(user);
+                }
+            }, new DeleteFailureListener() {
+                @Override
+                public void onDeleteFailure(Exception e) {
+                    // If deletion of custom profile picture fails, try to delete default profile picture
+                    Log.e("ImageDeletion", "Failed to delete custom profile picture: " + e.getMessage());
+                    deleteDefaultProfilePic(user);
+                }
+            });
+        } else {
+            // If profile picture ID is null or empty, proceed to delete user data directly
+            deleteDefaultProfilePic(user);
+            deleteUserData(user);
+        }
+    }
+
+    private void deleteDefaultProfilePic(User user) {
+        String defaultProfilePicID = user.getDefaultProfilePicture(); // Change this to get the default profile picture ID
+
+        Log.d("ImageDeletion", "Deleting default profile picture from delteDefaultProfilepic admin");
+        Log.d("DefaultProfilePicture", "Default profile picture ID: " + defaultProfilePicID); // Log the default profile picture ID
+
+        if (defaultProfilePicID != null && !defaultProfilePicID.isEmpty()) {
+            imageController.deleteImage("DEFAULT_PROFILE_PICTURE_PATH", defaultProfilePicID, new DeleteSuccessListener() {
+                @Override
+                public void onDeleteSuccess() {
+                    Log.d("ImageDeletion", "Default profile picture deleted successfully");
+                    deleteUserData(user); // If deletion of default profile picture is successful, continue to delete user data
+                }
+            }, new DeleteFailureListener() {
+                @Override
+                public void onDeleteFailure(Exception e) {
+                    Log.e("ImageDeletion", "Failed to delete default profile picture: " + e.getMessage());
+                    deleteUserData(user); // If deletion of default profile picture fails, still proceed to delete user data
+                }
+            });
+        } else {
+            // If user does not have a default profile picture, proceed to delete user data
+            deleteUserData(user);
+        }
+    }
+
+    private void deleteUserData(User user) {
+
+        // deletes the user
         userController.deleteUser(user, () -> {
             // profile deleted successfully
             Toast.makeText(AdministratorBrowseProfiles.this, "Profile deleted", Toast.LENGTH_SHORT).show();
@@ -151,8 +213,8 @@ public class AdministratorBrowseProfiles extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you sure you want to delete this profile?");
         builder.setPositiveButton("Yes", (dialog, which) -> {
-            // User confirmed, delete the profile
-            deleteUser(user);
+            // User confirmed, delete the profile and associated profile picture
+            deleteUserProfilePic(user);
         });
         builder.setNegativeButton("No", null); // Do nothing if user cancels
         builder.show();

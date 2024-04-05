@@ -2,6 +2,7 @@ package com.CMPUT301W24T32.brazmascheckin.controllers;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.google.firebase.storage.FirebaseStorage;
@@ -194,12 +195,15 @@ public class ImageController {
     public void deleteImage(String TYPE, String fileID, DeleteSuccessListener successListener,
                             DeleteFailureListener failureListener) {
         StorageReference imageReference;
+
         if(TYPE.equals(EVENT_POSTER)) {
             imageReference = posterReference.child(fileID);
         } else if (TYPE.equals(PROFILE_PICTURE)) {
             imageReference = profilePictureReference.child(fileID);
         } else if (TYPE.equals(QR_CODE)) {
             imageReference = qrCodeReference.child(fileID);
+        } else if (TYPE.equals(DEFAULT_PROFILE_PICTURE_PATH)) {
+            imageReference = defaultProfilePictureReference.child(fileID);
         } else {
             imageReference = null;
             return;
