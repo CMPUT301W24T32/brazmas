@@ -32,7 +32,6 @@ import androidx.appcompat.widget.SwitchCompat;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.commands.AddEventCommand;
-import com.CMPUT301W24T32.brazmascheckin.controllers.AddFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
@@ -40,16 +39,11 @@ import com.CMPUT301W24T32.brazmascheckin.helper.Date;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.helper.Location;
 import com.CMPUT301W24T32.brazmascheckin.helper.OrphanedQRCodeFinder;
-import com.CMPUT301W24T32.brazmascheckin.helper.QRCodeGenerator;
 import com.CMPUT301W24T32.brazmascheckin.helper.QRCodeSpinnerAdapter;
-import com.CMPUT301W24T32.brazmascheckin.models.Announcement;
-import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
 
 public class AddEventActivity extends AppCompatActivity {
     // CONSTANTS
@@ -272,15 +266,18 @@ public class AddEventActivity extends AppCompatActivity {
         int year = datePicker.getYear();
         Date date = new Date(day, month, year);
         boolean geoLocationEnabled = geoLocationSwitch.isChecked();
+        String selectedOption = autoCompleteTextView.getText().toString();
+        boolean generateNewQRCode = selectedOption.equals("Generate new QR code"); // TODO: make this constant
 
         if (name.isEmpty() || desc.isEmpty()) {
             Toast.makeText(this, "Enter all text fields", Toast.LENGTH_SHORT).show();
         }
         else if (geoLocationEnabled && location == null) {
             Toast.makeText(context, "Location enabled: Choose Location", Toast.LENGTH_SHORT).show();
+
+        } else if (!generateNewQRCode && qrCodeAdapter.getCount()==0 ) {
+            Toast.makeText(context, "no existing qr code, generate new code",Toast.LENGTH_SHORT).show();
         } else {
-            String selectedOption = autoCompleteTextView.getText().toString();
-            boolean generateNewQRCode = selectedOption.equals("Generate new QR code"); // TODO: make this constant
 
             if(!geoLocationEnabled) {
                 location = null;
