@@ -171,12 +171,21 @@ public class ViewMapActivity extends AppCompatActivity {
                 String name = user.getFirstName() + " " + user.getLastName();
                 attendeeMarker.setTitle(name);
                 String profilePicture = null;
+                String folder;
+
+
                 if(user.getProfilePicture() != null && !user.getProfilePicture().isEmpty()) {
                     profilePicture = user.getProfilePicture();
+                    folder = ImageController.PROFILE_PICTURE;
                 } else if (user.getDefaultProfilePicture() != null && !user.getDefaultProfilePicture().isEmpty()) {
                     profilePicture = user.getDefaultProfilePicture();
+                    folder = ImageController.DEFAULT_PROFILE_PICTURE_PATH;
+                } else {
+                    folder = ImageController.DEFAULT_PROFILE_PICTURE_PATH;
                 }
-                imageController.getImage(ImageController.PROFILE_PICTURE, profilePicture,
+
+
+                imageController.getImage(folder, profilePicture,
                         byteArray -> {
                             Bitmap rawBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
                             Bitmap bitmap = Bitmap.createScaledBitmap(rawBitmap, 100, 100, false);
@@ -283,17 +292,22 @@ public class ViewMapActivity extends AppCompatActivity {
                         }
 
                         marker.setSnippet(snippet);
-                        if (event.getPoster() != null && !event.getPoster().isEmpty()) {
-                            imageController.getImage(ImageController.EVENT_POSTER, event.getPoster(),
-                                    byteArray -> {
-                                        Bitmap rawBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-                                        Bitmap bitmap = Bitmap.createScaledBitmap(rawBitmap, 100, 100, false);
-                                        BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
-                                                bitmap);
-                                        marker.setIcon(bitmapDrawable);
-                                    }, e -> Toast.makeText(ViewMapActivity.this,
-                                            "Unable to retrieve image for " + event.getName(), Toast.LENGTH_SHORT).show());
-                    }
+
+                        String folder = ImageController.DEFAULT_EVENT_POSTER;
+                        if(!event.getPoster().equals("defaultPoster.png")) {
+                            folder = ImageController.EVENT_POSTER;
+                        }
+
+                        imageController.getImage(folder, event.getPoster(),
+                                byteArray -> {
+                                    Bitmap rawBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                                    Bitmap bitmap = Bitmap.createScaledBitmap(rawBitmap, 100, 100, false);
+                                    BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
+                                            bitmap);
+                                    marker.setIcon(bitmapDrawable);
+                                }, e -> Toast.makeText(ViewMapActivity.this,
+                                        "Unable to retrieve image for " + event.getName(), Toast.LENGTH_SHORT).show());
+
                     mapView.getOverlays().add(marker);
                 }
                 }, e -> Toast.makeText(ViewMapActivity.this,
@@ -327,18 +341,21 @@ public class ViewMapActivity extends AppCompatActivity {
                 }
 
                 marker.setSnippet(snippet);
-                if(event.getPoster() != null && !event.getPoster().isEmpty()) {
-                    imageController.getImage(ImageController.EVENT_POSTER, event.getPoster(),
-                            byteArray -> {
-                                Bitmap rawBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-                                Bitmap bitmap = Bitmap.createScaledBitmap(rawBitmap, 100, 100, false);
-                                BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
-                                        bitmap);
-
-                                marker.setIcon(bitmapDrawable);
-                            }, e -> Toast.makeText(ViewMapActivity.this,
-                                    "Unable to retrieve image for " + event.getName(), Toast.LENGTH_SHORT).show());
+                String folder = ImageController.DEFAULT_EVENT_POSTER;
+                if(!event.getPoster().equals("defaultPoster.png")) {
+                    folder = ImageController.EVENT_POSTER;
                 }
+
+                imageController.getImage(folder, event.getPoster(),
+                        byteArray -> {
+                            Bitmap rawBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                            Bitmap bitmap = Bitmap.createScaledBitmap(rawBitmap, 100, 100, false);
+                            BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
+                                    bitmap);
+                            marker.setIcon(bitmapDrawable);
+                        }, e -> Toast.makeText(ViewMapActivity.this,
+                                "Unable to retrieve image for " + event.getName(), Toast.LENGTH_SHORT).show());
+
                 marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
                 mapView.getOverlays().add(marker);
             }
@@ -359,7 +376,7 @@ public class ViewMapActivity extends AppCompatActivity {
                         Marker marker = new Marker(mapView);
                         GeoPoint point = new GeoPoint(eventLocation.getLatitude(), eventLocation.getLongitude());
                         marker.setPosition(point);
-                        marker.setTitle(event.getID());
+                        marker.setTitle(event.getName());
 
                         String snippet;
                         try {
@@ -372,17 +389,21 @@ public class ViewMapActivity extends AppCompatActivity {
                         }
                         marker.setSnippet(snippet);
 
-                        if (event.getPoster() != null && !event.getPoster().isEmpty()) {
-                            imageController.getImage(ImageController.EVENT_POSTER, event.getPoster(),
-                                    byteArray -> {
-                                        Bitmap rawBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-                                        Bitmap bitmap = Bitmap.createScaledBitmap(rawBitmap, 100, 100, false);
-                                        BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
-                                                bitmap);
-                                        marker.setIcon(bitmapDrawable);
-                                    }, e -> Toast.makeText(ViewMapActivity.this,
-                                            "Unable to retrieve image for " + event.getName(), Toast.LENGTH_SHORT).show());
+                        String folder = ImageController.DEFAULT_EVENT_POSTER;
+                        if(!event.getPoster().equals("defaultPoster.png")) {
+                            folder = ImageController.EVENT_POSTER;
                         }
+
+                        imageController.getImage(folder, event.getPoster(),
+                                byteArray -> {
+                                    Bitmap rawBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                                    Bitmap bitmap = Bitmap.createScaledBitmap(rawBitmap, 100, 100, false);
+                                    BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
+                                            bitmap);
+                                    marker.setIcon(bitmapDrawable);
+                                }, e -> Toast.makeText(ViewMapActivity.this,
+                                        "Unable to retrieve image for " + event.getName(), Toast.LENGTH_SHORT).show());
+
                         mapView.getOverlays().add(marker);
                     }
                 }, e -> Toast.makeText(ViewMapActivity.this,

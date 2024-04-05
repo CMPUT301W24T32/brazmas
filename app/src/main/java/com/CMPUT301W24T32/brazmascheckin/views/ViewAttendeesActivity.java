@@ -68,6 +68,7 @@ public class ViewAttendeesActivity extends AppCompatActivity implements AddAnnou
             userCheckIns = new ArrayList<>();
             recyclerViewAdapter = new AttendeeRecyclerViewAdapter(this, userDataList,
                     userCheckIns, CHECK_IN_MODE);
+            notifyButton.setVisibility(View.GONE);
 
         } else if (mode == SIGN_UP_MODE) {
             //organizerActionsLinearLayout.setVisibility(View.GONE);
@@ -76,7 +77,7 @@ public class ViewAttendeesActivity extends AppCompatActivity implements AddAnnou
             notifyButton.setVisibility(View.VISIBLE); //bc we need it for organizer -> notify for signed attendees not checked in
             recyclerViewAdapter = new AttendeeRecyclerViewAdapter(this, userDataList,
                     SIGN_UP_MODE);
-            notifyButton.setVisibility(View.GONE);
+            //notifyButton.setVisibility(View.GONE);
         }
 
         recyclerView.setAdapter(recyclerViewAdapter);
@@ -139,6 +140,7 @@ public class ViewAttendeesActivity extends AppCompatActivity implements AddAnnou
     }
     public void addAnnouncement(Announcement announcement) {
         eventController = new EventController(FirestoreDB.getDatabaseInstance());
+        announcement.setName(announcement.getName() + " for " +event.getName());
         event.getAnnouncements().add(announcement);
         eventController.setEvent(event,null,null);
 

@@ -14,15 +14,15 @@
 
         <EditText
             android:id="@+id/add_event_name_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="387dp"
+            android:layout_height="55dp"
+            android:layout_marginBottom="10dp"
+            android:autofillHints="event name"
             android:ems="10"
+            android:fontFamily="sans-serif-condensed-medium"
             android:hint="@string/event_name"
             android:inputType="text"
-            android:textColorHint="#F7CFE5"
-            android:layout_marginBottom="10dp"
-            android:fontFamily="sans-serif-condensed-medium"
-            android:autofillHints="event name" />
+            android:textColorHint="@color/darkGrey" />
 
         <EditText
             android:id="@+id/add_event_desc_et"
@@ -31,7 +31,7 @@
             android:ems="10"
             android:hint="@string/event_description"
             android:inputType="text"
-            android:textColorHint="#F7CFE5"
+            android:textColorHint="@color/darkGrey"
             android:layout_below="@id/add_event_name_tv"
             android:layout_marginBottom="10dp"
             android:fontFamily="sans-serif-condensed-medium"
@@ -44,7 +44,7 @@
             android:ems="10"
             android:hint="@string/attendee_limit"
             android:inputType="number"
-            android:textColorHint="#F7CFE5"
+            android:textColorHint="@color/darkGrey"
             android:layout_below="@id/add_event_desc_et"
             android:layout_marginBottom="10dp"
             android:fontFamily="sans-serif-condensed-medium"
@@ -131,7 +131,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/orphaned_qr_code_spinner"
             android:layout_below="@id/add_event_select_qr_code"
-            android:visibility="invisible"
+            android:visibility="gone"
             />
 
         <Button

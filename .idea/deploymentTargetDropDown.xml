@@ -24,6 +24,7 @@
           <timeTargetWasSelectedWithDropDown value="2024-03-28T18:37:23.656399300Z" />
         </State>
       </entry>
+<<<<<<< HEAD
       <entry key="checkInTest()">
         <State />
       </entry>
@@ -31,6 +32,9 @@
         <State />
       </entry>
       <entry key="testCheckInMap()">
+=======
+      <entry key="checkAttendeeList()">
+>>>>>>> 4f4b411123e36706939b6d2b4b81eba70c3132b9
         <State />
       </entry>
     </value>

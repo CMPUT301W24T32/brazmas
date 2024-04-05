@@ -245,9 +245,6 @@ public class UserHome extends AppCompatActivity {
                                 eventDataList.add(event);
                             }
 
-//                            if(organizedEvents.contains(event.getID())) {
-//                                handleAttendanceAlerts(event);
-//                            }
                         }
                         eventRecyclerViewAdapter.notifyDataSetChanged();
                     }
@@ -342,6 +339,7 @@ public class UserHome extends AppCompatActivity {
             eventController.addSnapshotListener(new SnapshotListener<Event>() {
                 @Override
                 public void snapshotListenerCallback(ArrayList<Event> events) {
+                    int count = 0;
                     for(Event event: events) {
                         if(signedUp.contains(event.getID())){
                             //Toast.makeText(getBaseContext(), "Unable to connect to the database", Toast.LENGTH_LONG).show();
@@ -349,18 +347,20 @@ public class UserHome extends AppCompatActivity {
                             if (announcements != null) {
                                 for(Announcement a: announcements){
                                     if (a.getTimeCreated() > user.getLastAnnouncementCheck()){
-                                        Toast.makeText(getBaseContext(), "check your announcements update for" + event.getName(), Toast.LENGTH_LONG).show();
-                                        break;
+                                        count++;
                                     }
                                 }
                             }
                         }
                     }
+                    if (count > 0){
+                        Toast.makeText(UserHome.this, "You have " + count + " new announcements", Toast.LENGTH_LONG).show();
+                    }
                 }
 
                 @Override
                 public void onError(Exception e) {
-                    //do soon**********8
+                   Toast.makeText(UserHome.this, "Unable to connect to the " + "database", Toast.LENGTH_LONG).show();
                 }
             });
 

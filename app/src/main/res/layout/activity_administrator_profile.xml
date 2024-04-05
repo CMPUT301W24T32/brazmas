@@ -13,16 +13,8 @@
         android:text="Profiles"
         android:textSize="45sp"
         android:gravity="center"
-        android:background="#673AB7"
-        android:textColor="@color/white"/>
-
-    <EditText
-        android:id="@+id/search_bar_profile_admin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="14"
-        android:hint="search"
-        android:layout_marginTop="8dp"/>
+        android:background="@color/lightPink"
+        android:textColor="@color/black" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/all_profiles_rv_admin"

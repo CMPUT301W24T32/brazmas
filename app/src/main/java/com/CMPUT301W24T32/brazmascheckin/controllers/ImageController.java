@@ -200,6 +200,8 @@ public class ImageController {
             imageReference = profilePictureReference.child(fileID);
         } else if (TYPE.equals(QR_CODE)) {
             imageReference = qrCodeReference.child(fileID);
+        } else if (TYPE.equals(DEFAULT_PROFILE_PICTURE_PATH)) {
+            imageReference = defaultProfilePictureReference.child(fileID);
         } else {
             imageReference = null;
             return;

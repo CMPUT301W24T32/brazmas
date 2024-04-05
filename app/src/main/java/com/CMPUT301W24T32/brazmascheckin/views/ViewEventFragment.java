@@ -23,6 +23,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteFailureListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
@@ -52,6 +54,7 @@ public class ViewEventFragment extends DialogFragment {
     private Button geoLocationBtn;
     private Button sharePromoQRCode;
     private Button eventAnalytics;
+    private Button deleteEventBtn;
     private CheckBox signedUpCB;
     private ImageView QRCode;
     private ImageView shareQRCode;
@@ -63,6 +66,7 @@ public class ViewEventFragment extends DialogFragment {
     public static final String EXTRA_VIEW_MODE = "view_mode";
     public static final int ATTENDEE_VIEW = 0;
     public static final int ORGANIZER_VIEW = 1;
+    public static final int ADMIN_VIEW = 2;
     private int mode;
 
     /**
@@ -134,6 +138,9 @@ public class ViewEventFragment extends DialogFragment {
         shareQRCodeLabel = view.findViewById(R.id.view_event_share_qr_code_tv);
         sharePromoQRCode = view.findViewById(R.id.share_promo_qr_code_btn);
         eventAnalytics = view.findViewById(R.id.statistics_button);
+        // admin functionality
+        deleteEventBtn = view.findViewById(R.id.delete_event_button);
+
 
         deviceID = DeviceID.getDeviceID(getContext());
 
@@ -175,7 +182,30 @@ public class ViewEventFragment extends DialogFragment {
             qrCodeTitle.setVisibility(View.GONE);
             sharePromoQRCode.setVisibility(View.GONE);
             eventAnalytics.setVisibility(View.GONE);
+            deleteEventBtn.setVisibility(View.GONE);
+        } else {
+            if (!e.getGeoLocationEnabled()) {
+                geoLocationBtn.setVisibility(View.GONE);
+            }
+            if(e.getShareQRCode() == null) {
+                sharePromoQRCode.setVisibility(View.GONE);
+            }
+        }
 
+        if(mode == ADMIN_VIEW) {
+            eventCheckIns.setVisibility(View.GONE);
+            checkedInAttendeesBtn.setVisibility(View.GONE);
+            signedUpAttendeesBtn.setVisibility(View.GONE);
+            geoLocationBtn.setVisibility(View.GONE);
+            QRCode.setVisibility(View.GONE);
+            shareQRCode.setVisibility(View.GONE);
+            shareqrCodeTitle.setVisibility(View.GONE);
+            qrCodeTitle.setVisibility(View.GONE);
+            sharePromoQRCode.setVisibility(View.GONE);
+            eventAnalytics.setVisibility(View.GONE);
+            geoLocationBtn.setVisibility(View.GONE);
+            sharePromoQRCode.setVisibility(View.GONE);
+            signedUpCB.setVisibility(View.GONE);
         }
     }
 
@@ -224,6 +254,28 @@ public class ViewEventFragment extends DialogFragment {
             Intent intent = new Intent(getActivity(), GraphAnalyticsActivity.class);
             intent.putExtra("event", e);
             startActivity(intent);
+        });
+
+        deleteEventBtn.setOnClickListener(view -> {
+            // need to delete event poster before deleting the actual event
+            if (!e.getPoster().equals("defaultPoster.png")) {  // so default poster doesn't get deleted
+                imageController.deleteImage("EVENT_POSTER", e.getPoster(), new DeleteSuccessListener() {
+                    @Override
+                    public void onDeleteSuccess() {
+                        Log.d("ImageDeletion", "Event poster deleted successfully");
+                    }
+                }, new DeleteFailureListener() {
+                    @Override
+                    public void onDeleteFailure(Exception e) {
+                        Log.e("ImageDeletion", "Failed to delete event poster: " + e.getMessage());
+                    }
+                });
+            }
+            // does actual deletion of event
+            eventController.deleteEvent(e.getID(), () -> {
+                Toast.makeText(getContext(), "Event deleted successfully", Toast.LENGTH_SHORT).show();
+                dismiss();
+            }, e1 -> Toast.makeText(getContext(), "Failed to delete event", Toast.LENGTH_SHORT).show());
         });
     }
 

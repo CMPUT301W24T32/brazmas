@@ -74,8 +74,7 @@ public class EditProfileActivity extends AppCompatActivity {
         firstName = findViewById(R.id.first_name_et);
         lastName = findViewById(R.id.last_name_et);
         changeProfileBtn = findViewById(R.id.change_profile_picture_btn);
-        removeProfileBtn = findViewById(R.id.remove_profile_picture_btn);
-//        storageRef = FirestoreDB.getStorageReference("uploads");
+        removeProfileBtn = findViewById(R.id.remove_profile_picture_btn);;
         deviceID = DeviceID.getDeviceID(this);
         doneBtn = findViewById(R.id.done_btn);
         changeProfileBtn.setOnClickListener(view1 -> openFileChooser());
@@ -122,7 +121,15 @@ public class EditProfileActivity extends AppCompatActivity {
         doneBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Object lock = new Object();
                 getInput();
+                synchronized (lock){
+                    try {
+                        lock.wait(1000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
                 startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
             }
         });
@@ -134,7 +141,6 @@ public class EditProfileActivity extends AppCompatActivity {
     public void getInput(){
         String firstNameS = String.valueOf(firstName.getText());
         String lastNameS = String.valueOf(lastName.getText());
-        String posterID = uploadFile();
 
         userController.getUser(deviceID,user -> {
             String old_first = user.getFirstName();
@@ -147,9 +153,6 @@ public class EditProfileActivity extends AppCompatActivity {
             }
             user.setFirstName(firstNameS);
             user.setLastName(lastNameS);
-            if (posterID != null) {
-                user.setProfilePicture(posterID);
-            }
 
             userController.setUser(user,null,null);
         },null);
@@ -227,12 +230,14 @@ public class EditProfileActivity extends AppCompatActivity {
                 //so that the profile can be removed after adding a new one
                 String posterID = uploadFile();
                 user.setProfilePicture(posterID);
-                userController.setUser(user,null,null);
+                userController.setUser(user,null,
+                        e -> Toast.makeText(EditProfileActivity.this, "Unable to connect to the " + "database", Toast.LENGTH_LONG).show());
 
             profilePicture.setImageURI(imageUri);
             profilePicture.setTag(imageUri);
         }
-        },null);
+        },
+                e -> Toast.makeText(EditProfileActivity.this, "Unable to connect to the " + "database", Toast.LENGTH_LONG).show());
     }
 
     /**
@@ -241,11 +246,10 @@ public class EditProfileActivity extends AppCompatActivity {
      */
     private void displayImage(String posterID) {
         if (posterID != null) {
-            //Toast.makeText(getBaseContext(), "Unable to connect to the " + posterID, Toast.LENGTH_LONG).show();
             imageController.getImage(ImageController.PROFILE_PICTURE, posterID, bytes -> {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 profilePicture.setImageBitmap(bitmap);
-            }, null);
+            }, e -> Toast.makeText(EditProfileActivity.this, "Unable to connect to the " + "database", Toast.LENGTH_LONG).show());
         }
     }
 
@@ -258,7 +262,7 @@ public class EditProfileActivity extends AppCompatActivity {
             imageController.getImage(ImageController.DEFAULT_PROFILE_PICTURE_PATH, posterID, bytes -> {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 profilePicture.setImageBitmap(bitmap);
-            }, null);
+            }, e -> Toast.makeText(EditProfileActivity.this, "Unable to connect to the " + "database", Toast.LENGTH_LONG).show());
         }
     }
 

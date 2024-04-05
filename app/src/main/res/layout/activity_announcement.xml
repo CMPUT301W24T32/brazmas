@@ -8,42 +8,28 @@ android:layout_height="match_parent"
 tools:context=".views.AnnouncementActivity">
 
     <!-- Text input -->
-    <EditText
-        android:id="@+id/announcement_sb"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:ems="14"
-        android:hint="search"
-        android:layout_marginTop="8dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_toStartOf="@+id/user_home_add_event_btn"
-        android:layout_toLeftOf="@+id/user_home_add_event_btn"
-        android:layout_marginEnd="2dp"
-        android:layout_marginRight="2dp"
-        android:layout_marginBottom="2dp"
-        android:layout_alignParentTop="true"/>
+    <TextView
+        android:id="@+id/attendee_view_card_name_tv"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:textColor="@color/black"
+        android:text="Announcements"
+        android:background="@color/lightPink"
+        android:gravity="center"
+        android:textSize="45sp"
+
+        android:layout_marginBottom="8dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/announcement_rv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/announcement_sb"
+        android:layout_height="match_parent"
         android:layout_above="@id/announcement_bnv"
-        android:id="@+id/announcement_rv"></androidx.recyclerview.widget.RecyclerView>
+        android:layout_below="@+id/attendee_view_card_name_tv"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="0dp" />
 
-    <Button
-        android:id="@+id/user_home_add_event_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="+"
-        android:layout_gravity="right"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="2dp"
-        android:layout_marginRight="2dp"/>
-
-<com.google.android.material.bottomnavigation.BottomNavigationView
+    <com.google.android.material.bottomnavigation.BottomNavigationView
 
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

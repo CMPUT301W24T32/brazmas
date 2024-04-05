@@ -6,36 +6,30 @@
 
     <EditText
         android:id="@+id/add_announcement_name_tv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="320dp"
+        android:layout_height="55dp"
+        android:layout_marginBottom="10dp"
         android:ems="10"
+        android:fontFamily="sans-serif-condensed-medium"
         android:hint="Announcement Name"
         android:inputType="text"
-        android:textColorHint="#9C27B0" />
+        android:textColorHint="@color/darkGrey"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"/>
 
     <EditText
         android:id="@+id/add_announcement_desc_et"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="320dp"
+        android:layout_height="55dp"
+        android:layout_marginBottom="10dp"
         android:ems="10"
+        android:fontFamily="sans-serif-condensed-medium"
         android:hint="Description"
         android:inputType="text"
-        android:textColorHint="#9C27B0" />
+        android:textColorHint="@color/darkGrey"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="-10dp"
+       />
 
-
-    <TextView
-        android:id="@+id/add_event_date_title_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Select Date"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp"/>
-
-    <DatePicker
-        android:id="@+id/add_announcement_date_dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:calendarViewShown="false" />
 
 </LinearLayout>

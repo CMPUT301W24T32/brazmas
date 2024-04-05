@@ -19,8 +19,12 @@ import com.CMPUT301W24T32.brazmascheckin.models.Announcement;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.bottomnavigation.LabelVisibilityMode;
+import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Announcement activity is made for testing navigation
@@ -90,7 +94,6 @@ public class AnnouncementActivity extends AppCompatActivity {
             }
         });
 
-        //end baab
     }
 
     public void configureViews(){
@@ -127,6 +130,17 @@ public class AnnouncementActivity extends AppCompatActivity {
                             }
                         }
                     }
+                    Collections.sort(announcementDataList, new Comparator<Announcement>() {
+                        @Override
+                        public int compare(Announcement a, Announcement b) {
+                            if (a.getTimeCreated() > b.getTimeCreated()){
+                                return -1;
+                            }
+                            else{
+                                return 1;
+                            }
+                        }
+                    });
                     adapter.notifyDataSetChanged();
                 }
 
