@@ -35,15 +35,13 @@ import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import java.util.ArrayList;
 
 /**
- * This class is the fragment for the individual event view
+ * This class is the fragment for the individual event view for admin.
  */
 public class AdministratorViewEventFragment extends DialogFragment {
     private String deviceID;
     private TextView eventName;
     private TextView  eventDescription;
-
     private TextView eventDate;
-
     private ImageView eventPoster;
     private TextView eventCheckIns;
     private TextView qrCodeTitle;
