@@ -1,3 +1,4 @@
+
 package com.CMPUT301W24T32.brazmascheckin.views;
 
 import android.app.AlertDialog;
@@ -137,11 +138,20 @@ public class AdministratorViewEventFragment extends DialogFragment {
                 // call the deleteEvent method of EventController
 
                 // need to delete event poster before deleting the actual event
+                imageController.deleteImage("EVENT_POSTER", e.getPoster(), new DeleteSuccessListener() {
+                    @Override
+                    public void onDeleteSuccess() {
+                        Log.d("ImageDeletion", "Event poster deleted successfully");
+                    }
+                }, new DeleteFailureListener() {
+                    @Override
+                    public void onDeleteFailure(Exception e) {
+                        Log.e("ImageDeletion", "Failed to delete event poster: " + e.getMessage());
+                    }
+                });
 
-
-
+                // does actual deletion of event
                 eventController.deleteEvent(e.getID(), () -> {
-
                     Toast.makeText(getContext(), "Event deleted successfully", Toast.LENGTH_SHORT).show();
                     dismiss();
                 }, e1 -> Toast.makeText(getContext(), "Failed to delete event", Toast.LENGTH_SHORT).show());
