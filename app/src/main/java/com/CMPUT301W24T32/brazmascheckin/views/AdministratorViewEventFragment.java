@@ -23,6 +23,8 @@ import androidx.fragment.app.DialogFragment;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
 
+import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteFailureListener;
+import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
 
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
@@ -134,8 +136,12 @@ public class AdministratorViewEventFragment extends DialogFragment {
             deleteEventBtn.setOnClickListener(view -> {
                 // call the deleteEvent method of EventController
 
+                // need to delete event poster before deleting the actual event
+
+
 
                 eventController.deleteEvent(e.getID(), () -> {
+
                     Toast.makeText(getContext(), "Event deleted successfully", Toast.LENGTH_SHORT).show();
                     dismiss();
                 }, e1 -> Toast.makeText(getContext(), "Failed to delete event", Toast.LENGTH_SHORT).show());
