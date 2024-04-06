@@ -97,9 +97,11 @@ public class EditProfileActivity extends AppCompatActivity {
             lastName.setText(lastNameS);
             if (user.getProfilePicture() != null) {
                 displayImage(user.getProfilePicture());
+                profilePicture.setContentDescription("user pfp");
             }
             else{
                 displayDefaultImage(user.getDefaultProfilePicture());
+                profilePicture.setContentDescription("default pfp");
             }
 
         },null);
@@ -113,6 +115,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     user.setProfilePicture(null);
                     userController.setUser(user,null,null);
                     displayDefaultImage(user.getDefaultProfilePicture());
+                    profilePicture.setContentDescription("user pfp");
                 }
                 },null);
             }
