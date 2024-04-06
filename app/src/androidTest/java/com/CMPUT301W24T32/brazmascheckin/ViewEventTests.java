@@ -4,6 +4,7 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.assertThat;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isNotEnabled;
+import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
@@ -522,9 +523,74 @@ public class ViewEventTests {
                 });
     }
 
-    @Test
-    public void checkInWithoutGeoLocationMap() {
 
+    @Test
+    public void attendeeCannotSeeQR() {
+        Event mockAttendEvent = new Event(
+                null, "Test Attendee QR Code Event",
+                new Date(11, 4, 2024),
+                "Event to test attending",
+                new HashMap<>(),
+                new ArrayList<>(),
+                1,
+                "default_poster.png",
+                null,
+                null,
+                user.getID(),
+                true,
+                new Location( 53.5269,-113.5267),
+                new HashMap<>(),
+                new ArrayList<>()
+        );
+
+
+        eventController.addEvent(mockAttendEvent, id -> {
+            mockAttendEvent.setID(id);
+            eventController.setEvent(mockAttendEvent, null, null);
+            ArrayList<String> events = new ArrayList<>();
+            events.add(id);
+            user.setEvent(events);
+            userController.setUser(user, null, null);
+
+        }, null);
+
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+
+        mockAttendEvent.checkIn(user.getID(), new Location(51.0447, -114.0719));
+        user.signUpEvent(mockAttendEvent.getID());
+
+        eventController.setEvent(mockAttendEvent, null, null);
+        userController.setUser(user, null, null);
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+
+        Espresso.onView(withId(R.id.user_home_attending_btn)).perform(ViewActions.click());
+
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+
+        Espresso.onView(withText("Test Attendee QR Code Event"))
+                .perform(ViewActions.click());
+
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+        Espresso.onView(withId(R.id.view_event_QR_iv))
+                .check(matches(
+                        withEffectiveVisibility(ViewMatchers.Visibility.GONE)
+                ));
     }
 
 
