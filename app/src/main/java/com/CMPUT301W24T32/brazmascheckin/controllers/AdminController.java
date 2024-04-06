@@ -49,4 +49,30 @@ public class AdminController {
                     }
                 });
     }
+
+    /**
+     * To add an admin.
+     * @param admin
+     * @param successListener
+     * @param failureListener
+     */
+    public void addAdmin(Admin admin, AddSuccessListener<String> successListener,
+                         AddFailureListener failureListener) {
+        adminsRef.add(admin)
+                .addOnSuccessListener(documentReference -> {
+                    if (documentReference != null) {
+                        String ID = documentReference.getId();
+                        if (successListener != null) {
+                            successListener.onAddSuccess(ID);
+                        }
+                    } else if (failureListener != null) {
+                        failureListener.onAddFailure(null);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if (failureListener != null) {
+                        failureListener.onAddFailure(e);
+                    }
+                });
+    }
 }
