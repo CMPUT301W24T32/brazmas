@@ -37,19 +37,16 @@ import java.util.Date;
 public class UserHome extends AppCompatActivity {
     private ArrayList<Event> eventDataList;
     private EventRecyclerViewAdapter eventRecyclerViewAdapter;
-
     private RecyclerView eventRecyclerView;
     private FloatingActionButton addButton;
-
     private Button allEventsButton;
     private Button attendingEventsButton;
     private Button organizingEventsButton;
-
     private EventController eventController;
     private UserController userController;
     private ImageController imageController;
     private String deviceID;
-
+    private int count;
     private final String lightGrey = "#B2B4B6";
     private final String lightPink = "#FDB0C0";
 
@@ -334,36 +331,34 @@ public class UserHome extends AppCompatActivity {
     }
 
     private void checkNotifications(){
-        userController.getUser(deviceID, user -> {
-            ArrayList<String> signedUp = user.getSignedUpEvents();
-            eventController.addSnapshotListener(new SnapshotListener<Event>() {
-                @Override
-                public void snapshotListenerCallback(ArrayList<Event> events) {
-                    int count = 0;
-                    for(Event event: events) {
-                        if(signedUp.contains(event.getID())){
-                            //Toast.makeText(getBaseContext(), "Unable to connect to the database", Toast.LENGTH_LONG).show();
-                            ArrayList<Announcement> announcements = event.getAnnouncements();
-                            if (announcements != null) {
-                                for(Announcement a: announcements){
-                                    if (a.getTimeCreated() > user.getLastAnnouncementCheck()){
-                                        count++;
+        count = 0;
+       userController.getUser(deviceID, user ->{
+           ArrayList<String> signedUp = user.getSignedUpEvents();
+           long userTime = user.getLastAnnouncementCheck();
+                    eventController.getAllEventsReg(events -> {
+                        for (Event e: events){
+                            //Toast.makeText(getBaseContext(), e.getID(), Toast.LENGTH_SHORT).show();
+                            if (signedUp.contains(e.getID())){
+                                //Toast.makeText(getBaseContext(), e.getID(), Toast.LENGTH_LONG).show();
+                                ArrayList<Announcement> announcements = e.getAnnouncements();
+                                if (announcements != null) {
+                                    for (Announcement a : announcements) {
+                                        if (a.getTimeCreated() > userTime) {
+                                            //Toast.makeText(getBaseContext(), e.getID(), Toast.LENGTH_LONG).show();
+                                            count++;
+                                        }
                                     }
                                 }
                             }
+
                         }
-                    }
-                    if (count > 0){
-                        Toast.makeText(UserHome.this, "You have " + count + " new announcements", Toast.LENGTH_LONG).show();
-                    }
-                }
+                        if(count > 0){
+                            Toast.makeText(getBaseContext(), "You have " + count + " new announcements", Toast.LENGTH_LONG).show();
+                        }
+                    },e -> Toast.makeText(UserHome.this, "Unable to connect to the " +
+                            "database", Toast.LENGTH_LONG).show());
+       },e -> Toast.makeText(UserHome.this, "Unable to connect to the " +
+               "database", Toast.LENGTH_LONG).show());
 
-                @Override
-                public void onError(Exception e) {
-                   Toast.makeText(UserHome.this, "Unable to connect to the " + "database", Toast.LENGTH_LONG).show();
-                }
-            });
-
-        }, null);
     }
 }

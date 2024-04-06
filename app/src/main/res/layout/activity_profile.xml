@@ -115,7 +115,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="6dp"
             android:id="@+id/profile_geolocation_attendee_checkins_btn"
-            android:text="Check-In Map"
+            android:text="@string/check_ins"
             tools:ignore="HardcodedText" />
 
         <Button

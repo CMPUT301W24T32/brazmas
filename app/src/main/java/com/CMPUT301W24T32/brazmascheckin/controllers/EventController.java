@@ -215,8 +215,29 @@ public class EventController {
                 });
     }
 
-
-
-
-
+    /**
+     * Gets all events from the database
+     * @param successListener
+     * @param failureListener
+     */
+    public void getAllEventsReg(GetSuccessListener<List<Event>> successListener, GetFailureListener
+            failureListener) {
+        eventsRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
+                    ArrayList<Event> events = new ArrayList<>();
+                    for(DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        Event event = documentSnapshot.toObject(Event.class);
+                        if(event != null) {
+                            events.add(event);
+                        }
+                    }
+                    if(successListener != null) {
+                        successListener.onSuccess(events);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if(failureListener != null) {
+                        failureListener.onFailure(e);
+                    }
+                });
+    }
 }

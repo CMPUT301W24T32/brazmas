@@ -46,20 +46,21 @@ public class Event implements Serializable {
 
     /**
      * Constructs a new instance of the Event class with the full information for an event.
-     * @param ID Identification assigned by FirestoreDB
-     * @param name Name of the event
-     * @param date Date of the event
-     * @param description Description of the event
-     * @param checkIns Attendees who have checked in, including number of times they have checked in
-     * @param signUps Attendees who have signed up
-     * @param attendeeLimit Maximum number of attendees who can check-in
-     * @param posterID Reference to the image
-     * @param QRCodeID Reference to the image
-     * @param shareQRCodeID Reference to the image
-     * @param organizer Reference to the user who created the event
+     *
+     * @param ID                 Identification assigned by FirestoreDB
+     * @param name               Name of the event
+     * @param date               Date of the event
+     * @param description        Description of the event
+     * @param checkIns           Attendees who have checked in, including number of times they have checked in
+     * @param signUps            Attendees who have signed up
+     * @param attendeeLimit      Maximum number of attendees who can check-in
+     * @param posterID           Reference to the image
+     * @param QRCodeID           Reference to the image
+     * @param shareQRCodeID      Reference to the image
+     * @param organizer          Reference to the user who created the event
      * @param geoLocationEnabled If geolocation is enabled
-     * @param eventLocation the location of the event
-     * @param userLocationPairs the list of users who have checked in, and where they have checked in
+     * @param eventLocation      the location of the event
+     * @param userLocationPairs  the list of users who have checked in, and where they have checked in
      */
     public Event(String ID, String name, Date date, String description, HashMap<String, Integer> checkIns,
                  ArrayList<String> signUps, int attendeeLimit, String posterID, String QRCodeID,
@@ -113,6 +114,9 @@ public class Event implements Serializable {
         this.geoLocationEnabled = geoLocationEnabled;
         this.userLocationPairs = userLocationPairs;
         this.nextMilestone = 1;
+    }
+
+    public <V, K, E> Event(String id, String title, Date date, String desc, HashMap<K,V> kvHashMap, ArrayList<E> es, int limit, String s, String qrCode, Object o, String organizer, boolean geoLocationEnabled, Location location, HashMap<K,V> kvHashMap1) {
     }
 
     /**

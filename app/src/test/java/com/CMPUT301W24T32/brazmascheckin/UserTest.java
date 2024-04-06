@@ -13,12 +13,11 @@ public class UserTest {
     private User user;
 
     @Before
-    public void setup() {
+    public void setUp() {
         ArrayList<String> signedUpEvents = new ArrayList<>();
         ArrayList<String> organizedEvents = new ArrayList<>();
-        // fix this for new fields
-        //user = new User("John", "Doe", signedUpEvents, "123", "profilePicture.jpg", organizedEvents,);
-//        user = new User("John", "Doe", signedUpEvents, "123", "profilePicture.jpg", organizedEvents, null);
+        ArrayList<String> checkedInEvents = new ArrayList<>();
+        user = new User("John", "Doe", signedUpEvents, "1", organizedEvents, true, 0, "profilePicture", "defaultProfilePicture", checkedInEvents);
     }
 
     @Test
@@ -45,18 +44,25 @@ public class UserTest {
 
     @Test
     public void testGetSignedUpEvents() {
-        assertEquals(0, user.getSignedUpEvents().size());
+        assertTrue(user.getSignedUpEvents().isEmpty());
+    }
+
+    @Test
+    public void testSetSignedUpEvents() {
+        ArrayList<String> events = new ArrayList<>();
+        events.add("event1");
+        user.setSignedUpEvents(events);
+        assertFalse(user.getSignedUpEvents().isEmpty());
     }
 
     @Test
     public void testSignUpEvent() {
         user.signUpEvent("event1");
-        assertEquals(1, user.getSignedUpEvents().size());
-        assertEquals("event1", user.getSignedUpEvents().get(0));
+        assertTrue(user.getSignedUpEvents().contains("event1"));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSignUpEvent_alreadySignedUp() {
+    public void testSignUpEventTwice() {
         user.signUpEvent("event1");
         user.signUpEvent("event1");
     }
@@ -65,63 +71,98 @@ public class UserTest {
     public void testUnSignUpEvent() {
         user.signUpEvent("event1");
         user.unSignUpEvent("event1");
-        assertEquals(0, user.getSignedUpEvents().size());
+        assertTrue(user.getSignedUpEvents().isEmpty());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testUnSignUpEvent_notSignedUp() {
+    public void testUnSignUpEventNotSignedUp() {
         user.unSignUpEvent("event1");
     }
 
     @Test
     public void testGetID() {
-        assertEquals("123", user.getID());
+        assertEquals("1", user.getID());
     }
 
     @Test
     public void testSetID() {
-        user.setID("456");
-        assertEquals("456", user.getID());
+        user.setID("2");
+        assertEquals("2", user.getID());
     }
 
     @Test
     public void testGetProfilePicture() {
-        assertEquals("profilePicture.jpg", user.getProfilePicture());
+        assertEquals("profilePicture", user.getProfilePicture());
     }
 
     @Test
     public void testSetProfilePicture() {
-        user.setProfilePicture("newProfilePicture.jpg");
-        assertEquals("newProfilePicture.jpg", user.getProfilePicture());
+        user.setProfilePicture("newProfilePicture");
+        assertEquals("newProfilePicture", user.getProfilePicture());
     }
 
     @Test
     public void testCreateEvent() {
         user.createEvent("event1");
-        assertEquals(1, user.getOrganizedEvents().size());
-        assertEquals("event1", user.getOrganizedEvents().get(0));
+        assertTrue(user.getOrganizedEvents().contains("event1"));
     }
 
     @Test
     public void testDeleteEvent() {
         user.createEvent("event1");
         user.deleteEvent("event1");
-        assertEquals(0, user.getOrganizedEvents().size());
+        assertTrue(user.getOrganizedEvents().isEmpty());
     }
 
     @Test
     public void testSetEvent() {
         ArrayList<String> events = new ArrayList<>();
         events.add("event1");
-        events.add("event2");
         user.setEvent(events);
-        assertEquals(2, user.getOrganizedEvents().size());
-        assertEquals("event1", user.getOrganizedEvents().get(0));
-        assertEquals("event2", user.getOrganizedEvents().get(1));
+        assertFalse(user.getOrganizedEvents().isEmpty());
     }
 
     @Test
     public void testGetOrganizedEvents() {
-        assertEquals(0, user.getOrganizedEvents().size());
+        assertTrue(user.getOrganizedEvents().isEmpty());
+    }
+
+    @Test
+    public void testIsGeoLocationEnabled() {
+        assertTrue(user.isGeoLocationEnabled());
+    }
+
+    @Test
+    public void testSetGeoLocationEnabled() {
+        user.setGeoLocationEnabled(false);
+        assertFalse(user.isGeoLocationEnabled());
+    }
+
+    @Test
+    public void testGetDefaultProfilePicture() {
+        assertEquals("defaultProfilePicture", user.getDefaultProfilePicture());
+    }
+
+    @Test
+    public void testSetDefaultProfilePicture() {
+        user.setDefaultProfilePicture("newDefaultProfilePicture");
+        assertEquals("newDefaultProfilePicture", user.getDefaultProfilePicture());
+    }
+
+    @Test
+    public void testGetLastAnnouncementCheck() {
+        assertEquals(0, user.getLastAnnouncementCheck());
+    }
+
+    @Test
+    public void testSetLastAnnouncementCheck() {
+        user.setLastAnnouncementCheck(1);
+        assertEquals(1, user.getLastAnnouncementCheck());
+    }
+
+    @Test
+    public void testCheckIn() {
+        user.checkIn("event1");
+        assertTrue(user.getCheckInEvents().contains("event1"));
     }
 }

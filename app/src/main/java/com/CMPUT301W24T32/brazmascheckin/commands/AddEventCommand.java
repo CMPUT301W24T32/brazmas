@@ -5,15 +5,12 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.widget.Toast;
 
-import com.CMPUT301W24T32.brazmascheckin.controllers.AddFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.Date;
-import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.helper.Location;
 import com.CMPUT301W24T32.brazmascheckin.helper.QRCodeGenerator;
-import com.CMPUT301W24T32.brazmascheckin.models.Announcement;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 
 import java.util.ArrayList;
