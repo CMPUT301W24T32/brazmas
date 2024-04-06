@@ -6,6 +6,10 @@ import com.CMPUT301W24T32.brazmascheckin.models.Admin;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
 
 /**
  * Controller responsible for managing interactions with the Firestore Database for admin-related operations.
@@ -74,5 +78,41 @@ public class AdminController {
                         failureListener.onAddFailure(e);
                     }
                 });
+    }
+
+    /**
+     * Sets an admin in the Firestore Database.
+     * @param admin
+     * @param successListener
+     * @param failureListener
+     */
+    public void setAdmin(Admin admin, SetSuccessListener successListener,
+                         SetFailureListener failureListener) {
+        String ID = admin.getID();
+        adminsRef.document(ID).set(admin)
+                .addOnSuccessListener(temp -> {
+                    if (successListener != null) {
+                        successListener.onSetSuccess();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if (failureListener != null) {
+                        failureListener.onSetFailure(e);
+                    }
+                });
+    }
+
+    public ListenerRegistration addSnapshotListener(SnapshotListener listener) {
+        return adminsRef.addSnapshotListener((value, error) -> {
+            if(error != null) {
+                listener.onError(error);
+            }
+            ArrayList<Admin> admins = new ArrayList<>();
+            for(QueryDocumentSnapshot doc : value) {
+                Admin admin = doc.toObject(Admin.class);
+                admins.add(admin);
+            }
+            listener.snapshotListenerCallback(admins);
+        });
     }
 }

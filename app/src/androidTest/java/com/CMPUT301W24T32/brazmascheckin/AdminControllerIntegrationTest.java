@@ -2,6 +2,8 @@ import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.anyString;
 
 import com.CMPUT301W24T32.brazmascheckin.controllers.AdminController;
 import com.CMPUT301W24T32.brazmascheckin.models.Admin;
@@ -26,6 +28,9 @@ public class AdminControllerIntegrationTest {
 
     private AdminController adminController;
 
+    /**
+     * To set up for integration tests.
+     */
     @Before
     public void setUp() {
         mockDatabase = mock(FirebaseFirestore.class);
@@ -36,6 +41,46 @@ public class AdminControllerIntegrationTest {
         when(mockCollectionRef.document(anyString())).thenReturn(mockDocumentRef);
 
         adminController = new AdminController(mockDatabase);
+    }
+
+    /**
+     * Test for adding an admin successfully.
+     */
+    @Test
+    public void testAddAdmin_Success() {
+        Admin mockAdmin = mock(Admin.class);
+        when(mockDocumentRef.getId()).thenReturn("mock_admin_id");
+        Task mockTask = mock(Task.class);
+        when(mockCollectionRef.add(any(Admin.class))).thenReturn(mockTask);
+        when(mockTask.addOnSuccessListener(any())).thenReturn(mockTask);
+        when(mockTask.addOnFailureListener(any())).thenReturn(mockTask);
+
+        adminController.addAdmin(mockAdmin, object -> {
+            assert object.equals("mock_admin_id");
+        }, null);
+    }
+
+    /**
+     * Test for adding an admin failure.
+     */
+    @Test
+    public void testAddAdmin_Failure() {
+        Admin mockAdmin = mock(Admin.class);
+        Task mockTask = mock(Task.class);
+
+        when(mockDocumentRef.getId()).thenReturn("mock_admin_id");
+        when(mockCollectionRef.add(any(Admin.class))).thenReturn(mockTask);
+
+        when(mockTask.addOnSuccessListener(any())).thenReturn(mockTask);
+        when(mockTask.addOnFailureListener(any())).thenAnswer(invocation -> {
+            OnFailureListener listener = invocation.getArgument(0);
+            listener.onFailure(new Exception());
+            return mockTask;
+        });
+
+        AtomicBoolean targetListenerInvoked = new AtomicBoolean(false);
+        adminController.addAdmin(mockAdmin, null, failure -> targetListenerInvoked.set(true));
+        assertTrue(targetListenerInvoked.get());
     }
 
     /**
@@ -84,5 +129,43 @@ public class AdminControllerIntegrationTest {
                 e -> targetListenerInvoked.set(true));
 
         assertTrue(targetListenerInvoked.get());
+    }
+
+    /**
+     * Test for setting an admin successfully.
+     */
+    @Test
+    public void testSetAdmin_Success() {
+        Admin admin = new Admin("mock_admin_Id");
+        Task mockTask = mock(Task.class);
+        when(mockTask.addOnSuccessListener(any())).thenReturn(mockTask);
+        when(mockTask.addOnFailureListener(any())).thenReturn(mockTask);
+
+        when(mockDocumentRef.set(any(Admin.class))).thenReturn(mockTask);
+        adminController.setAdmin(admin, () -> assertTrue(true), e -> fail());
+        verify(mockDocumentRef).set(admin);
+    }
+
+    /**
+     * Test for setting an admin failure.
+     */
+    @Test
+    public void testSetAdmin_Failure() {
+        Admin admin = new Admin("mock_admin_Id");
+        Task<Void> mockTask = mock(Task.class);
+
+        when(mockDocumentRef.set(any(Admin.class))).thenReturn(mockTask);
+        when(mockTask.addOnSuccessListener(any())).thenReturn(mockTask);
+        when(mockTask.addOnFailureListener(any())).thenReturn(mockTask);
+
+        when(mockTask.addOnFailureListener(any())).thenAnswer(invocation -> {
+            OnFailureListener listener = invocation.getArgument(0);
+            listener.onFailure(new Exception("Mock failure"));
+            return mockTask;
+        });
+
+        adminController.setAdmin(admin, () -> fail(), e -> assertTrue(true));
+
+        verify(mockDocumentRef).set(admin);
     }
 }
