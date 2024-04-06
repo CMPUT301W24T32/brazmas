@@ -183,16 +183,15 @@ public class ViewEventFragment extends DialogFragment {
             sharePromoQRCode.setVisibility(View.GONE);
             eventAnalytics.setVisibility(View.GONE);
             deleteEventBtn.setVisibility(View.GONE);
-        } else {
+        } else if (mode == ORGANIZER_VIEW) {
             if (!e.getGeoLocationEnabled()) {
                 geoLocationBtn.setVisibility(View.GONE);
             }
             if(e.getShareQRCode() == null) {
                 sharePromoQRCode.setVisibility(View.GONE);
             }
-        }
-
-        if(mode == ADMIN_VIEW) {
+            deleteEventBtn.setVisibility(View.GONE);
+        } else if(mode == ADMIN_VIEW) {
             eventCheckIns.setVisibility(View.GONE);
             checkedInAttendeesBtn.setVisibility(View.GONE);
             signedUpAttendeesBtn.setVisibility(View.GONE);
