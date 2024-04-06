@@ -148,6 +148,7 @@ public class CameraActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("MissingPermission")
     private void handleCheckIn(String qrID) {
         AlertDialog.Builder builder = new AlertDialog.Builder(CameraActivity.this);
         eventController.getEvent(qrID, event -> userController.getUser(deviceID, user -> {
