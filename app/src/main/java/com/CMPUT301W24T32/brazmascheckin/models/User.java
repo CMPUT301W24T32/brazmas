@@ -77,6 +77,14 @@ public class User {
     }
 
     /**
+     *
+     * @param ID
+     */
+    public User(String ID) {
+        this.ID = ID;
+    }
+
+    /**
      * Getter for the first name of the user
      * @return the first name of the user
      */

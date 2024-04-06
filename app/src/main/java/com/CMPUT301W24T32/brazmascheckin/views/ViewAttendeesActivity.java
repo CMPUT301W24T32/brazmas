@@ -74,7 +74,6 @@ public class ViewAttendeesActivity extends AppCompatActivity implements AddAnnou
             //organizerActionsLinearLayout.setVisibility(View.GONE);
             recyclerViewAdapter = new AttendeeRecyclerViewAdapter(this, userDataList,
                     SIGN_UP_MODE);
-            Toast.makeText(ViewAttendeesActivity.this, "test", Toast.LENGTH_SHORT).show();
             notifyButton.setVisibility(View.VISIBLE); //bc we need it for organizer -> notify for signed attendees not checked in
             recyclerViewAdapter = new AttendeeRecyclerViewAdapter(this, userDataList,
                     SIGN_UP_MODE);
@@ -96,6 +95,9 @@ public class ViewAttendeesActivity extends AppCompatActivity implements AddAnnou
         eventController.addSingleSnapshotListener(event.getID(), new SnapshotListener<Event>() {
             @Override
             public void snapshotListenerCallback(ArrayList<Event> events) {
+                if(events.size() == 0 || events.get(0) == null) {
+                    return;
+                }
                 Event dbEvent = events.get(0);
                 ArrayList<String> attendeeIDs = null;
                 HashMap<String, Integer> checkIns = null;
@@ -123,15 +125,17 @@ public class ViewAttendeesActivity extends AppCompatActivity implements AddAnnou
                                 id, Toast.LENGTH_SHORT).show();
                     });
                 }
-                notifyButton.setOnClickListener(v -> {
-                    new AddAnnouncementFragment().show(getSupportFragmentManager(), "Add Announcement");
-                });
+
             }
             @Override
             public void onError(Exception e) {
                 Toast.makeText(ViewAttendeesActivity.this, "Unable to retrieve " +
                         "details for event " + event.getID(), Toast.LENGTH_SHORT).show();
             }
+        });
+
+        notifyButton.setOnClickListener(v -> {
+            new AddAnnouncementFragment().show(getSupportFragmentManager(), "Add Announcement");
         });
     }
     public void addAnnouncement(Announcement announcement) {

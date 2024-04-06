@@ -9,57 +9,65 @@ import com.CMPUT301W24T32.brazmascheckin.models.Announcement;
 
 
 public class AnnouncementTest {
-    private Announcement announcement;
-    private Date date;
 
-    @Before
-    public void setUp() {
-        date = new Date();
-        //announcement = new Announcement("Test Announcement", "This is a test announcement", date, "event1", );
+    @Test
+    public void testAnnouncementConstructor() {
+        Announcement announcement = new Announcement("Test Name", "Test Description", "Test Event ID", System.currentTimeMillis());
+        assertNotNull(announcement);
     }
 
     @Test
     public void testGetName() {
-        assertEquals("Test Announcement", announcement.getName());
+        Announcement announcement = new Announcement("Test Name", "Test Description", "Test Event ID", System.currentTimeMillis());
+        assertEquals("Test Name", announcement.getName());
     }
 
     @Test
     public void testSetName() {
-        announcement.setName("New Test Announcement");
-        assertEquals("New Test Announcement", announcement.getName());
+        Announcement announcement = new Announcement("Test Name", "Test Description", "Test Event ID", System.currentTimeMillis());
+        announcement.setName("New Test Name");
+        assertEquals("New Test Name", announcement.getName());
     }
 
     @Test
     public void testGetDescription() {
-        assertEquals("This is a test announcement", announcement.getDescription());
+        Announcement announcement = new Announcement("Test Name", "Test Description", "Test Event ID", System.currentTimeMillis());
+        assertEquals("Test Description", announcement.getDescription());
     }
 
     @Test
     public void testSetDescription() {
-        announcement.setDescription("This is a new test announcement");
-        assertEquals("This is a new test announcement", announcement.getDescription());
-    }
-
-    @Test
-    public void testGetDate() {
-        assertEquals(date, announcement.getDate());
-    }
-
-    @Test
-    public void testSetDate() {
-        Date newDate = new Date();
-        announcement.setDate(newDate);
-        assertEquals(newDate, announcement.getDate());
+        Announcement announcement = new Announcement("Test Name", "Test Description", "Test Event ID", System.currentTimeMillis());
+        announcement.setDescription("New Test Description");
+        assertEquals("New Test Description", announcement.getDescription());
     }
 
     @Test
     public void testGetEventID() {
-        assertEquals("event1", announcement.getEventID());
+        Announcement announcement = new Announcement("Test Name", "Test Description", "Test Event ID", System.currentTimeMillis());
+        assertEquals("Test Event ID", announcement.getEventID());
     }
 
     @Test
     public void testSetEventID() {
-        announcement.setEventID("event2");
-        assertEquals("event2", announcement.getEventID());
+        Announcement announcement = new Announcement("Test Name", "Test Description", "Test Event ID", System.currentTimeMillis());
+        announcement.setEventID("New Test Event ID");
+        assertEquals("New Test Event ID", announcement.getEventID());
+    }
+
+    @Test
+    public void testGetTimeCreated() {
+        long currentTime = System.currentTimeMillis();
+        Announcement announcement = new Announcement("Test Name", "Test Description", "Test Event ID", currentTime);
+        assertEquals(currentTime, announcement.getTimeCreated());
+    }
+
+    @Test
+    public void testSetTimeCreated() {
+        long currentTime = System.currentTimeMillis();
+        Announcement announcement = new Announcement("Test Name", "Test Description", "Test Event ID", currentTime);
+        long newTime = currentTime + 1000;
+        announcement.setTimeCreated(newTime);
+        assertEquals(newTime, announcement.getTimeCreated());
     }
 }
