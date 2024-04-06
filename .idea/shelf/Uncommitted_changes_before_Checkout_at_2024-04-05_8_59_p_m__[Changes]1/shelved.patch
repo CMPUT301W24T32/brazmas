@@ -1,0 +1,27 @@
+Index: .idea/deploymentTargetDropDown.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"deploymentTargetDropDown\">\r\n    <value>\r\n      <entry key=\"EventControllerIntegrationTest\">\r\n        <State />\r\n      </entry>\r\n      <entry key=\"UserControllerIntegrationTest\">\r\n        <State />\r\n      </entry>\r\n      <entry key=\"app\">\r\n        <State />\r\n      </entry>\r\n      <entry key=\"testDeleteEvent_Failure()\">\r\n        <State />\r\n      </entry>\r\n      <entry key=\"testGetEvent_Failure()\">\r\n        <State />\r\n      </entry>\r\n      <entry key=\"testSetUser_Failure()\">\r\n        <State />\r\n      </entry>\r\n    </value>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/deploymentTargetDropDown.xml b/.idea/deploymentTargetDropDown.xml
+--- a/.idea/deploymentTargetDropDown.xml	
++++ b/.idea/deploymentTargetDropDown.xml	
+@@ -11,15 +11,6 @@
+       <entry key="app">
+         <State />
+       </entry>
+-      <entry key="testDeleteEvent_Failure()">
+-        <State />
+-      </entry>
+-      <entry key="testGetEvent_Failure()">
+-        <State />
+-      </entry>
+-      <entry key="testSetUser_Failure()">
+-        <State />
+-      </entry>
+     </value>
+   </component>
+ </project>
+\ No newline at end of file
