@@ -6,17 +6,25 @@ import androidx.test.espresso.Espresso;
 import androidx.test.espresso.InjectEventSecurityException;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
+
 import androidx.test.espresso.action.ViewActions;
+import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.pressImeActionButton;
+import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
+import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 
@@ -71,7 +79,7 @@ public class AddEventTests {
     public void setUp() {
         userController = new UserController(FirestoreDB.getDatabaseInstance());
         eventController = new EventController(FirestoreDB.getDatabaseInstance());
-        userController.setUser(user, null ,null);
+        userController.setUser(user, null, null);
     }
 
     @After
@@ -81,10 +89,10 @@ public class AddEventTests {
         ArrayList<String> signedUpEvents = user.getSignedUpEvents();
         ArrayList<String> organizedEvents = user.getOrganizedEvents();
 
-        for(String event: signedUpEvents) {
+        for (String event : signedUpEvents) {
             eventController.deleteEvent(event, null, null);
         }
-        for(String event: organizedEvents) {
+        for (String event : organizedEvents) {
             eventController.deleteEvent(event, null, null);
         }
         userController.deleteUser(user, null, null);
@@ -98,21 +106,21 @@ public class AddEventTests {
                 .perform(ViewActions.click());
 
         Espresso.onView(ViewMatchers.withId(R.id.add_event_name_tv))
-                .perform(ViewActions.typeText("Test Event"));
+                .perform(typeText("Test Event"));
         Espresso.onView(ViewMatchers.withId(R.id.add_event_desc_et))
-                .perform(ViewActions.typeText("Test Event Description"));
+                .perform(typeText("Test Event Description"));
         Espresso.onView(ViewMatchers.withId(R.id.add_event_limit_et))
-                .perform(ViewActions.typeText("1"));
+                .perform(typeText("1"));
         Espresso.onView(ViewMatchers.withId(R.id.add_event_geolocation_sw))
                 .perform(ViewActions.click());
         Espresso.onView(ViewMatchers.withId(R.id.add_event_choose_location_btn))
                 .perform(ViewActions.click());
         Espresso.onView(ViewMatchers.withId(R.id.view_map_done_btn))
                 .perform(ViewActions.click());
-        Espresso.onView(ViewMatchers.withId(R.id.add_event_generate_promo_qr_btn))
+        Espresso.onView(ViewMatchers.withId(R.id.add_event_promo_code_sw))
                 .perform(ViewActions.click());
         Espresso.onView(ViewMatchers.withId(R.id.add_event_sv))
-                        .perform(ViewActions.swipeUp());
+                .perform(ViewActions.swipeUp());
 
         try {
             Thread.sleep(5000);
@@ -152,14 +160,14 @@ public class AddEventTests {
         // TESTING BY NOT ADDING THE EVENT NAME
 
         Espresso.onView(ViewMatchers.withId(R.id.add_event_desc_et))
-                .perform(ViewActions.typeText("Test Event Description"));
+                .perform(typeText("Test Event Description"));
         Espresso.onView(ViewMatchers.withId(R.id.add_event_geolocation_sw))
                 .perform(ViewActions.click());
         Espresso.onView(ViewMatchers.withId(R.id.add_event_choose_location_btn))
                 .perform(ViewActions.click());
         Espresso.onView(ViewMatchers.withId(R.id.view_map_done_btn))
                 .perform(ViewActions.click());
-        Espresso.onView(ViewMatchers.withId(R.id.add_event_generate_promo_qr_btn))
+        Espresso.onView(ViewMatchers.withId(R.id.add_event_promo_code_sw))
                 .perform(ViewActions.click());
         Espresso.onView(ViewMatchers.withId(R.id.add_event_sv))
                 .perform(ViewActions.swipeUp());
@@ -195,9 +203,9 @@ public class AddEventTests {
                 .perform(ViewActions.click());
 
         Espresso.onView(ViewMatchers.withId(R.id.add_event_name_tv))
-                .perform(ViewActions.typeText("Test Event"));
+                .perform(typeText("Test Event"));
         Espresso.onView(ViewMatchers.withId(R.id.add_event_desc_et))
-                .perform(ViewActions.typeText("Test Event Description"));
+                .perform(typeText("Test Event Description"));
         // TEST BY NOT ADDING EVENT DESCRIPTION
 //        Espresso.onView(ViewMatchers.withId(R.id.add_event_limit_et))
 //                .perform(ViewActions.typeText("1"));
@@ -207,7 +215,7 @@ public class AddEventTests {
                 .perform(ViewActions.click());
         Espresso.onView(ViewMatchers.withId(R.id.view_map_done_btn))
                 .perform(ViewActions.click());
-        Espresso.onView(ViewMatchers.withId(R.id.add_event_generate_promo_qr_btn))
+        Espresso.onView(ViewMatchers.withId(R.id.add_event_promo_code_sw))
                 .perform(ViewActions.click());
         Espresso.onView(ViewMatchers.withId(R.id.add_event_sv))
                 .perform(ViewActions.swipeUp());
@@ -239,4 +247,69 @@ public class AddEventTests {
         Espresso.onView(ViewMatchers.withId(R.id.user_home_all_events_rv))
                 .check(matches(hasDescendant(withText("Test Event"))));
     }
+
+    @Test
+    public void testNoPromoView() {
+        Espresso.onView(ViewMatchers.withId(R.id.user_home_organizing_btn))
+                .perform(ViewActions.click());
+        Espresso.onView(ViewMatchers.withId(R.id.user_home_add_event_btn))
+                .perform(ViewActions.click());
+
+        Espresso.onView(ViewMatchers.withId(R.id.add_event_name_tv))
+                .perform(typeText("Test No Promo Event"));
+        Espresso.onView(ViewMatchers.withId(R.id.add_event_desc_et))
+                .perform(typeText("Test Event Description"));
+        Espresso.onView(ViewMatchers.withId(R.id.add_event_limit_et))
+                .perform(typeText("1"));
+        Espresso.onView(ViewMatchers.withId(R.id.add_event_sv))
+                .perform(ViewActions.swipeUp());
+
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+
+        Espresso.onView(ViewMatchers.withId(R.id.add_event_button))
+                .perform(ViewActions.click());
+
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+
+        Espresso.onView(ViewMatchers.withId(R.id.user_home_organizing_btn))
+                .perform(ViewActions.click());
+
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+
+        Espresso.onView(ViewMatchers.withText("Test No Promo Event"))
+                        .perform(ViewActions.click());
+
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+
+        Espresso.onView(ViewMatchers.withId(R.id.view_event_sv))
+                .perform(ViewActions.swipeUp());
+
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+        Espresso.onView(withId(R.id.view_event_share_QR_iv))
+                .check(matches(
+                        withEffectiveVisibility(ViewMatchers.Visibility.GONE)
+                ));
+    }
+
+
 }

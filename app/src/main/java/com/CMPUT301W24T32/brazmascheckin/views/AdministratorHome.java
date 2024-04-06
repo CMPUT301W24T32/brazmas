@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -19,6 +20,8 @@ import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * This class will be the home page for organizer.
@@ -109,12 +112,31 @@ public class AdministratorHome extends AppCompatActivity {
     }
 
     private void showAllEvents() {
+
+        // getting current date
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(calendar.YEAR);
+        int month = calendar.get(calendar.MONTH);
+        int day = calendar.get(calendar.DATE);
+
         eventController.addSnapshotListener(new SnapshotListener<Event>() {
             @Override
             public void snapshotListenerCallback(ArrayList<Event> events) {
                 eventDataList.clear();
                 for (Event event : events) {
-                    eventDataList.add(event);
+
+                    // to prevent events that have passed to be displayed
+                    if (year < event.getDate().getYear()) {
+                        eventDataList.add(event);
+                    } else if (year == event.getDate().getYear()) {
+                        if (month < event.getDate().getMonth()) {
+                            eventDataList.add(event);
+                        } else if (month == event.getDate().getMonth()) {
+                            if (day <= event.getDate().getDay()) {
+                                eventDataList.add(event);
+                            }
+                        }
+                    }
                 }
                 eventRecyclerViewAdapter.notifyDataSetChanged();
             }

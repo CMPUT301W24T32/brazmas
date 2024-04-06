@@ -181,19 +181,20 @@ public class ViewMapActivity extends AppCompatActivity {
                     profilePicture = user.getDefaultProfilePicture();
                     folder = ImageController.DEFAULT_PROFILE_PICTURE_PATH;
                 } else {
-                    folder = ImageController.DEFAULT_PROFILE_PICTURE_PATH;
+                    folder = null;
                 }
 
-
-                imageController.getImage(folder, profilePicture,
-                        byteArray -> {
-                            Bitmap rawBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-                            Bitmap bitmap = Bitmap.createScaledBitmap(rawBitmap, 100, 100, false);
-                            BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
-                                    bitmap);
-                            attendeeMarker.setIcon(bitmapDrawable);
-                        },
-                        e -> Toast.makeText(this, "Unable to retrieve profile picture", Toast.LENGTH_SHORT).show());
+                if(folder != null) {
+                    imageController.getImage(folder, profilePicture,
+                            byteArray -> {
+                                Bitmap rawBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                                Bitmap bitmap = Bitmap.createScaledBitmap(rawBitmap, 100, 100, false);
+                                BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
+                                        bitmap);
+                                attendeeMarker.setIcon(bitmapDrawable);
+                            },
+                            e -> Toast.makeText(this, "Unable to retrieve profile picture", Toast.LENGTH_SHORT).show());
+                }
 
 
                 String snippet;
