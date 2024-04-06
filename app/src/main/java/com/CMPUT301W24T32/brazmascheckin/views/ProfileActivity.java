@@ -139,9 +139,11 @@ public class ProfileActivity extends AppCompatActivity {
 
             if (user.getProfilePicture() != null) {
                 displayImage(user.getProfilePicture());
+                profilePicture.setContentDescription("user pfp");
             }
             else{
                 displayDefaultImage(user.getDefaultProfilePicture());
+                profilePicture.setContentDescription("default pfp");
             }
             userName.setText(fullName);
 
