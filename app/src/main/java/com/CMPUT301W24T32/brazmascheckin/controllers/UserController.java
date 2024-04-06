@@ -1,20 +1,11 @@
 package com.CMPUT301W24T32.brazmascheckin.controllers;
 
-import android.content.Context;
-
-
-import androidx.annotation.Nullable;
-
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
-
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -47,13 +38,39 @@ public class UserController {
         String ID = user.getID();
         usersRef.document(ID).set(user)
                 .addOnSuccessListener(temp -> {
-                    if(successListener != null) {
+                    if (successListener != null) {
                         successListener.onSetSuccess();
                     }
                 })
                 .addOnFailureListener(e -> {
-                    if(failureListener != null) {
+                    if (failureListener != null) {
                         failureListener.onSetFailure(e);
+                    }
+                });
+    }
+
+    /**
+     *
+     * @param user
+     * @param successListener
+     * @param failureListener
+     */
+    public void addUser(User user, AddSuccessListener<String> successListener,
+                         AddFailureListener failureListener) {
+        usersRef.add(user)
+                .addOnSuccessListener(documentReference -> {
+                    if (documentReference != null) {
+                        String ID = documentReference.getId();
+                        if (successListener != null) {
+                            successListener.onAddSuccess(ID);
+                        }
+                    } else if (failureListener != null) {
+                        failureListener.onAddFailure(null);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if (failureListener != null) {
+                        failureListener.onAddFailure(e);
                     }
                 });
     }

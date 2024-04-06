@@ -84,7 +84,7 @@ public class EventsOrganizerTest {
         }
         onView(withText("BleeBloopEvent")).perform(click());
         onView(withId(R.id.view_event_signed_up_cb)).perform(ViewActions.click());
-        Espresso.onView(ViewMatchers.withId(R.id.view_scroll_bar)).perform(ViewActions.swipeUp());
+//        Espresso.onView(ViewMatchers.withId(R.id.view_scroll_bar)).perform(ViewActions.swipeUp());
         onView(withId(R.id.view_event_see_signed_up_attendees_btn)).perform(ViewActions.click());
     }
 
@@ -132,4 +132,6 @@ public class EventsOrganizerTest {
 
 
     }
+
+
 }

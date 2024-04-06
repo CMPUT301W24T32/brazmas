@@ -39,6 +39,10 @@ public class Event implements Serializable {
 
     private int nextMilestone;
 
+    public Event(String ID) {
+        this.ID = ID;
+    }
+
 
     /**
      * Constructs a new instance of the Event class with the full information for an event.
@@ -256,7 +260,11 @@ public class Event implements Serializable {
      * @return the list of users who have signed-up to attend the event
      */
     public ArrayList<String> getSignUps() {
-        return signUps;
+        if(signUps != null) {
+            return signUps;
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     /**
