@@ -62,7 +62,8 @@ public class AddEventActivity extends AppCompatActivity {
     private LinearLayout geoLocationLinearLayout;
     private TextView addEventLocationTextView;
     private Button chooseLocation;
-    private Button addShareQRCode;
+    private SwitchCompat shareQRCodeSwitch;
+    private LinearLayout shareQRCodeLinearLayout;
     private String deviceID;
     private Spinner qrCodeSpinner;
 
@@ -122,7 +123,8 @@ public class AddEventActivity extends AppCompatActivity {
         geoLocationLinearLayout = findViewById(R.id.add_event_geolocation_display_ll);
         chooseLocation = findViewById(R.id.add_event_choose_location_btn);
         addEventLocationTextView = findViewById(R.id.add_event_location_tv);
-        addShareQRCode = findViewById(R.id.add_event_generate_promo_qr_btn);
+        shareQRCodeSwitch = findViewById(R.id.add_event_promo_code_sw);
+        shareQRCodeLinearLayout = findViewById(R.id.share_promo_qr_code_ll);
         deviceID = DeviceID.getDeviceID(this);
         chooseImage.setOnClickListener(view -> openFileChooser());
         qrCodeSpinner = findViewById(R.id.orphaned_qr_code_spinner);
@@ -190,8 +192,13 @@ public class AddEventActivity extends AppCompatActivity {
             viewMapLauncher.launch(intent);
         });
 
-        addShareQRCode.setOnClickListener(view -> {
-            shareQRCodeClicked = true;
+        shareQRCodeSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b) {
+                shareQRCodeClicked = true;
+
+            } else {
+                shareQRCodeClicked = false;
+            }
         });
    }
 
