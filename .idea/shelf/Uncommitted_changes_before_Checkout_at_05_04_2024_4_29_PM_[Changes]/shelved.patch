@@ -1,0 +1,51 @@
+Index: .idea/deploymentTargetDropDown.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"deploymentTargetDropDown\">\r\n    <value>\r\n      <entry key=\"AddEventTests\">\r\n        <State />\r\n      </entry>\r\n      <entry key=\"ViewEventTests\">\r\n        <State />\r\n      </entry>\r\n      <entry key=\"app\">\r\n        <State>\r\n          <targetSelectedWithDropDown>\r\n            <Target>\r\n              <type value=\"QUICK_BOOT_TARGET\" />\r\n              <deviceKey>\r\n                <Key>\r\n                  <type value=\"VIRTUAL_DEVICE_PATH\" />\r\n                  <value value=\"C:\\Users\\Ria Ahir\\.android\\avd\\Pixel_2_API_30.avd\" />\r\n                </Key>\r\n              </deviceKey>\r\n            </Target>\r\n          </targetSelectedWithDropDown>\r\n          <timeTargetWasSelectedWithDropDown value=\"2024-03-28T18:37:23.656399300Z\" />\r\n        </State>\r\n      </entry>\r\n<<<<<<< HEAD\r\n      <entry key=\"checkInTest()\">\r\n        <State />\r\n      </entry>\r\n      <entry key=\"checkNoCheckIns()\">\r\n        <State />\r\n      </entry>\r\n      <entry key=\"testCheckInMap()\">\r\n=======\r\n      <entry key=\"checkAttendeeList()\">\r\n>>>>>>> 4f4b411123e36706939b6d2b4b81eba70c3132b9\r\n        <State />\r\n      </entry>\r\n    </value>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/deploymentTargetDropDown.xml b/.idea/deploymentTargetDropDown.xml
+--- a/.idea/deploymentTargetDropDown.xml	
++++ b/.idea/deploymentTargetDropDown.xml	
+@@ -2,39 +2,7 @@
+ <project version="4">
+   <component name="deploymentTargetDropDown">
+     <value>
+-      <entry key="AddEventTests">
+-        <State />
+-      </entry>
+-      <entry key="ViewEventTests">
+-        <State />
+-      </entry>
+-      <entry key="app">
+-        <State>
+-          <targetSelectedWithDropDown>
+-            <Target>
+-              <type value="QUICK_BOOT_TARGET" />
+-              <deviceKey>
+-                <Key>
+-                  <type value="VIRTUAL_DEVICE_PATH" />
+-                  <value value="C:\Users\Ria Ahir\.android\avd\Pixel_2_API_30.avd" />
+-                </Key>
+-              </deviceKey>
+-            </Target>
+-          </targetSelectedWithDropDown>
+-          <timeTargetWasSelectedWithDropDown value="2024-03-28T18:37:23.656399300Z" />
+-        </State>
+-      </entry>
+-<<<<<<< HEAD
+-      <entry key="checkInTest()">
+-        <State />
+-      </entry>
+-      <entry key="checkNoCheckIns()">
+-        <State />
+-      </entry>
+-      <entry key="testCheckInMap()">
+-=======
+-      <entry key="checkAttendeeList()">
+->>>>>>> 4f4b411123e36706939b6d2b4b81eba70c3132b9
++      <entry key="testDeleteEvent_Failure()">
+         <State />
+       </entry>
+     </value>

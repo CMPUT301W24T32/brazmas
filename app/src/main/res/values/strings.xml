@@ -38,4 +38,5 @@
     <string name="all_events">All Events</string>
     <string name="organized_events">Organized Events</string>
     <string name="share_qr_code_button_text">Share</string>
+    <string name="promotional_qr_code">Promotional QR code</string>
 </resources>
