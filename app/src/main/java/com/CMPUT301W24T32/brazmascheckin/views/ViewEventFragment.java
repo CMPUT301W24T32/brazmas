@@ -26,12 +26,14 @@ import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
+import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
+import com.CMPUT301W24T32.brazmascheckin.models.User;
 
 import java.util.ArrayList;
 
@@ -275,6 +277,13 @@ public class ViewEventFragment extends DialogFragment {
                 Toast.makeText(getContext(), "Event deleted successfully", Toast.LENGTH_SHORT).show();
                 dismiss();
             }, e1 -> Toast.makeText(getContext(), "Failed to delete event", Toast.LENGTH_SHORT).show());
+
+            userController.getUser(deviceID, user -> {
+                ArrayList<String> organizedEvents = user.getOrganizedEvents();
+                organizedEvents.remove(e.getID());
+                user.setOrganizedEvents(organizedEvents);
+                userController.setUser(user, null, null);
+            }, null);
         });
     }
 
