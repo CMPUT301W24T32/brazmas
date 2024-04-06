@@ -118,7 +118,7 @@ public class AddEventCommand implements Command{
         Event event = new Event(
                 ID, title, date, desc, new HashMap<>(), new ArrayList<>(),
                 limit, uploadFile(), qrCode, null, organizer, geoLocationEnabled,
-                location, new HashMap<>()
+                location, new HashMap<>(), new ArrayList<>()
         );
 
 
