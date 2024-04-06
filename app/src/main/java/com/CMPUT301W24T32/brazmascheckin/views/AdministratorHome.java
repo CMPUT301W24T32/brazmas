@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -113,9 +114,24 @@ public class AdministratorHome extends AppCompatActivity {
             @Override
             public void snapshotListenerCallback(ArrayList<Event> events) {
                 eventDataList.clear();
+                // Get current date
+                java.util.Date currentDate = new java.util.Date();
+                java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("MMMM d, yyyy");
+
                 for (Event event : events) {
-                    eventDataList.add(event);
+                    try {
+                        java.util.Date eventDate = dateFormat.parse(event.getDate().getPrettyDate());
+                        Log.d("DateComparison", "Event Date: " + eventDate.toString() + ", Current Date: " + currentDate.toString());
+                        // Compare the event date with the current date
+                        if (!eventDate.before(currentDate)) {
+                            eventDataList.add(event);
+                        }
+
+                    } catch (java.text.ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
+
                 eventRecyclerViewAdapter.notifyDataSetChanged();
             }
 
