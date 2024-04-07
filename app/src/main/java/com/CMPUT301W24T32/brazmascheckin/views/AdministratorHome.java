@@ -50,7 +50,6 @@ public class AdministratorHome extends AppCompatActivity {
         configureViews();
         configureControllers();
 
-        //TODO: need to add the navigation bar
         BottomNavigationView bottomNavigationView = findViewById(R.id.admin_home_bnv);
         bottomNavigationView.setSelectedItemId(R.id.admin_event);
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -66,7 +65,6 @@ public class AdministratorHome extends AppCompatActivity {
                 if (id == (R.id.admin_event)){
                     return true;
                 }
-
                 if (id == (R.id.admin_profile)){
                     startActivity(new Intent(getApplicationContext(), AdministratorBrowseProfiles.class));
                     overridePendingTransition(0,0);
@@ -76,7 +74,6 @@ public class AdministratorHome extends AppCompatActivity {
                     overridePendingTransition(0,0);
                 }
                 return false;
-
             }
         });
 
@@ -111,6 +108,10 @@ public class AdministratorHome extends AppCompatActivity {
         });
     }
 
+    /**
+     * Fetches and displays all events that have not passed yet.
+     * Events that have passed are not displayed.
+     */
     private void showAllEvents() {
 
         // getting current date
@@ -147,6 +148,5 @@ public class AdministratorHome extends AppCompatActivity {
             }
         });
     }
-
     //TODO: implement a long click action for event clicked then delete or swipe?
 }
