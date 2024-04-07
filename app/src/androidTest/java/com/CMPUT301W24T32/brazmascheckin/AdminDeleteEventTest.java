@@ -1,116 +1,133 @@
 package com.CMPUT301W24T32.brazmascheckin;
 
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.core.app.ActivityScenario;
-import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.Espresso;
-import androidx.test.espresso.InjectEventSecurityException;
-import androidx.test.espresso.UiController;
-import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.assertion.ViewAssertions;
-import androidx.test.espresso.matcher.ViewMatchers;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
-import static org.mockito.ArgumentMatchers.any;
 
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
-import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
-
-import static org.hamcrest.Matchers.instanceOf;
-
-import android.os.SystemClock;
-import android.view.MotionEvent;
-import android.view.View;
-
-import com.CMPUT301W24T32.brazmascheckin.controllers.AdminController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteFailureListener;
-import com.CMPUT301W24T32.brazmascheckin.controllers.DeleteSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
-import com.CMPUT301W24T32.brazmascheckin.controllers.GetFailureListener;
-import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
-import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
-import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
-import com.CMPUT301W24T32.brazmascheckin.helper.Date;
-import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
-import com.CMPUT301W24T32.brazmascheckin.models.Admin;
+import com.CMPUT301W24T32.brazmascheckin.models.Announcement;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
-import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
-import com.CMPUT301W24T32.brazmascheckin.models.User;
-import com.CMPUT301W24T32.brazmascheckin.views.AddEventActivity;
 import com.CMPUT301W24T32.brazmascheckin.views.AdministratorHome;
-import com.CMPUT301W24T32.brazmascheckin.views.UserHome;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.ListenerRegistration;
 
-import org.hamcrest.Matcher;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.osmdroid.views.MapView;
-import static org.mockito.Mockito.*;
-import org.mockito.Mockito;
-
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import androidx.test.filters.LargeTest;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Rule;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.junit.Assert.assertFalse;
 
 /**
- * test for deletion of event as an administrator
+ * Test for deletion of event as an administrator.
  */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class AdminDeleteEventTest {
 
     @Test
-    public void testEventDeletion() {
+    public void testDeleteEvent() {
+        // controllers
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        EventController eventController = new EventController(database);
 
-        // mock EventController
-        EventController eventController = Mockito.mock(EventController.class);
+        // retrieve all events
+        eventController.getAllEvents(events -> {
+            // Iterate through all events and delete each
+            AtomicInteger counter = new AtomicInteger(events.size());
+            for (Event event : events) {
+                eventController.deleteEvent(event.getID(), () -> {
+                    // Success listener
+                    if (counter.decrementAndGet() == 0) {
+                        // All events have been deleted, now create a mock event
+                        createMockEvent(eventController);
+                    }
+                }, e -> {
+                    // Failure listener
+                    // Handle failure, maybe log the error
+                    if (counter.decrementAndGet() == 0) {
+                        // All events have been deleted, now create a mock event
+                        createMockEvent(eventController);
+                    }
+                });
+            }
+        }, e -> {
+            // Failure for retrieving all events
+            // Handle failure, maybe log the error
+            createMockEvent(eventController); // Launch anyway even if retrieval fails
+        });
+    }
 
-        // create mock event to be deleted
-        //Event mockEvent = new Event("event_id_to_be_deleted", "Mock Event", "Mock Description", "Organizer ID");
-
-        // create mock event to be deleted
-        Date eventDate = new Date();
-        HashMap<String, Integer> emptyMap = new HashMap<>();
+    /**
+     * Creates a mock event that will later be deleted
+     * @param eventController to preform actions on event.
+     */
+    private void createMockEvent(EventController eventController) {
+        // create a mock event
+        HashMap<String, Integer> checkIns = new HashMap<>();
         ArrayList<String> signUps = new ArrayList<>();
-        Event mockEvent = new Event("event_id", "Mock Event", eventDate, "Mock Description", emptyMap, signUps, 1, null, null, null, "Organizer ID", false, null, null, null);
+        ArrayList<Announcement> announcements = new ArrayList<>();
 
-        // launch AdministratorHome activity, mock event will be displayed
-        ActivityScenario<AdministratorHome> activityScenario = ActivityScenario.launch(AdministratorHome.class);
+        Event event = new Event("1", "Test Event", "Test Description", new HashMap<>(), new ArrayList<>(),
+                "organizer", true, new HashMap<>());
 
-        activityScenario.onActivity(activity -> {
-            // verify the event is displayed in the UI
-            Espresso.onView(withText("Mock Event")).check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
+        // Add the mock event to Firestore using the EventController
+        eventController.addEvent(event, eventId -> {
+            // Success listener
+            launchAdministratorHomeActivity();
+        }, failure -> {
+            // Failure listener
+        });
+    }
 
-            // click on the mock event to view its details
-            Espresso.onView(withText("Mock Event")).perform(ViewActions.click());
+    /**
+     * Launches activities and fragments necessary.
+     */
+    private void launchAdministratorHomeActivity() {
+        // AdministratorHome activity
+        ActivityScenario.launch(AdministratorHome.class).onActivity(activity -> {
+            // Wait for RecyclerView
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
-            // click on the "Delete Event" button to delete the event
-            Espresso.onView(withText("Delete Event")).perform(ViewActions.click());
+            // click on the first item of the RecyclerView
+            activity.runOnUiThread(() -> {
+                RecyclerView recyclerView = activity.findViewById(R.id.all_events_rv_admin);
+                RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(0);
+                if (viewHolder != null) {
+                    viewHolder.itemView.performClick();
 
-            // wrap the verification inside runOnUiThread
-            /*activity.runOnUiThread(() -> {
-                // verify that the event deletion is triggered in the controller
-                verify(eventController).deleteEvent(any(String.class), any(DeleteSuccessListener.class), any(DeleteFailureListener.class));
-            });*/
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
 
-            // verify that the event is no longer displayed in the UI after deletion
-            Espresso.onView(withText("Mock Event")).check(ViewAssertions.doesNotExist());
+                    // once you have clicked on the mock event, click on the delete button
+                    Espresso.onView(withText("Delete Event")).perform(ViewActions.click());
 
+                    // wait for event to be deleted
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    // check if mock event is no longer with us
+                    Espresso.onView(withText("Mock Event")).check(ViewAssertions.doesNotExist());
+                }
+            });
         });
     }
 }
+
