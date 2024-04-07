@@ -87,7 +87,7 @@ public class ViewEventTests {
     public void testSignUpBelowLimit() {
         Event mockAttendEvent = new Event(
                 null, "Test Attend Event",
-                new Date(11, 4, 2024),
+                new Date(11, 11, 2024),
                 "Event to test attending",
                 new HashMap<>(),
                 new ArrayList<>(),
@@ -142,7 +142,7 @@ public class ViewEventTests {
     public void testAttendeeList() {
         Event mockAttendEvent = new Event(
                 null, "Test Attend Event",
-                new Date(11, 4, 2024),
+                new Date(11, 11, 2024),
                 "Event to test attending",
                 new HashMap<>(),
                 new ArrayList<>(),
@@ -214,7 +214,7 @@ public class ViewEventTests {
     public void testSignUpFull() {
         Event mockAttendEvent = new Event(
                 null, "Test Attend Event",
-                new Date(11, 4, 2024),
+                new Date(11, 11, 2024),
                 "Event to test attending",
                 new HashMap<>(),
                 new ArrayList<>(),
@@ -268,7 +268,7 @@ public class ViewEventTests {
     public void testCheckIn() {
         Event mockAttendEvent = new Event(
                 null, "Test Check In Event",
-                new Date(11, 4, 2024),
+                new Date(11, 11, 2024),
                 "Event to test attending",
                 new HashMap<>(),
                 new ArrayList<>(),
@@ -338,7 +338,7 @@ public class ViewEventTests {
     public void testNoCheckIns() {
         Event mockAttendEvent = new Event(
                 null, "Test Check In Event",
-                new Date(11, 4, 2024),
+                new Date(11, 11, 2024),
                 "Event to test attending",
                 new HashMap<>(),
                 new ArrayList<>(),
@@ -389,7 +389,7 @@ public class ViewEventTests {
     public void testCheckInMap() {
         Event mockAttendEvent = new Event(
                 null, "Test Map Event",
-                new Date(11, 4, 2024),
+                new Date(11, 11, 2024),
                 "Event to test attending",
                 new HashMap<>(),
                 new ArrayList<>(),
@@ -477,7 +477,7 @@ public class ViewEventTests {
     public void testNoCheckInsMap() {
         Event mockAttendEvent = new Event(
                 null, "Test Map Event",
-                new Date(11, 4, 2024),
+                new Date(11, 11, 2024),
                 "Event to test attending",
                 new HashMap<>(),
                 new ArrayList<>(),
@@ -542,7 +542,7 @@ public class ViewEventTests {
     public void attendeeCannotSeeQR() {
         Event mockAttendEvent = new Event(
                 null, "Test Attendee QR Code Event",
-                new Date(11, 4, 2024),
+                new Date(11, 11, 2024),
                 "Event to test attending",
                 new HashMap<>(),
                 new ArrayList<>(),
