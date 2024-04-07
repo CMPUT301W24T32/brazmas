@@ -5,19 +5,19 @@
       <entry key="ProfileTests">
         <State />
       </entry>
+      <entry key="ViewEventTests">
+        <State />
+      </entry>
       <entry key="app">
         <State />
       </entry>
-      <entry key="testCheckIn()">
+      <entry key="attendeeCannotSeeQR()">
         <State />
       </entry>
-      <entry key="testFullNameChanged()">
+      <entry key="testCheckInMap()">
         <State />
       </entry>
-      <entry key="testNoCheckIns()">
-        <State />
-      </entry>
-      <entry key="testSignUpFull()">
+      <entry key="testFirstNameChanged()">
         <State />
       </entry>
     </value>

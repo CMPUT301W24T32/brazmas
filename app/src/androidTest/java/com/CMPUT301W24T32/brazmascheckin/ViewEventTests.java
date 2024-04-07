@@ -455,7 +455,7 @@ public class ViewEventTests {
                     if(view instanceof MapView) {
                         MapView mapView = (MapView) view;
                         int markerCount = countMarkers(mapView);
-                        assert(markerCount >= 2);
+                        assert(markerCount == 2);
                     }
                 });
     }
@@ -532,7 +532,7 @@ public class ViewEventTests {
                     if(view instanceof MapView) {
                         MapView mapView = (MapView) view;
                         int markerCount = countMarkers(mapView);
-                        assert(markerCount >= 1);
+                        assert(markerCount == 1);
                     }
                 });
     }
