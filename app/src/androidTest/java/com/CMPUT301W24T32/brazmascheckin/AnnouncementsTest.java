@@ -150,7 +150,7 @@ public class AnnouncementsTest {
      * Tests to see if Announcement fragment is empty-> doesn't add to signed-up Announcements
      *
      */
-    @Test
+   
     @Test
     public void emptyFragment() {
         try {
