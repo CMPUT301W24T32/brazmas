@@ -85,13 +85,14 @@ public class AddEventCommand implements Command{
      *  Execute the command to add or reuse an event.
      */
     @Override
-    public void execute() {
+    public Event execute() {
         Event event = createEvent();
         if(ID != null && qrCode != null) {
             reuseEvent(event);
         } else {
             addEvent(event);
         }
+        return event;
 
     }
 
