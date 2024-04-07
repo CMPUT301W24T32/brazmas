@@ -129,18 +129,18 @@
         <Spinner
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/orphaned_qr_code_spinner"
+            android:id="@+id/add_event_orphaned_qr_code_spinner"
             android:layout_below="@id/add_event_select_qr_code"
             android:visibility="gone"
             />
 
         <LinearLayout
-            android:id="@+id/share_promo_qr_code_ll"
+            android:id="@+id/add_event_share_promo_qr_code_ll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_gravity="center"
-            android:layout_below="@id/orphaned_qr_code_spinner"
+            android:layout_below="@id/add_event_orphaned_qr_code_spinner"
             android:layout_marginBottom="10dp"
             >
             <TextView
@@ -169,7 +169,7 @@
             android:fontFamily="sans-serif-condensed-medium"
             android:textColor="@color/black"
             app:rippleColor="#9B27AF"
-            android:layout_below="@id/share_promo_qr_code_ll"
+            android:layout_below="@id/add_event_share_promo_qr_code_ll"
             android:layout_marginBottom="10dp"
             />
 

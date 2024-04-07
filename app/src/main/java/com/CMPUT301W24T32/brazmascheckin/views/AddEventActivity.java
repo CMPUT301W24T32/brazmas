@@ -10,6 +10,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -44,6 +46,7 @@ import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class AddEventActivity extends AppCompatActivity {
     // CONSTANTS
@@ -63,7 +66,6 @@ public class AddEventActivity extends AppCompatActivity {
     private TextView addEventLocationTextView;
     private Button chooseLocation;
     private SwitchCompat shareQRCodeSwitch;
-    private LinearLayout shareQRCodeLinearLayout;
     private String deviceID;
     private Spinner qrCodeSpinner;
 
@@ -80,6 +82,9 @@ public class AddEventActivity extends AppCompatActivity {
 
     //conditional
     private boolean shareQRCodeClicked = false;
+
+    //etc
+    private Geocoder geocoder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,10 +129,9 @@ public class AddEventActivity extends AppCompatActivity {
         chooseLocation = findViewById(R.id.add_event_choose_location_btn);
         addEventLocationTextView = findViewById(R.id.add_event_location_tv);
         shareQRCodeSwitch = findViewById(R.id.add_event_promo_code_sw);
-        shareQRCodeLinearLayout = findViewById(R.id.share_promo_qr_code_ll);
         deviceID = DeviceID.getDeviceID(this);
         chooseImage.setOnClickListener(view -> openFileChooser());
-        qrCodeSpinner = findViewById(R.id.orphaned_qr_code_spinner);
+        qrCodeSpinner = findViewById(R.id.add_event_orphaned_qr_code_spinner);
         autoCompleteTextView = findViewById(R.id.add_event_select_qr_code_actv);
 
         // prevent choosing date in the past
@@ -200,6 +204,8 @@ public class AddEventActivity extends AppCompatActivity {
                 shareQRCodeClicked = false;
             }
         });
+
+        geocoder = new Geocoder(this);
    }
 
     private ActivityResultLauncher<Intent> viewMapLauncher = registerForActivityResult(
@@ -211,11 +217,16 @@ public class AddEventActivity extends AppCompatActivity {
                         int mode = data.getIntExtra(ViewMapActivity.EXTRA_MODE, -1);
                         if(mode == ViewMapActivity.CHOOSE_LOCATION) {
                             location = (Location) data.getSerializableExtra(ViewMapActivity.RESULT_LOCATION);
-                            addEventLocationTextView.setText(
-                                    location.getLatitude() + " " + location.getLongitude()
-                            );
-                        } else {
-                            // TODO: error handling
+                            String place;
+                            try {
+                                List<Address> addresses = geocoder.getFromLocation(location.getLatitude(),
+                                        location.getLongitude(), 1);
+                                place = addresses.get(0).getAddressLine(0);
+                            } catch (Exception e) {
+                                place = location.getLatitude() + " " + location.getLongitude();
+
+                            }
+                            addEventLocationTextView.setText(place);
                         }
                     }
                 }

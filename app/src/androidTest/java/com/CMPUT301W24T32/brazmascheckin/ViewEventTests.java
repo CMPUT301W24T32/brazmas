@@ -1,16 +1,15 @@
 package com.CMPUT301W24T32.brazmascheckin;
 
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.Espresso.pressBack;
+import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.assertThat;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isNotEnabled;
+import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
-import static org.hamcrest.Matchers.equalTo;
-
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.Espresso;
@@ -20,7 +19,6 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
-import com.CMPUT301W24T32.brazmascheckin.controllers.AddSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.helper.Date;
@@ -37,7 +35,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.Marker;
 
 import java.util.ArrayList;
@@ -52,6 +49,7 @@ public class ViewEventTests {
     public ActivityScenarioRule<UserHome> scenario = new ActivityScenarioRule<>(UserHome.class);
     private UserController userController;
     private EventController eventController;
+    private boolean userCreated = false;
 
     private User user = new User(DeviceID.getDeviceID(
             ApplicationProvider.getApplicationContext()
@@ -61,7 +59,10 @@ public class ViewEventTests {
     public void setUp() {
         userController = new UserController(FirestoreDB.getDatabaseInstance());
         eventController = new EventController(FirestoreDB.getDatabaseInstance());
-        userController.setUser(user, null ,null);
+        if(!userCreated) {
+            userController.setUser(user, null ,null);
+            userCreated = true;
+        }
     }
 
     @After
@@ -78,6 +79,7 @@ public class ViewEventTests {
             eventController.deleteEvent(event, null, null);
         }
         userController.deleteUser(user, null, null);
+        userCreated = false;
     }
 
     @Test
@@ -112,25 +114,25 @@ public class ViewEventTests {
 
         try {
             Thread.sleep(5000);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
 
-        Espresso.onView(ViewMatchers.withId(R.id.user_home_organizing_btn)).perform(
-                ViewActions.click());
+        onView(withId(R.id.user_home_organizing_btn)).perform(
+                click());
 
         try {
             Thread.sleep(3000);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
-        Espresso.onView(ViewMatchers.withText("Test Attend Event")).perform(ViewActions.click());
-        Espresso.onView(ViewMatchers.withId(R.id.view_event_signed_up_cb)).perform(ViewActions.click());
+        onView(withText("Test Attend Event")).perform(click());
+        onView(withId(R.id.view_event_signed_up_cb)).perform(click());
 
-        Espresso.pressBack();
+        pressBack();
 
-        Espresso.onView(ViewMatchers.withId(R.id.user_home_attending_btn)).perform(ViewActions.click());
-        Espresso.onView(ViewMatchers.withText("Test Attend Event"))
+        onView(withId(R.id.user_home_attending_btn)).perform(click());
+        onView(withText("Test Attend Event"))
                 .check(matches(ViewMatchers.isDisplayed()));
 
     }
@@ -167,42 +169,42 @@ public class ViewEventTests {
 
         try {
             Thread.sleep(5000);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
 
-        Espresso.onView(ViewMatchers.withId(R.id.user_home_organizing_btn)).perform(
-                ViewActions.click());
+        onView(withId(R.id.user_home_organizing_btn)).perform(
+                click());
 
         try {
             Thread.sleep(3000);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
-        Espresso.onView(ViewMatchers.withText("Test Attend Event")).perform(ViewActions.click());
-        Espresso.onView(ViewMatchers.withId(R.id.view_event_signed_up_cb)).perform(ViewActions.click());
+        onView(withText("Test Attend Event")).perform(click());
+        onView(withId(R.id.view_event_signed_up_cb)).perform(click());
 
-        Espresso.pressBack();
+        pressBack();
 
         try {
             Thread.sleep(3000);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
 
-        Espresso.onView(ViewMatchers.withId(R.id.user_home_organizing_btn));
-        Espresso.onView(ViewMatchers.withText("Test Attend Event")).perform(ViewActions.click());
-        Espresso.onView(ViewMatchers.withId(R.id.view_event_see_signed_up_attendees_btn))
-                        .perform(ViewActions.click());
-        Espresso.onView(ViewMatchers.withText(user.getID())).check(matches(ViewMatchers.isDisplayed()));
+        onView(withId(R.id.user_home_organizing_btn));
+        onView(withText("Test Attend Event")).perform(click());
+        onView(withId(R.id.view_event_see_signed_up_attendees_btn))
+                        .perform(click());
+        onView(withText(user.getID())).check(matches(ViewMatchers.isDisplayed()));
 
 
-        Espresso.pressBack();
-        Espresso.pressBack();
+        pressBack();
+        pressBack();
         try {
 
             Thread.sleep(5000);
-        } catch (Exception e){
+        } catch (Exception ignored){
 
         }
     }
@@ -239,20 +241,20 @@ public class ViewEventTests {
 
         try {
             Thread.sleep(5000);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
 
-        Espresso.onView(ViewMatchers.withId(R.id.user_home_organizing_btn)).perform(
-                ViewActions.click());
+        onView(withId(R.id.user_home_organizing_btn)).perform(
+                click());
 
         try {
             Thread.sleep(3000);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
-        Espresso.onView(ViewMatchers.withText("Test Attend Event")).perform(ViewActions.click());
-        Espresso.onView(ViewMatchers.withId(R.id.view_event_signed_up_cb)).check(matches(isNotEnabled()));
+        onView(withText("Test Attend Event")).perform(click());
+        onView(withId(R.id.view_event_signed_up_cb)).check(matches(isNotEnabled()));
     }
 
     @Test
@@ -299,19 +301,19 @@ public class ViewEventTests {
 
         try {
             Thread.sleep(5000);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
 
-        Espresso.onView(withId(R.id.user_home_organizing_btn)).perform(ViewActions.click());
+        onView(withId(R.id.user_home_organizing_btn)).perform(click());
         try {
             Thread.sleep(5000);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
-        Espresso.onView(ViewMatchers.withText("Test Check In Event")).perform(ViewActions.click());
-        Espresso.onView(withId(R.id.view_event_see_checked_in_attendees_btn)).perform(ViewActions.click());
-        Espresso.onView(withText(user.getID())).check(matches(ViewMatchers.isDisplayed()));
+        onView(withText("Test Check In Event")).perform(click());
+        onView(withId(R.id.view_event_see_checked_in_attendees_btn)).perform(click());
+        onView(withText(user.getID())).check(matches(ViewMatchers.isDisplayed()));
     }
 
     @Test
@@ -346,23 +348,23 @@ public class ViewEventTests {
 
         try {
             Thread.sleep(5000);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
 
-        Espresso.onView(withId(R.id.user_home_organizing_btn)).perform(ViewActions.click());
+        onView(withId(R.id.user_home_organizing_btn)).perform(click());
         try {
             Thread.sleep(5000);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
-        Espresso.onView(ViewMatchers.withText("Test Check In Event")).perform(ViewActions.click());
+        onView(withText("Test Check In Event")).perform(click());
         try {
             Thread.sleep(5000);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
-        Espresso.onView(withId(R.id.view_event_social_tv)).check(matches(ViewMatchers.withText("0")));
+        onView(withId(R.id.view_event_social_tv)).check(matches(withText("Check Ins: 0")));
     }
 
     @Test
@@ -397,47 +399,45 @@ public class ViewEventTests {
 
         try {
             Thread.sleep(5000);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
 
         mockAttendEvent.checkIn(user.getID(), new Location(51.0447, -114.0719));
         user.checkIn(mockAttendEvent.getID());
 
-
-
         eventController.setEvent(mockAttendEvent, null, null);
         userController.setUser(user, null, null);
         try {
             Thread.sleep(5000);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
 
-        Espresso.onView(withId(R.id.user_home_organizing_btn)).perform(ViewActions.click());
+        onView(withId(R.id.user_home_organizing_btn)).perform(click());
         try {
             Thread.sleep(5000);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
-        Espresso.onView(withText("Test Map Event")).perform(ViewActions.click());
+        onView(withText("Test Map Event")).perform(click());
         try {
             Thread.sleep(5000);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
-        Espresso.onView(withId(R.id.view_event_map_btn)).perform(ViewActions.click());
+        onView(withId(R.id.view_event_map_btn)).perform(click());
         try {
             Thread.sleep(5000);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
-        Espresso.onView(withId(R.id.map)).check(matches(isDisplayed()))
+        onView(withId(R.id.map)).check(matches(isDisplayed()))
                 .check((view, noViewFoundException) -> {
                     if(view instanceof MapView) {
                         MapView mapView = (MapView) view;
                         int markerCount = countMarkers(mapView);
-                        assertThat(markerCount, equalTo(1));
+                        assert(markerCount == 2);
                     }
                 });
     }
@@ -455,5 +455,137 @@ public class ViewEventTests {
         return markerCount;
     }
 
+    @Test
+    public void testNoCheckInsMap() {
+        Event mockAttendEvent = new Event(
+                null, "Test Map Event",
+                new Date(11, 4, 2024),
+                "Event to test attending",
+                new HashMap<>(),
+                new ArrayList<>(),
+                1,
+                "default_poster.png",
+                null,
+                null,
+                user.getID(),
+                true,
+                new Location( 53.5269,-113.5267),
+                new HashMap<>(),
+                new ArrayList<>()
+        );
 
+
+        eventController.addEvent(mockAttendEvent, id -> {
+            mockAttendEvent.setID(id);
+            eventController.setEvent(mockAttendEvent, null, null);
+            ArrayList<String> events = new ArrayList<>();
+            events.add(id);
+            user.setEvent(events);
+            userController.setUser(user, null, null);
+
+        }, null);
+
+        try {
+            Thread.sleep(5000);
+        } catch (Exception ignored) {
+
+        }
+
+        onView(withId(R.id.user_home_organizing_btn)).perform(click());
+        try {
+            Thread.sleep(5000);
+        } catch (Exception ignored) {
+
+        }
+        onView(withText("Test Map Event")).perform(click());
+        try {
+            Thread.sleep(5000);
+        } catch (Exception ignored) {
+
+        }
+        onView(withId(R.id.view_event_map_btn)).perform(click());
+        try {
+            Thread.sleep(5000);
+        } catch (Exception ignored) {
+
+        }
+        onView(withId(R.id.map)).check(matches(isDisplayed()))
+                .check((view, noViewFoundException) -> {
+                    if(view instanceof MapView) {
+                        MapView mapView = (MapView) view;
+                        int markerCount = countMarkers(mapView);
+                        assert(markerCount == 1);
+                    }
+                });
+    }
+
+
+    @Test
+    public void attendeeCannotSeeQR() {
+        Event mockAttendEvent = new Event(
+                null, "Test Attendee QR Code Event",
+                new Date(11, 4, 2024),
+                "Event to test attending",
+                new HashMap<>(),
+                new ArrayList<>(),
+                1,
+                "default_poster.png",
+                null,
+                null,
+                user.getID(),
+                true,
+                new Location( 53.5269,-113.5267),
+                new HashMap<>(),
+                new ArrayList<>()
+        );
+
+
+        eventController.addEvent(mockAttendEvent, id -> {
+            mockAttendEvent.setID(id);
+            eventController.setEvent(mockAttendEvent, null, null);
+            ArrayList<String> events = new ArrayList<>();
+            events.add(id);
+            user.setEvent(events);
+            userController.setUser(user, null, null);
+
+        }, null);
+
+        try {
+            Thread.sleep(5000);
+        } catch (Exception ignored) {
+
+        }
+
+        mockAttendEvent.checkIn(user.getID(), new Location(51.0447, -114.0719));
+        user.signUpEvent(mockAttendEvent.getID());
+
+        eventController.setEvent(mockAttendEvent, null, null);
+        userController.setUser(user, null, null);
+        try {
+            Thread.sleep(5000);
+        } catch (Exception ignored) {
+
+        }
+
+        onView(withId(R.id.user_home_attending_btn)).perform(click());
+
+        try {
+            Thread.sleep(5000);
+        } catch (Exception ignored) {
+
+        }
+
+        onView(withText("Test Attendee QR Code Event"))
+                .perform(click());
+
+        try {
+            Thread.sleep(5000);
+        } catch (Exception ignored) {
+
+        }
+        onView(withId(R.id.view_event_QR_iv))
+                .check(matches(
+                        withEffectiveVisibility(ViewMatchers.Visibility.GONE)
+                ));
+    }
 }

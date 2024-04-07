@@ -39,9 +39,6 @@ import com.journeyapps.barcodescanner.ScanOptions;
  */
 public class CameraActivity extends AppCompatActivity {
 
-    // Current event object
-    Event currentEvent;
-
     // Scan button
     Button btn_scan;
 
@@ -133,11 +130,12 @@ public class CameraActivity extends AppCompatActivity {
 
         // Get the scanned QR code content (event ID)
         String qrID = result.getContents();
-        Log.d("log1", "handleScanResult: "+qrID);
         if (qrID.endsWith("SHARE-QRCODE")) {
             openEventViewFragment(qrID);
-        } else {
+        } else if (qrID.endsWith("-QRCODE")){
             handleCheckIn(qrID);
+        } else {
+            Toast.makeText(this, "Invalid QR Code for this app", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -147,13 +145,10 @@ public class CameraActivity extends AppCompatActivity {
      */
     private void openEventViewFragment(String shareqrID) {
         String eventID = shareqrID.replace("-SHARE-QRCODE","");
-        eventController.getEvent(eventID, new GetSuccessListener<Event>() {
-            @Override
-            public void onSuccess(Event event) {
-                // Open the view fragment for the event
-                ViewEventFragment viewEventFragment = ViewEventFragment.sendEvent(event, ViewEventFragment.ATTENDEE_VIEW);
-                viewEventFragment.show(getSupportFragmentManager(), "view_event_fragment");
-            }
+        eventController.getEvent(eventID, event -> {
+            // Open the view fragment for the event
+            ViewEventFragment viewEventFragment = ViewEventFragment.sendEvent(event, ViewEventFragment.ATTENDEE_VIEW);
+            viewEventFragment.show(getSupportFragmentManager(), "view_event_fragment");
         }, e -> {
             Toast.makeText(CameraActivity.this, "Unable to load event details a", Toast.LENGTH_SHORT).show();
         });
@@ -163,30 +158,26 @@ public class CameraActivity extends AppCompatActivity {
      * Handles the check-in process for an event.
      * @param qrID The QR code ID of the event.
      */
+    @SuppressLint("MissingPermission")
     private void handleCheckIn(String qrID) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(CameraActivity.this);
-        eventController.getEvent(qrID, new GetSuccessListener<Event>() {
-            @SuppressLint("MissingPermission")
-            @Override
-            public void onSuccess(Event event) {
+        qrID = qrID.replace("-QRCODE", "");
 
-                userController.getUser(deviceID, user -> {
-                    if (user.isGeoLocationEnabled() && event.getGeoLocationEnabled()) {
-                        if (checkLocationPermissions()) {
-                            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(location -> {
-                                Location l = new Location(location.getLatitude(), location.getLongitude());
-                                checkIntoEvent(builder, event, l, user);
-                            });
-                        } else {
-                            Toast.makeText(CameraActivity.this, "Checked into event without location", Toast.LENGTH_SHORT).show();
-                            checkIntoEvent(builder, event, null, user);
-                        }
-                    } else {
-                        checkIntoEvent(builder, event, null, user);
-                    }
-                }, e -> Toast.makeText(CameraActivity.this, "Unable to check into event", Toast.LENGTH_SHORT).show());
+        AlertDialog.Builder builder = new AlertDialog.Builder(CameraActivity.this);
+        eventController.getEvent(qrID, event -> userController.getUser(deviceID, user -> {
+            if (user.isGeoLocationEnabled() && event.getGeoLocationEnabled()) {
+                if (checkLocationPermissions()) {
+                    fusedLocationProviderClient.getLastLocation().addOnSuccessListener(location -> {
+                        Location l = new Location(location.getLatitude(), location.getLongitude());
+                        checkIntoEvent(builder, event, l, user);
+                    });
+                } else {
+                    Toast.makeText(CameraActivity.this, "Checked into event without location", Toast.LENGTH_SHORT).show();
+                    checkIntoEvent(builder, event, null, user);
+                }
+            } else {
+                checkIntoEvent(builder, event, null, user);
             }
-        }, e -> {
+        }, e -> Toast.makeText(CameraActivity.this, "Unable to check into event", Toast.LENGTH_SHORT).show()), e -> {
             Toast.makeText(this, "Unable to check into event", Toast.LENGTH_SHORT).show();
         });
     }
@@ -205,12 +196,7 @@ public class CameraActivity extends AppCompatActivity {
             builder.setMessage(event.getName());
             builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss()).show();
             user.checkIn(event.getID());
-            userController.setUser(user, null, new SetFailureListener() {
-                @Override
-                public void onSetFailure(Exception e) {
-                    Toast.makeText(CameraActivity.this, "Unable to register location", Toast.LENGTH_SHORT).show();
-                }
-            });
+            userController.setUser(user, null, e -> Toast.makeText(CameraActivity.this, "Unable to register location", Toast.LENGTH_SHORT).show());
         }, e -> Toast.makeText(CameraActivity.this, "Unable to check into event", Toast.LENGTH_SHORT).show());
     }
 

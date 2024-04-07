@@ -49,6 +49,7 @@ public class ViewEventFragment extends DialogFragment {
 
     private ImageView eventPoster;
     private TextView eventCheckIns;
+    private TextView eventCheckInsLabel;
     private TextView qrCodeTitle;
     private TextView shareqrCodeTitle;
     private Button checkedInAttendeesBtn;
@@ -128,6 +129,7 @@ public class ViewEventFragment extends DialogFragment {
         eventDescription = view.findViewById(R.id.view_event_description_tv);
         eventDate = view.findViewById(R.id.view_event_date_tv);
         eventCheckIns = view.findViewById(R.id.view_event_social_tv);
+        eventCheckInsLabel = view.findViewById(R.id.view_event_social_label_tv);
         qrCodeTitle = view.findViewById(R.id.view_event_check_in_qr_code_tv);
         shareqrCodeTitle = view.findViewById(R.id.view_event_share_qr_code_tv);
         eventPoster = view.findViewById(R.id.view_event_poster_iv);
@@ -174,6 +176,7 @@ public class ViewEventFragment extends DialogFragment {
         }
 
         if(mode == ATTENDEE_VIEW) {
+            eventCheckInsLabel.setVisibility(View.GONE);
             eventCheckIns.setVisibility(View.GONE);
             checkedInAttendeesBtn.setVisibility(View.GONE);
             signedUpAttendeesBtn.setVisibility(View.GONE);
@@ -194,6 +197,7 @@ public class ViewEventFragment extends DialogFragment {
             }
             deleteEventBtn.setVisibility(View.GONE);
         } else if(mode == ADMIN_VIEW) {
+            eventCheckInsLabel.setVisibility(View.GONE);
             eventCheckIns.setVisibility(View.GONE);
             checkedInAttendeesBtn.setVisibility(View.GONE);
             signedUpAttendeesBtn.setVisibility(View.GONE);

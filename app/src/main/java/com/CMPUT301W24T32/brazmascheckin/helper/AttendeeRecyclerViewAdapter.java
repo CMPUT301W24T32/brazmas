@@ -2,15 +2,22 @@ package com.CMPUT301W24T32.brazmascheckin.helper;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
+import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.CMPUT301W24T32.brazmascheckin.views.ViewAttendeesActivity;
 
@@ -25,6 +32,7 @@ public class AttendeeRecyclerViewAdapter  extends RecyclerView.Adapter<RecyclerV
     private Context context;
 
     private int mode;
+    private ImageController imageController = new ImageController(FirestoreDB.getStorageInstance());
 
     /**
      * Constructor for the AttendeeRecyclerViewAdapter.
@@ -127,18 +135,18 @@ public class AttendeeRecyclerViewAdapter  extends RecyclerView.Adapter<RecyclerV
     /**
      * ViewHolder for displaying a user in the SIGN_UP_MODE.
      */
-    public static class SignUpViewHolder extends RecyclerView.ViewHolder {
+    public class SignUpViewHolder extends RecyclerView.ViewHolder {
         private TextView nameTextView;
         private TextView idTextView;
         private TextView checkInTextView;
+        private ImageView profileImageView;
         public SignUpViewHolder(@NonNull View itemView) {
             super(itemView);
             nameTextView = itemView.findViewById(R.id.attendee_view_card_name_tv);
             idTextView = itemView.findViewById(R.id.attendee_view_card_id_tv);
             checkInTextView = itemView.findViewById(R.id.attendee_view_card_check_ins_tv);
-
+            profileImageView = itemView.findViewById(R.id.attendee_view_card_picture_iv);
             checkInTextView.setVisibility(View.GONE);
-
         }
 
         /**
@@ -150,23 +158,48 @@ public class AttendeeRecyclerViewAdapter  extends RecyclerView.Adapter<RecyclerV
             String combinedName = user.getFirstName() + " " + user.getLastName();
             nameTextView.setText(combinedName);
             idTextView.setText(user.getID());
+
+            String profilePicture = null;
+            String profileFolder;
+
+            // image: default and custom
+            if(user.getProfilePicture() != null && !user.getProfilePicture().isEmpty()) {
+                profilePicture = user.getProfilePicture();
+                profileFolder = ImageController.PROFILE_PICTURE;
+            } else if (user.getDefaultProfilePicture() != null && !user.getDefaultProfilePicture().isEmpty()) {
+                profilePicture = user.getDefaultProfilePicture();
+                profileFolder = ImageController.DEFAULT_PROFILE_PICTURE_PATH;
+            } else {
+                profileFolder = ImageController.DEFAULT_PROFILE_PICTURE_PATH;
+                profilePicture = null;
+            }
+
+            if(profilePicture != null) {
+                imageController.getImage(profileFolder, profilePicture,
+                        byteArray -> {
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                            profileImageView.setImageBitmap(bitmap);
+                        }, null);
+            }
         }
     }
 
     /**
      * ViewHolder for displaying a user in the CHECK_IN_MODE.
      */
-    public static class CheckInViewHolder extends RecyclerView.ViewHolder {
+    public class CheckInViewHolder extends RecyclerView.ViewHolder {
 
         private TextView nameTextView;
         private TextView idTextView;
         private TextView checkInTextView;
+        private ImageView profileImageView;
 
         public CheckInViewHolder(@NonNull View itemView) {
             super(itemView);
             nameTextView = itemView.findViewById(R.id.attendee_view_card_name_tv);
             idTextView = itemView.findViewById(R.id.attendee_view_card_id_tv);
             checkInTextView = itemView.findViewById(R.id.attendee_view_card_check_ins_tv);
+            profileImageView = itemView.findViewById(R.id.attendee_view_card_picture_iv);
         }
 
         /**
@@ -181,8 +214,29 @@ public class AttendeeRecyclerViewAdapter  extends RecyclerView.Adapter<RecyclerV
             nameTextView.setText(combinedName);
             idTextView.setText(user.getID());
             checkInTextView.setText("Check Ins: " + checkInCount);
+
+            // image: default and custom
+            String profilePicture = null;
+            String profileFolder;
+            if(user.getProfilePicture() != null && !user.getProfilePicture().isEmpty()) {
+                profilePicture = user.getProfilePicture();
+                profileFolder = ImageController.PROFILE_PICTURE;
+            } else if (user.getDefaultProfilePicture() != null && !user.getDefaultProfilePicture().isEmpty()) {
+                profilePicture = user.getDefaultProfilePicture();
+                profileFolder = ImageController.DEFAULT_PROFILE_PICTURE_PATH;
+            } else {
+                profileFolder = ImageController.DEFAULT_PROFILE_PICTURE_PATH;
+                profilePicture = null;
+            }
+
+            if(profilePicture != null) {
+                imageController.getImage(profileFolder, profilePicture,
+                        byteArray -> {
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                            profileImageView.setImageBitmap(bitmap);
+                        }, null);
+            }
         }
     }
-
 
 }
