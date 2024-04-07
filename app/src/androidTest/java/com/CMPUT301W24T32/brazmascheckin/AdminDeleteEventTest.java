@@ -25,6 +25,8 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.assertFalse;
 
+//TODO: check that mock event is on screen before deleting
+
 /**
  * Test for deletion of event as an administrator.
  */
