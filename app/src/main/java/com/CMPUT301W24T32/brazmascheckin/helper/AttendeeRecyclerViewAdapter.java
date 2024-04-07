@@ -171,13 +171,16 @@ public class AttendeeRecyclerViewAdapter  extends RecyclerView.Adapter<RecyclerV
                 profileFolder = ImageController.DEFAULT_PROFILE_PICTURE_PATH;
             } else {
                 profileFolder = ImageController.DEFAULT_PROFILE_PICTURE_PATH;
+                profilePicture = null;
             }
 
-            imageController.getImage(profileFolder, profilePicture,
-                    byteArray -> {
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-                        profileImageView.setImageBitmap(bitmap);
-                    }, null);
+            if(profilePicture != null) {
+                imageController.getImage(profileFolder, profilePicture,
+                        byteArray -> {
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                            profileImageView.setImageBitmap(bitmap);
+                        }, null);
+            }
         }
     }
 
@@ -223,13 +226,16 @@ public class AttendeeRecyclerViewAdapter  extends RecyclerView.Adapter<RecyclerV
                 profileFolder = ImageController.DEFAULT_PROFILE_PICTURE_PATH;
             } else {
                 profileFolder = ImageController.DEFAULT_PROFILE_PICTURE_PATH;
+                profilePicture = null;
             }
 
-            imageController.getImage(profileFolder, profilePicture,
-                    byteArray -> {
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-                        profileImageView.setImageBitmap(bitmap);
-                    }, null);
+            if(profilePicture != null) {
+                imageController.getImage(profileFolder, profilePicture,
+                        byteArray -> {
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                            profileImageView.setImageBitmap(bitmap);
+                        }, null);
+            }
         }
     }
 
