@@ -496,15 +496,74 @@ public class ProfileTests {
         Intents.release();
     }
 
-    @Test
-    public void testAllEventsMap() {
-
-    }
 
     @Test
     public void testOrganizedEventsMap() {
+        Intents.init();
+        Event mockAttendEvent = new Event(
+                null, "Test Map Event",
+                new Date(11, 4, 2024),
+                "Event to test attending",
+                new HashMap<>(),
+                new ArrayList<>(),
+                1,
+                "default_poster.png",
+                null,
+                null,
+                user.getID(),
+                true,
+                new Location( 53.5269,-113.5267),
+                new HashMap<>(),
+                new ArrayList<>()
+        );
 
+
+        eventController.addEvent(mockAttendEvent, id -> {
+            mockAttendEvent.setID(id);
+            eventController.setEvent(mockAttendEvent, null, null);
+            ArrayList<String> events = new ArrayList<>();
+            events.add(id);
+            user.setEvent(events);
+            userController.setUser(user, null, null);
+
+        }, null);
+
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+
+        user.setGeoLocationEnabled(true);
+        mockAttendEvent.checkIn(user.getID(), new Location(51.0447, -114.0719));
+        user.checkIn(mockAttendEvent.getID());
+
+        eventController.setEvent(mockAttendEvent, null, null);
+        userController.setUser(user, null, null);
+        Espresso.onView(ViewMatchers.withId(R.id.profile_geolocation_sw))
+                .perform(ViewActions.click());
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+
+        Espresso.onView(ViewMatchers.withId(R.id.profile_geolocation_organized_events_btn))
+                .perform(ViewActions.click());
+
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+        Espresso.onView(withId(R.id.map)).check(matches(isDisplayed()))
+                .check((view, noViewFoundException) -> {
+                    if(view instanceof MapView) {
+                        MapView mapView = (MapView) view;
+                        int markerCount = countMarkers(mapView);
+                        assert(markerCount == 1);
+                    }
+                });
+        Intents.release();
     }
-
-
 }
