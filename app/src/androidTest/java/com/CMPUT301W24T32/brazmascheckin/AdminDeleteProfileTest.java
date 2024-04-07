@@ -26,12 +26,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 //TODO: check mock user is on screen before deleting
 /**
- * Test for deletion of profile as an administrator.
+ * Test class for deletion of profiles by an administrator.
+ * This test ensures that an administrator can successfully delete profiles from the system.
  */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class AdminDeleteProfileTest {
 
+    /**
+     * Test method to delete profiles.
+     * This method retrieves all profiles from the database and deletes each one.
+     * After deleting all profiles, it creates a mock user profile and verifies its deletion.
+     */
     @Test
     public void testDeleteProfileAdmin() {
 
@@ -90,7 +96,9 @@ public class AdminDeleteProfileTest {
     }
 
     /**
-     * Launches activities and fragments necessary.
+     * Launches the AdministratorBrowseProfiles activity and performs necessary actions.
+     * This method clicks on the first profile in the RecyclerView, clicks on the delete button,
+     * waits for the profile to be deleted, and verifies its deletion.
      */
     private void launchAdministratorBrowseProfiles() {
         // AdministratorBrowseProfiles activity
@@ -132,5 +140,4 @@ public class AdminDeleteProfileTest {
             });
         });
     }
-
 }
