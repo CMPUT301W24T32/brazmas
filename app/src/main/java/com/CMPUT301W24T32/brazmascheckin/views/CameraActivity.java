@@ -39,9 +39,6 @@ import com.journeyapps.barcodescanner.ScanOptions;
  */
 public class CameraActivity extends AppCompatActivity {
 
-    // Current event object
-    Event currentEvent;
-
     // Scan button
     Button btn_scan;
 
