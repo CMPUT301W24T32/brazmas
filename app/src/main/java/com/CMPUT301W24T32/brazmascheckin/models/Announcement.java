@@ -20,8 +20,10 @@ public class Announcement implements Serializable {
     private String eventID; //not needed field
     private long timeCreated;
 
-
-
+    /**
+     * This method sends a notification related to announcement.
+     */
+    // don't need this
     public void sendNotification(){
 
     }
@@ -112,7 +114,15 @@ public class Announcement implements Serializable {
         this.eventID = eventID;
     }
 
+    /**
+     * Retrieves the time when the announcement was created.
+     * @return The time when the announcement was created.
+     */
     public long getTimeCreated() {return timeCreated;}
 
+    /**
+     * Sets the time when the announcement was created.
+     * @param timeCreated The time when the announcement was created.
+     */
     public void setTimeCreated(long timeCreated) {this.timeCreated = timeCreated;}
 }
