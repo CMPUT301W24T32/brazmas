@@ -19,7 +19,6 @@ public class AdminController {
 
     /**
      * Constructs a new instance of the Admin Controller.
-     *
      * @param database Dependency Injection for FirebaseFirestore database
      */
     public AdminController(FirebaseFirestore database) {
@@ -28,7 +27,6 @@ public class AdminController {
 
     /**
      * Retrieves a document from the Admin collection.
-     *
      * @param ID             the ID of the document to retrieve.
      * @param successListener a listener to handle success callbacks for the operation.
      * @param failureListener a listener to handle failure callbacks for the operation.
@@ -56,9 +54,9 @@ public class AdminController {
 
     /**
      * To add an admin.
-     * @param admin
-     * @param successListener
-     * @param failureListener
+     * @param admin the admin object to be added.
+     * @param successListener a listener to handle success callbacks for the operation.
+     * @param failureListener a listener to handle failure callbacks for the operation.
      */
     public void addAdmin(Admin admin, AddSuccessListener<String> successListener,
                          AddFailureListener failureListener) {
@@ -82,9 +80,9 @@ public class AdminController {
 
     /**
      * Sets an admin in the Firestore Database.
-     * @param admin
-     * @param successListener
-     * @param failureListener
+     * @param admin the admin object to be set.
+     * @param successListener a listener to handle success callbacks for the operation.
+     * @param failureListener a listener to handle failure callbacks for the operation.
      */
     public void setAdmin(Admin admin, SetSuccessListener successListener,
                          SetFailureListener failureListener) {
@@ -102,6 +100,11 @@ public class AdminController {
                 });
     }
 
+    /**
+     * Adds snapshot listener to Admin collection in Firestore Database.
+     * @param listener a listener to handle snapshot data and errors.
+     * @return the registration object for the listener.
+     */
     public ListenerRegistration addSnapshotListener(SnapshotListener listener) {
         return adminsRef.addSnapshotListener((value, error) -> {
             if(error != null) {
