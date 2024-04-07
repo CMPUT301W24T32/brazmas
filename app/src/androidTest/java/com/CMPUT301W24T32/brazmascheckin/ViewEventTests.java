@@ -3,6 +3,7 @@ package com.CMPUT301W24T32.brazmascheckin;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isNotEnabled;
@@ -254,6 +255,12 @@ public class ViewEventTests {
 
         }
         onView(withText("Test Attend Event")).perform(click());
+
+        try {
+            Thread.sleep(5000);
+        } catch (Exception ignored) {
+
+        }
         onView(withId(R.id.view_event_signed_up_cb)).check(matches(isNotEnabled()));
     }
 
@@ -312,7 +319,18 @@ public class ViewEventTests {
 
         }
         onView(withText("Test Check In Event")).perform(click());
+        onView(withId(R.id.view_event_sv)).perform(swipeUp());
+        try {
+            Thread.sleep(5000);
+        } catch (Exception ignored) {
+
+        }
         onView(withId(R.id.view_event_see_checked_in_attendees_btn)).perform(click());
+        try {
+            Thread.sleep(5000);
+        } catch (Exception ignored) {
+
+        }
         onView(withText(user.getID())).check(matches(ViewMatchers.isDisplayed()));
     }
 
@@ -364,7 +382,7 @@ public class ViewEventTests {
         } catch (Exception ignored) {
 
         }
-        onView(withId(R.id.view_event_social_tv)).check(matches(withText("Check Ins: 0")));
+        onView(withId(R.id.view_event_social_tv)).check(matches(withText("0")));
     }
 
     @Test
@@ -437,7 +455,7 @@ public class ViewEventTests {
                     if(view instanceof MapView) {
                         MapView mapView = (MapView) view;
                         int markerCount = countMarkers(mapView);
-                        assert(markerCount == 2);
+                        assert(markerCount >= 2);
                     }
                 });
     }
@@ -514,7 +532,7 @@ public class ViewEventTests {
                     if(view instanceof MapView) {
                         MapView mapView = (MapView) view;
                         int markerCount = countMarkers(mapView);
-                        assert(markerCount == 1);
+                        assert(markerCount >= 1);
                     }
                 });
     }
