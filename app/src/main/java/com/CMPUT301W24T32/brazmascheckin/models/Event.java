@@ -428,32 +428,32 @@ public class Event implements Serializable {
     }
 
     /**
-     * Retrieves the milestone index for the next milestone in the event.
-     * @return the milestone index for the next milestone
+     * This method retrieves the next milestone for the event.
+     * @return the next milestone for the event.
      */
     public int getNextMilestone() {
         return nextMilestone;
     }
 
     /**
-     * Sets the milestone index for the next milestone in the event.
-     * @param nextMilestone the milestone index for the next milestone
+     * This method sets the next milestone for the event.
+     * @param nextMilestone the next milestone to be set for event.
      */
     public void setNextMilestone(int nextMilestone) {
         this.nextMilestone = nextMilestone;
     }
 
     /**
-     * Retrieves the list of announcements associated with the event.
-     * @return the list of announcements associated with the event
+     * The method retrieves the list of announcements related to the event.
+     * @return the list of announcements related to event.
      */
     public ArrayList<Announcement> getAnnouncements() {
         return announcements;
     }
 
     /**
-     * Sets the list of announcements associated with the event.
-     * @param announcements the list of announcements to set
+     * setter for the announcements
+     * @param announcements the announcements that need to be set.
      */
     public void setAnnouncements(ArrayList<Announcement> announcements) {
         this.announcements = announcements;

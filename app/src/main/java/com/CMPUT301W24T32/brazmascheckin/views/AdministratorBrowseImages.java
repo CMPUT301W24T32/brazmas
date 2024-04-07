@@ -35,6 +35,12 @@ public class AdministratorBrowseImages extends AppCompatActivity {
     private ImageController imageController;
     private List<String> allFileIds; // list to hold all file IDs
 
+    /**
+     * Called when the activity is starting. This is where most initialization should go.
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           then this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     *                           Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +50,7 @@ public class AdministratorBrowseImages extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.admin_image_bnv);
         bottomNavigationView.setSelectedItemId(R.id.admin_image);
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+
             /**
              * This method determines something from navigation bar has been selected or not.
              * @param menuItem The selected item
@@ -58,19 +65,15 @@ public class AdministratorBrowseImages extends AppCompatActivity {
                     overridePendingTransition(0,0);
                     return true;
                 }
-
                 if (id == (R.id.admin_profile)){
                     startActivity(new Intent(getApplicationContext(), AdministratorBrowseProfiles.class));
                     overridePendingTransition(0,0);
                     return true;
                 }
-
                 if (id == (R.id.admin_image)){
                     return true;
                 }
-
                 return false;
-
             }
         });
 
@@ -93,6 +96,9 @@ public class AdministratorBrowseImages extends AppCompatActivity {
         });
     }
 
+    /**
+     * Fetches images from the ImageController and updates the UI accordingly.
+     */
     private void fetchImagesFromController() {
         imageController.getAllPosterFileIDs(new GetSuccessListener<List<String>>() {
             @Override
@@ -145,6 +151,10 @@ public class AdministratorBrowseImages extends AppCompatActivity {
         });
     }
 
+    /**
+     * Deletes an image from the database and updates UI.
+     * @param position the position of the image to be deleted.
+     */
     private void deleteImage(int position) {
         // Get the image type from the list using the position
         String imageType = imageUrlsWithType.get(position).second;
@@ -166,6 +176,10 @@ public class AdministratorBrowseImages extends AppCompatActivity {
         });
     }
 
+    /**
+     * Shows a confirmation dialog before deleting an image.
+     * @param position The position of the image to be deleted.
+     */
     private void showConfirmationDialog(int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you sure you want to delete this image?");

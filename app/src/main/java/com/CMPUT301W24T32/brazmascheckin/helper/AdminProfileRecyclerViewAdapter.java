@@ -109,6 +109,10 @@ public class AdminProfileRecyclerViewAdapter extends RecyclerView.Adapter<AdminP
 
             // set the click listener for the itemView
             itemView.setOnClickListener(new View.OnClickListener() {
+                /**
+                 * Called when a view has been clicked.
+                 * @param view The view that was clicked.
+                 */
                 @Override
                 public void onClick(View view) {
                     // notify the registered click listener about the recently clicked profile

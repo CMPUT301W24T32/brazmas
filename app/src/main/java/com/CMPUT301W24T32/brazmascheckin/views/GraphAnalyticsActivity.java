@@ -28,18 +28,15 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * This class displays the event analytics for the organizer's events.
+ * This class displays the event analytics for the organizer's events through bar chart.
  */
-
 //TODO: need to cite the library and https://www.youtube.com/watch?v=WdsmQ3Zyn84
-
 public class GraphAnalyticsActivity extends AppCompatActivity {
 
     private List<String> xValues = Arrays.asList("Checked In", "Signed Up");
-    private EventController eventController;
 
     /**
-     * Initializes the GraphAnalyticsActivity and sets up the bar chart to display event analytics.
+     * Initializes the activity and sets up the event analytics bar chart
      * @param savedInstanceState If the activity is being re-initialized after
      *     previously being shut down then this Bundle contains the data it most
      *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>

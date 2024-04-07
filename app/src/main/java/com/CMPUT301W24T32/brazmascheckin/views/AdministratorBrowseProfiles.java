@@ -29,6 +29,7 @@ import java.util.ArrayList;
 
 /**
  * This class will be the page to browse profiles for admin.
+ * Can view profiles, and delete profiles.
  */
 public class AdministratorBrowseProfiles extends AppCompatActivity {
 
@@ -53,7 +54,6 @@ public class AdministratorBrowseProfiles extends AppCompatActivity {
         configureViews();
         configureControllers();
 
-        //TODO: need to add navigation bar.
         BottomNavigationView bottomNavigationView = findViewById(R.id.admin_profile_bnv);
         bottomNavigationView.setSelectedItemId(R.id.admin_profile);
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -71,19 +71,15 @@ public class AdministratorBrowseProfiles extends AppCompatActivity {
                     overridePendingTransition(0,0);
                     return true;
                 }
-
                 if (id == (R.id.admin_profile)){
                     return true;
                 }
-
                 if (id == (R.id.admin_image)){
                     startActivity(new Intent(getApplicationContext(), AdministratorBrowseImages.class));
                     overridePendingTransition(0,0);
                     return true;
                 }
-
                 return false;
-
             }
         });
     }
@@ -119,6 +115,9 @@ public class AdministratorBrowseProfiles extends AppCompatActivity {
         });
     }
 
+    /**
+     * Retrieves and displays all user profiles.
+     */
     private void showAllUsers() {
         userController.addSnapshotListener(new SnapshotListener<User>() {
             @Override
@@ -129,15 +128,17 @@ public class AdministratorBrowseProfiles extends AppCompatActivity {
                 }
                 profileRecyclerViewAdapter.notifyDataSetChanged();
             }
-
             @Override
             public void onError(Exception e) {
                 Toast.makeText(AdministratorBrowseProfiles.this, "Unable to connect to the " + "database", Toast.LENGTH_LONG).show();
-
             }
         });
     }
 
+    /**
+     * This method deletes the user profile and associated profile picture.
+     * @param user the user profile to be deleted.
+     */
     private void deleteUserProfilePic(User user) {
         // Delete the profile picture first
         String profilePicID = user.getProfilePicture();
@@ -167,6 +168,10 @@ public class AdministratorBrowseProfiles extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method deletes the user profile and associated default profile picture.
+     * @param user the user profile to be deleted.
+     */
     private void deleteDefaultProfilePic(User user) {
         String defaultProfilePicID = user.getDefaultProfilePicture(); // Change this to get the default profile picture ID
 
@@ -193,6 +198,10 @@ public class AdministratorBrowseProfiles extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method deletes the user.
+     * @param user the user to be deleted.
+     */
     private void deleteUserData(User user) {
 
         // deletes the user
@@ -208,6 +217,10 @@ public class AdministratorBrowseProfiles extends AppCompatActivity {
         });
     }
 
+    /**
+     * Displays confirmation dialog asking user if they want to delete a profile.
+     * @param user the user profile to be deleted.
+     */
     private void showConfirmationDialog(User user) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you sure you want to delete this profile?");

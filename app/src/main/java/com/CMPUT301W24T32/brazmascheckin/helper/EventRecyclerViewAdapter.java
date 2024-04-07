@@ -114,10 +114,17 @@ public class EventRecyclerViewAdapter extends RecyclerView.Adapter<EventRecycler
             eventPosterTextView = itemView.findViewById(R.id.event_view_card_poster_iv);
 
             // Set the click listener for the itemView
-            itemView.setOnClickListener(view -> {
-                // notify the registered click listener about the recently clicked event
-                if (onItemClickListener != null) {
-                    onItemClickListener.onItemClick(getAdapterPosition());
+            itemView.setOnClickListener(new View.OnClickListener() {
+                /**
+                 * Called when a view has been clicked.
+                 * @param view The view that was clicked.
+                 */
+                @Override
+                public void onClick(View view) {
+                    // notify the registered click listener about the recently clicked event
+                    if (onItemClickListener != null) {
+                        onItemClickListener.onItemClick(getAdapterPosition());
+                    }
                 }
             });
         }

@@ -232,92 +232,82 @@ public class User {
         }
 
     }
+
     /**
-     * Getter for checking if geolocation is enabled for the user.
-     *
-     * @return true if geolocation is enabled, false otherwise
+     * This method checks if geolocation is enabled for user.
+     * @return True if geolocation is enabled, false otherwise.
      */
     public boolean isGeoLocationEnabled() {
         return geoLocationEnabled;
     }
 
     /**
-     * Setter for enabling or disabling geolocation for the user.
-     *
-     * @param geoLocationEnabled true to enable geolocation, false to disable
+     * This method sets whether geolocation is enabled for the user.
+     * @param geoLocationEnabled True to enable geolocation, false to disable it.
      */
     public void setGeoLocationEnabled(boolean geoLocationEnabled) {
         this.geoLocationEnabled = geoLocationEnabled;
     }
 
     /**
-     * Getter for the default profile picture reference.
-     *
-     * @return the reference ID for the default profile picture
+     * Retrieves the default profile picture for the user.
+     * @return The default profile picture for the user.
      */
     public String getDefaultProfilePicture() {
         return defaultProfilePicture;
     }
 
-
     /**
-     * Setter for the default profile picture reference.
-     *
-     * @param defaultProfilePicture the reference ID for the default profile picture
+     * Sets the default profile picture for the user.
+     * @param defaultProfilePicture The default profile picture for the user.
      */
     public void setDefaultProfilePicture(String defaultProfilePicture) {
         this.defaultProfilePicture = defaultProfilePicture;
     }
 
     /**
-     * Getter for the timestamp of the user's last announcement check.
-     *
-     * @return the timestamp of the last announcement check
+     * Retrieves the timestamp of the user's last announcement check.
+     * @return The timestamp of the user's last announcement check.
      */
     public long getLastAnnouncementCheck() {
         return lastAnnouncementCheck;
     }
 
     /**
-     * Setter for the timestamp of the user's last announcement check.
-     *
-     * @param lastAnnouncementCheck the timestamp of the last announcement check
+     * Sets the timestamp of the user's last announcement check.
+     * @param lastAnnouncementCheck The timestamp of the user's last announcement check.
      */
     public void setLastAnnouncementCheck(long lastAnnouncementCheck) {
         this.lastAnnouncementCheck = lastAnnouncementCheck;
     }
 
     /**
-     * Getter for the list of events the user has checked into.
-     *
-     * @return the list of event IDs the user has checked into
+     * Retrieves the list of events the user has checked into.
+     * @return The list of events the user has checked into.
      */
     public ArrayList<String> getCheckInEvents() {
         return checkInEvents;
     }
 
     /**
-     * Setter for the list of events the user has checked into.
-     *
-     * @param checkInEvents the list of event IDs the user has checked into
+     * Sets the list of events the user has checked into.
+     * @param checkInEvents The list of events the user has checked into.
      */
     public void setCheckInEvents(ArrayList<String> checkInEvents) {
         this.checkInEvents = checkInEvents;
     }
 
     /**
-     * Setter for the list of events the user is organizing.
-     *
-     * @param organizedEvents the new list of events the user is organizing
+     * Sets the list of events the user has organized.
+     * @param organizedEvents The list of events the user has organized.n
      */
     public void setOrganizedEvents(ArrayList<String> organizedEvents) {
         this.organizedEvents = organizedEvents;
     }
 
     /**
-     * Method for checking the user into an event.
-     *
-     * @param eventID the ID of the event to check into
+     * Adds an event to the list of events the user has checked into.
+     * @param eventID The ID of the event to be added to the list of check-ins.
      */
     public void checkIn(String eventID) {
         if(eventID != null) {

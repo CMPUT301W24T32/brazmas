@@ -20,7 +20,6 @@ public class UserController {
 
     /**
      * Constructs a new instance of the UserController.
-     *
      * @param database Dependency Injection of FirebaseFirestore database
      */
     public UserController(FirebaseFirestore database) {
@@ -30,7 +29,6 @@ public class UserController {
 
     /**
      * Sets a user in the Firestore Database.
-     *
      * @param user            the user object to be set.
      * @param successListener a listener to handle success callbacks for the operation.
      * @param failureListener a listener to handle failure callbacks for the operation.
@@ -52,10 +50,10 @@ public class UserController {
     }
 
     /**
-     *
-     * @param user
-     * @param successListener
-     * @param failureListener
+     * Adds a user to the Firestore Database.
+     * @param user the user object to be added.
+     * @param successListener a listener to handle success callbacks for the operation.
+     * @param failureListener a listener to handle failure callbacks for the operation.
      */
     public void addUser(User user, AddSuccessListener<String> successListener,
                          AddFailureListener failureListener) {
@@ -79,7 +77,6 @@ public class UserController {
 
     /**
      * Retrieves a user from the Firestore Database.
-     *
      * @param ID             the ID of the user to be retrieved.
      * @param successListener a listener to handle success callbacks for the operation.
      * @param failureListener a listener to handle failure callbacks for the operation.
@@ -108,7 +105,6 @@ public class UserController {
 
     /**
      * Deletes a user from the Firestore Database.
-     *
      * @param user            the user to be deleted.
      * @param successListener a listener to handle success callbacks for the operation.
      * @param failureListener a listener to handle failure callbacks for the operation.
@@ -133,7 +129,6 @@ public class UserController {
 
     /**
      * Adds a snapshot listener to the users collection in the Firestore Database.
-     *
      * @param listener a listener to handle snapshot data and errors.
      * @return the registration object for the listener.
      */

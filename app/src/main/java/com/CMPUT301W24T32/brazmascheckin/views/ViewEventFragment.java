@@ -44,9 +44,7 @@ public class ViewEventFragment extends DialogFragment {
     private String deviceID;
     private TextView eventName;
     private TextView  eventDescription;
-
     private TextView eventDate;
-
     private ImageView eventPoster;
     private TextView eventCheckIns;
     private TextView eventCheckInsLabel;
@@ -74,7 +72,6 @@ public class ViewEventFragment extends DialogFragment {
 
     /**
      * This function allows me to accept a bundle so i can access event data
-     *
      * @param e event
      * @return fragment
      */
@@ -91,7 +88,6 @@ public class ViewEventFragment extends DialogFragment {
      * This function creates the dialog box and sets all the texts
      * @param savedInstanceState The last saved instance state of the Fragment,
      * or null if this is a freshly created Fragment.
-     *
      * @return the builder
      */
     @NonNull
@@ -292,10 +288,11 @@ public class ViewEventFragment extends DialogFragment {
     }
 
     /**
-     * Retrieves the number of checked-in attendees for the event and updates the UI accordingly.
-     * Also handles the enabling/disabling of the signed-up checkbox based on the attendee limit.
-     *
-     * @param ID the ID of the event
+     * Retrieves the number of check-ins for the specified event from the database
+     * and updates the corresponding TextView to display the check-in count.
+     * Additionally, it enables or disables the signed-up checkbox based on the event's attendee limit.
+     * If the event has reached its maximum attendee limit, the checkbox is disabled.
+     * @param ID The ID of the event for which to retrieve check-in information.
      */
     private void handleCheckedInNumber(String ID) {
         eventController.addSingleSnapshotListener(ID, new SnapshotListener<Event>() {
@@ -328,10 +325,9 @@ public class ViewEventFragment extends DialogFragment {
     }
 
     /**
-     * Handles the logic when the signed-up checkbox state changes.
-     * Enables or disables signing up for the event based on the checkbox state.
-     *
-     * @param ID the ID of the event
+     * Sets an OnCheckedChangeListener for the signed-up checkbox.
+     * When the checkbox's state changes, either the handleChecked or handleUnChecked method is called based on the new state.
+     * @param ID The ID of the event associated with the checkbox.
      */
     private void handleCheckBox(String ID) {
         signedUpCB.setOnCheckedChangeListener((buttonView ,isChecked) -> {
@@ -344,10 +340,9 @@ public class ViewEventFragment extends DialogFragment {
     }
 
     /**
-     * Handles the logic when the checkbox is checked.
-     * Adds the current user to the event's sign-up list and updates the user's signed-up events list.
-     *
-     * @param ID the ID of the event
+     * Handles the process when the user checks in to an event.
+     * Adds the current device's ID to the list of sign-ups for the event and updates the event and user data in the database accordingly.
+     * @param ID The ID of the event to be checked in to.
      */
     private void handleChecked(String ID) {
         eventController.getEvent(ID, event -> {
@@ -368,10 +363,9 @@ public class ViewEventFragment extends DialogFragment {
     }
 
     /**
-     * Handles the logic when the checkbox is unchecked.
-     * Removes the current user from the event's sign-up list and updates the user's signed-up events list.
-     *
-     * @param ID the ID of the event
+     * Handles the process when the user unchecks from an event.
+     * Removes the current device's ID from the list of sign-ups for the event and updates the event and user data in the database accordingly.
+     * @param ID The ID of the event to be unchecked from.
      */
     private void handleUnChecked(String ID) {
         eventController.getEvent(ID, event -> {
@@ -379,16 +373,13 @@ public class ViewEventFragment extends DialogFragment {
             signUps.remove(deviceID);
             eventController.setEvent(event, null, null);
         }, e -> {
-
         });
-
 
         userController.getUser(deviceID, user -> {
             ArrayList<String> signUps = user.getSignedUpEvents();
             signUps.remove(ID);
             userController.setUser(user, null, null);
         }, e -> {
-
         });
     }
 
@@ -416,7 +407,6 @@ public class ViewEventFragment extends DialogFragment {
      * This method retrieves the QR code from the database and displays it in the view
      * @param code the ID of the QRC code in the database
      */
-
     private void displayQRCode(String code, ImageView QRCodeType, boolean share) {
         if(code != null && !code.isEmpty()) {
             String type;

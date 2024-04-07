@@ -28,12 +28,18 @@ import static org.junit.Assert.assertFalse;
 //TODO: check that mock event is on screen before deleting
 
 /**
- * Test for deletion of event as an administrator.
+ * Test class for deletion of events by an administrator.
+ * This test ensures that an administrator can successfully delete events from the system.
  */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class AdminDeleteEventTest {
 
+    /**
+     * Test method to delete events.
+     * This method retrieves all events from the database and deletes each one.
+     * After deleting all events, it creates a mock event and verifies its deletion.
+     */
     @Test
     public void testDeleteEvent() {
         // controllers
@@ -90,7 +96,9 @@ public class AdminDeleteEventTest {
     }
 
     /**
-     * Launches activities and fragments necessary.
+     * Launches the AdministratorHome activity and performs necessary actions.
+     * This method clicks on the first event in the RecyclerView, clicks on the delete button,
+     * waits for the event to be deleted, and verifies its deletion.
      */
     private void launchAdministratorHomeActivity() {
         // AdministratorHome activity
