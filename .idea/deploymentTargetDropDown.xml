@@ -2,6 +2,9 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="AdminDeleteEventTest">
+        <State />
+      </entry>
       <entry key="EventControllerIntegrationTest">
         <State />
       </entry>
@@ -9,15 +12,6 @@
         <State />
       </entry>
       <entry key="app">
-        <State />
-      </entry>
-      <entry key="attendeeCannotSeeQR()">
-        <State />
-      </entry>
-      <entry key="testAddEventEmptyReuse()">
-        <State />
-      </entry>
-      <entry key="testNoPromoView()">
         <State />
       </entry>
     </value>
