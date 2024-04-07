@@ -19,15 +19,14 @@ import com.CMPUT301W24T32.brazmascheckin.models.Announcement;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.bottomnavigation.LabelVisibilityMode;
-import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
 /**
- * Announcement activity is made for testing navigation
+ * Announcement activity displays announcements related to events.
+ * Users can navigate to other activities using the bottom navigation bar.
  */
 
 public class AnnouncementActivity extends AppCompatActivity {
@@ -47,6 +46,13 @@ public class AnnouncementActivity extends AppCompatActivity {
 
     private EventController eventController;
     private UserController userController;
+
+    /**
+     * Initializes the Announcement activity.
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           then this Bundle contains the data it most recently supplied in onSaveInstanceState.
+     *                           Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +102,9 @@ public class AnnouncementActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Configures the views, including the RecyclerView.
+     */
     public void configureViews(){
         recyclerView = findViewById(R.id.announcement_rv);
         announcementDataList = new ArrayList<>();
@@ -103,6 +112,7 @@ public class AnnouncementActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
+
     /**
      * configures the controllers
      */

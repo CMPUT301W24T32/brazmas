@@ -34,7 +34,8 @@ import com.journeyapps.barcodescanner.ScanIntentResult;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 /**
- * Camera activity made for testing navigation and implementing QR code scanning functionality.
+ * CameraActivity allows users to scan QR codes and perform check-ins to events.
+ * It also handles navigation using the bottom navigation bar.
  */
 public class CameraActivity extends AppCompatActivity {
 
@@ -124,6 +125,10 @@ public class CameraActivity extends AppCompatActivity {
         handleScanResult(result);
     });
 
+    /**
+     * Handles the result of the QR code scanning.
+     * @param result The result of the QR code scanning.
+     */
     private void handleScanResult(ScanIntentResult result) {
 
         // Get the scanned QR code content (event ID)
@@ -136,6 +141,10 @@ public class CameraActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Opens the event view fragment for a shared event.
+     * @param shareqrID The QR code ID of the shared event.
+     */
     private void openEventViewFragment(String shareqrID) {
         String eventID = shareqrID.replace("-SHARE-QRCODE","");
         eventController.getEvent(eventID, new GetSuccessListener<Event>() {
@@ -150,6 +159,10 @@ public class CameraActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Handles the check-in process for an event.
+     * @param qrID The QR code ID of the event.
+     */
     private void handleCheckIn(String qrID) {
         AlertDialog.Builder builder = new AlertDialog.Builder(CameraActivity.this);
         eventController.getEvent(qrID, new GetSuccessListener<Event>() {
@@ -183,6 +196,7 @@ public class CameraActivity extends AppCompatActivity {
      * @param builder AlertDialog.Builder to display the check-in result
      * @param event the event to heck into
      * @param location the location of the check-in
+     * @param user the user performing the check-in
      */
     private void checkIntoEvent(AlertDialog.Builder builder, Event event, Location location, User user) {
         event.checkIn(deviceID, location);
@@ -201,6 +215,10 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     // TODO: put this into utility class
+    /**
+     * Checks if the necessary location permissions are granted.
+     * @return True if both ACCESS_FINE_LOCATION and ACCESS_COARSE_LOCATION permissions are granted, false otherwise.
+     */
     private boolean checkLocationPermissions() {
         return (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
         == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,

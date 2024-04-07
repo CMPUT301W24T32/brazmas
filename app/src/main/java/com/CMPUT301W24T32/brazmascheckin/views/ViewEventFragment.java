@@ -279,6 +279,12 @@ public class ViewEventFragment extends DialogFragment {
         });
     }
 
+    /**
+     * Retrieves the number of checked-in attendees for the event and updates the UI accordingly.
+     * Also handles the enabling/disabling of the signed-up checkbox based on the attendee limit.
+     *
+     * @param ID the ID of the event
+     */
     private void handleCheckedInNumber(String ID) {
         eventController.addSingleSnapshotListener(ID, new SnapshotListener<Event>() {
             @Override
@@ -309,6 +315,12 @@ public class ViewEventFragment extends DialogFragment {
         });
     }
 
+    /**
+     * Handles the logic when the signed-up checkbox state changes.
+     * Enables or disables signing up for the event based on the checkbox state.
+     *
+     * @param ID the ID of the event
+     */
     private void handleCheckBox(String ID) {
         signedUpCB.setOnCheckedChangeListener((buttonView ,isChecked) -> {
             if(isChecked) {
@@ -319,6 +331,12 @@ public class ViewEventFragment extends DialogFragment {
         });
     }
 
+    /**
+     * Handles the logic when the checkbox is checked.
+     * Adds the current user to the event's sign-up list and updates the user's signed-up events list.
+     *
+     * @param ID the ID of the event
+     */
     private void handleChecked(String ID) {
         eventController.getEvent(ID, event -> {
             ArrayList<String> signUps = event.getSignUps();
@@ -337,6 +355,12 @@ public class ViewEventFragment extends DialogFragment {
         });
     }
 
+    /**
+     * Handles the logic when the checkbox is unchecked.
+     * Removes the current user from the event's sign-up list and updates the user's signed-up events list.
+     *
+     * @param ID the ID of the event
+     */
     private void handleUnChecked(String ID) {
         eventController.getEvent(ID, event -> {
             ArrayList<String> signUps = event.getSignUps();

@@ -16,6 +16,10 @@ import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Concrete command class that implements the Command interface. Provides commands to add, create,
+ * and reuse events, upload posters for events, and generate QR codes for events.
+ */
 public class AddEventCommand implements Command{
     private String ID;
     private EventController eventController;
@@ -34,6 +38,25 @@ public class AddEventCommand implements Command{
     private String organizer;
     private Context context;
 
+    /**
+     * Constructor for add event fragment
+     *
+     * @param eventController
+     * @param imageController
+     * @param userController
+     * @param ID
+     * @param title
+     * @param desc
+     * @param limit
+     * @param date
+     * @param geoLocationEnabled
+     * @param qrCode
+     * @param imageURI
+     * @param generateShareQRCode
+     * @param organizer
+     * @param location
+     * @param context
+     */
     public AddEventCommand(EventController eventController, ImageController imageController,
                            UserController userController,
                            String ID, String title, String desc, int limit, Date date,
@@ -58,6 +81,9 @@ public class AddEventCommand implements Command{
         this.context = context;
     }
 
+    /**
+     *  Execute the command to add or reuse an event.
+     */
     @Override
     public void execute() {
         Event event = createEvent();
@@ -69,6 +95,10 @@ public class AddEventCommand implements Command{
 
     }
 
+    /**
+     *  Method to add a new event.
+     * @param event : The event to be added.
+     */
     private void addEvent(Event event) {
         eventController.addEvent(event, ID -> {
             event.setID(ID);
@@ -98,6 +128,10 @@ public class AddEventCommand implements Command{
         }, e -> Toast.makeText(context, "Unable to add event", Toast.LENGTH_SHORT).show());
     }
 
+    /**
+     * Method to reuse an existing event.
+     * @param event : The event to be reused.
+     */
     private void reuseEvent(Event event) {
         if(generateShareQRCode) {
             generateShareQRCode(event);
@@ -114,6 +148,10 @@ public class AddEventCommand implements Command{
         });
     }
 
+    /**
+     * Method to creates a new event based on the provided information.
+     * @return The created event.
+     */
     private Event createEvent() {
         Event event = new Event(
                 ID, title, date, desc, new HashMap<>(), new ArrayList<>(),
@@ -129,6 +167,10 @@ public class AddEventCommand implements Command{
         return event;
     }
 
+    /**
+     * Method to upload the event's image file.
+     * @return The ID of the uploaded file.
+     */
     private String uploadFile() {
         String fileID = String.valueOf(System.currentTimeMillis());
 

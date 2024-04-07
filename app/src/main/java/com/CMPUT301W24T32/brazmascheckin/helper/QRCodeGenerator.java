@@ -30,6 +30,12 @@ public class QRCodeGenerator {
         }
     }
 
+    /**
+     * Converts a bitmap representation of a QR code into a byte array.
+     *
+     * @param bitmap Bitmap representation of the QR code.
+     * @return Byte array containing the bitmap data.
+     */
     public static byte[] getQRCodeByteArray(Bitmap bitmap) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);

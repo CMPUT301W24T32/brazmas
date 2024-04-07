@@ -1,13 +1,10 @@
 package com.CMPUT301W24T32.brazmascheckin.views;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -16,6 +13,8 @@ import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
@@ -39,6 +38,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * This activity is responsible for displaying a map and handling various map-related functionalities,
+ * such as displaying check-in locations, selecting event locations, and displaying events.
+ */
 public class ViewMapActivity extends AppCompatActivity {
     private MapView mapView;
     private Button chooseLocationBtn;
@@ -121,6 +124,9 @@ public class ViewMapActivity extends AppCompatActivity {
         deviceID = DeviceID.getDeviceID(this);
     }
 
+    /**
+     * Configures the controllers used in the activity.
+     */
     private void configureControllers() {
         userController = new UserController(FirestoreDB.getDatabaseInstance());
         eventController = new EventController(FirestoreDB.getDatabaseInstance());

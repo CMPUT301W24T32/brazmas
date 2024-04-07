@@ -1,7 +1,10 @@
 package com.CMPUT301W24T32.brazmascheckin.helper;
 
 import java.io.Serializable;
-
+/**
+ * Represents a geographical location with latitude and longitude coordinates.
+ * Implements Serializable interface to allow for serialization.
+ */
 public class Location implements Serializable {
     private double latitude;
     private double longitude;
