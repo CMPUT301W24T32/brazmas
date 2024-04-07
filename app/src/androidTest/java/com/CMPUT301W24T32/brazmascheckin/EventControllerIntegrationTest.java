@@ -60,7 +60,7 @@ public class EventControllerIntegrationTest {
 
         eventController.addEvent(mockEvent, object -> {
             assert object.equals("mock_event_id");
-        }, null);
+        }, e -> fail());
     }
 
     @Test
@@ -103,7 +103,7 @@ public class EventControllerIntegrationTest {
         eventController.addEvent(mockEvent, id -> {
             assertEquals("mock_event_id", id);
             targetListenerInvoked.set(true);
-        }, null);
+        }, e -> fail());
 
         assertTrue(targetListenerInvoked.get());
     }

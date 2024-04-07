@@ -65,9 +65,7 @@ public class ImageController {
         } else if (TYPE.equals(DEFAULT_PROFILE_PICTURE_PATH)){
                 fileReference = defaultProfilePictureReference.child(fileID);
         } else {
-            fileReference = null;
-            //TODO: add proper error checking
-            return;
+            fileReference = posterReference.child(fileID);
         }
 
         fileReference.putFile(imageURI)

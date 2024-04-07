@@ -57,7 +57,7 @@ public class UserControllerIntegrationTest {
 
         userController.addUser(mockUser, object -> {
             assert object.equals("mock_user_id");
-        }, null);
+        }, e -> fail());
     }
 
     /**
