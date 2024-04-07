@@ -131,7 +131,7 @@ public class AddEventActivity extends AppCompatActivity {
         shareQRCodeSwitch = findViewById(R.id.add_event_promo_code_sw);
         deviceID = DeviceID.getDeviceID(this);
         chooseImage.setOnClickListener(view -> openFileChooser());
-        qrCodeSpinner = findViewById(R.id.orphaned_qr_code_spinner);
+        qrCodeSpinner = findViewById(R.id.add_event_orphaned_qr_code_spinner);
         autoCompleteTextView = findViewById(R.id.add_event_select_qr_code_actv);
 
         // prevent choosing date in the past
