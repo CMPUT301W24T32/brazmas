@@ -233,41 +233,83 @@ public class User {
 
     }
 
+    /**
+     * This method checks if geolocation is enabled for user.
+     * @return True if geolocation is enabled, false otherwise.
+     */
     public boolean isGeoLocationEnabled() {
         return geoLocationEnabled;
     }
 
+    /**
+     * This method sets whether geolocation is enabled for the user.
+     * @param geoLocationEnabled True to enable geolocation, false to disable it.
+     */
     public void setGeoLocationEnabled(boolean geoLocationEnabled) {
         this.geoLocationEnabled = geoLocationEnabled;
     }
 
+    /**
+     * Retrieves the default profile picture for the user.
+     * @return The default profile picture for the user.
+     */
     public String getDefaultProfilePicture() {
         return defaultProfilePicture;
     }
 
+    /**
+     * Sets the default profile picture for the user.
+     * @param defaultProfilePicture The default profile picture for the user.
+     */
     public void setDefaultProfilePicture(String defaultProfilePicture) {
         this.defaultProfilePicture = defaultProfilePicture;
     }
 
+    /**
+     * Retrieves the timestamp of the user's last announcement check.
+     * @return The timestamp of the user's last announcement check.
+     */
     public long getLastAnnouncementCheck() {
         return lastAnnouncementCheck;
     }
 
+
+    /**
+     * Sets the timestamp of the user's last announcement check.
+     * @param lastAnnouncementCheck The timestamp of the user's last announcement check.
+     */
     public void setLastAnnouncementCheck(long lastAnnouncementCheck) {
         this.lastAnnouncementCheck = lastAnnouncementCheck;
     }
+
+    /**
+     * Retrieves the list of events the user has checked into.
+     * @return The list of events the user has checked into.
+     */
     public ArrayList<String> getCheckInEvents() {
         return checkInEvents;
     }
 
+    /**
+     * Sets the list of events the user has checked into.
+     * @param checkInEvents The list of events the user has checked into.
+     */
     public void setCheckInEvents(ArrayList<String> checkInEvents) {
         this.checkInEvents = checkInEvents;
     }
 
+    /**
+     * Sets the list of events the user has organized.
+     * @param organizedEvents The list of events the user has organized.
+     */
     public void setOrganizedEvents(ArrayList<String> organizedEvents) {
         this.organizedEvents = organizedEvents;
     }
 
+    /**
+     * Adds an event to the list of events the user has checked into.
+     * @param eventID The ID of the event to be added to the list of check-ins.
+     */
     public void checkIn(String eventID) {
         if(eventID != null) {
             checkInEvents.add(eventID);
