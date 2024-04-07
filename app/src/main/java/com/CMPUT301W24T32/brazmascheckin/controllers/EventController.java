@@ -21,7 +21,6 @@ public class EventController {
 
     /**
      * Constructs a new instance of the Event Controller.
-     *
      * @param database Dependency Injection of FirebaseFirestore database
      */
     public EventController(FirebaseFirestore database) {
@@ -30,7 +29,6 @@ public class EventController {
 
     /**
      * Adds an event to the Firestore Database.
-     *
      * @param event           the event to be added.
      * @param successListener a listener to handle success callbacks for the operation.
      * @param failureListener a listener to handle failure callbacks for the operation.
@@ -58,7 +56,6 @@ public class EventController {
 
     /**
      * Updates an existing event in the Firestore Database.
-     *
      * @param event           the updated event.
      * @param successListener a listener to handle success callbacks for the operation.
      * @param failureListener a listener to handle failure callbacks for the operation.
@@ -82,7 +79,6 @@ public class EventController {
 
     /**
      * Deletes an event from the Firestore Database.
-     *
      * @param ID             the ID of the event to be deleted.
      * @param successListener a listener to handle success callbacks for the operation.
      * @param failureListener a listener to handle failure callbacks for the operation.
@@ -106,7 +102,6 @@ public class EventController {
 
     /**
      * Retrieves an event from the Firestore Database.
-     *
      * @param ID             the ID of the event to be retrieved.
      * @param successListener a listener to handle success callbacks for the operation.
      * @param failureListener a listener to handle failure callbacks for the operation.
@@ -135,7 +130,6 @@ public class EventController {
 
     /**
      * Adds a snapshot listener to the events collection in the Firestore Database.
-     *
      * @param listener a listener to handle snapshot data and errors.
      * @return the registration object for the listener.
      */
@@ -155,7 +149,6 @@ public class EventController {
 
     /**
      * Adds a single document snapshot listener for a specific event in the Firestore Database.
-     *
      * @param ID       the ID of the event to listen for.
      * @param listener a listener to handle snapshot data and errors.
      * @return the registration object for the listener.
@@ -173,6 +166,10 @@ public class EventController {
         });
     }
 
+    /**
+     * Retrieves the QR cods IDs of all events from the Firestore Database.
+     * @param listener a listener to handle success callbacks for the operation.
+     */
     public void getAllEventQRCodeIDs(GetSuccessListener<List<String>> listener) {
 
         eventsRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
@@ -194,6 +191,11 @@ public class EventController {
         });
     }
 
+    /**
+     * Retrieves all events from the Firestore Database that have geo-location enabled.
+     * @param successListener a listener to handle success callbacks for the operation.
+     * @param failureListener a listener to handle failure callbacks for the operation.
+     */
     public void getAllEvents(GetSuccessListener<List<Event>> successListener, GetFailureListener
                              failureListener) {
         eventsRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
@@ -216,9 +218,9 @@ public class EventController {
     }
 
     /**
-     * Gets all events from the database
-     * @param successListener
-     * @param failureListener
+     * Retrieves all events from the Firestore Database.
+     * @param successListener successListener a listener to handle success callbacks for the operation.
+     * @param failureListener successListener a listener to handle failure callbacks for the operation.
      */
     public void getAllEventsReg(GetSuccessListener<List<Event>> successListener, GetFailureListener
             failureListener) {
