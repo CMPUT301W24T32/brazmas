@@ -88,7 +88,7 @@ public class AdminDeleteEventTest {
 
         Event event = new Event(
                 null, "Test Check In Event",
-                new Date(11, 4, 2024),
+                new Date(11, 11, 2024),
                 "Event to test attending",
                 new HashMap<>(),
                 new ArrayList<>(),
