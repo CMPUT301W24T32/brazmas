@@ -49,6 +49,7 @@ public class ViewEventFragment extends DialogFragment {
 
     private ImageView eventPoster;
     private TextView eventCheckIns;
+    private TextView eventCheckInsLabel;
     private TextView qrCodeTitle;
     private TextView shareqrCodeTitle;
     private Button checkedInAttendeesBtn;
@@ -128,6 +129,7 @@ public class ViewEventFragment extends DialogFragment {
         eventDescription = view.findViewById(R.id.view_event_description_tv);
         eventDate = view.findViewById(R.id.view_event_date_tv);
         eventCheckIns = view.findViewById(R.id.view_event_social_tv);
+        eventCheckInsLabel = view.findViewById(R.id.view_event_social_label_tv);
         qrCodeTitle = view.findViewById(R.id.view_event_check_in_qr_code_tv);
         shareqrCodeTitle = view.findViewById(R.id.view_event_share_qr_code_tv);
         eventPoster = view.findViewById(R.id.view_event_poster_iv);
@@ -174,6 +176,7 @@ public class ViewEventFragment extends DialogFragment {
         }
 
         if(mode == ATTENDEE_VIEW) {
+            eventCheckInsLabel.setVisibility(View.GONE);
             eventCheckIns.setVisibility(View.GONE);
             checkedInAttendeesBtn.setVisibility(View.GONE);
             signedUpAttendeesBtn.setVisibility(View.GONE);
@@ -194,6 +197,7 @@ public class ViewEventFragment extends DialogFragment {
             }
             deleteEventBtn.setVisibility(View.GONE);
         } else if(mode == ADMIN_VIEW) {
+            eventCheckInsLabel.setVisibility(View.GONE);
             eventCheckIns.setVisibility(View.GONE);
             checkedInAttendeesBtn.setVisibility(View.GONE);
             signedUpAttendeesBtn.setVisibility(View.GONE);
@@ -287,6 +291,12 @@ public class ViewEventFragment extends DialogFragment {
         });
     }
 
+    /**
+     * Retrieves the number of checked-in attendees for the event and updates the UI accordingly.
+     * Also handles the enabling/disabling of the signed-up checkbox based on the attendee limit.
+     *
+     * @param ID the ID of the event
+     */
     private void handleCheckedInNumber(String ID) {
         eventController.addSingleSnapshotListener(ID, new SnapshotListener<Event>() {
             @Override
@@ -317,6 +327,12 @@ public class ViewEventFragment extends DialogFragment {
         });
     }
 
+    /**
+     * Handles the logic when the signed-up checkbox state changes.
+     * Enables or disables signing up for the event based on the checkbox state.
+     *
+     * @param ID the ID of the event
+     */
     private void handleCheckBox(String ID) {
         signedUpCB.setOnCheckedChangeListener((buttonView ,isChecked) -> {
             if(isChecked) {
@@ -327,6 +343,12 @@ public class ViewEventFragment extends DialogFragment {
         });
     }
 
+    /**
+     * Handles the logic when the checkbox is checked.
+     * Adds the current user to the event's sign-up list and updates the user's signed-up events list.
+     *
+     * @param ID the ID of the event
+     */
     private void handleChecked(String ID) {
         eventController.getEvent(ID, event -> {
             ArrayList<String> signUps = event.getSignUps();
@@ -345,6 +367,12 @@ public class ViewEventFragment extends DialogFragment {
         });
     }
 
+    /**
+     * Handles the logic when the checkbox is unchecked.
+     * Removes the current user from the event's sign-up list and updates the user's signed-up events list.
+     *
+     * @param ID the ID of the event
+     */
     private void handleUnChecked(String ID) {
         eventController.getEvent(ID, event -> {
             ArrayList<String> signUps = event.getSignUps();

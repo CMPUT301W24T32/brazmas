@@ -1,6 +1,8 @@
 package com.CMPUT301W24T32.brazmascheckin;
 
 import static android.app.Activity.RESULT_OK;
+import android.Manifest;
+
 import static android.app.PendingIntent.getActivity;
 
 import androidx.core.content.ContextCompat;
@@ -18,6 +20,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.rule.GrantPermissionRule;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.replaceText;
@@ -26,6 +29,7 @@ import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.Intents.intending;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.toPackage;
 import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
@@ -33,6 +37,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
@@ -42,10 +47,12 @@ import static org.hamcrest.Matchers.not;
 import static com.CMPUT301W24T32.brazmascheckin.controllers.ImageController.DEFAULT_PROFILE_PICTURE_PATH;
 import static org.hamcrest.Matchers.instanceOf;
 
+import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -65,7 +72,9 @@ import com.CMPUT301W24T32.brazmascheckin.controllers.GetSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
 import com.CMPUT301W24T32.brazmascheckin.controllers.SnapshotListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
+import com.CMPUT301W24T32.brazmascheckin.helper.Date;
 import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
+import com.CMPUT301W24T32.brazmascheckin.helper.Location;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
@@ -88,12 +97,15 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
 
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -102,6 +114,10 @@ public class ProfileTests {
     @Rule
     public ActivityScenarioRule<ProfileActivity> scenario = new
             ActivityScenarioRule<ProfileActivity>(ProfileActivity.class);
+
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION);
+
 
     private UserController userController;
     private EventController eventController;
@@ -397,5 +413,157 @@ public class ProfileTests {
         return fileID;
     }
 
+    private int countMarkers(MapView mapView) {
+        int markerCount = 0;
+        if (mapView != null) {
+            List<Marker> mapMarkers = mapView.getOverlays().stream()
+                    .filter(overlay -> overlay instanceof Marker)
+                    .map(overlay -> (Marker) overlay)
+                    .collect(Collectors.toList());
 
+            markerCount = mapMarkers.size();
+        }
+        return markerCount;
+    }
+
+    @Test
+    public void testCheckInMap() {
+        Intents.init();
+        Event mockAttendEvent = new Event(
+                null, "Test Map Event",
+                new Date(11, 4, 2024),
+                "Event to test attending",
+                new HashMap<>(),
+                new ArrayList<>(),
+                1,
+                "default_poster.png",
+                null,
+                null,
+                user.getID(),
+                true,
+                new Location( 53.5269,-113.5267),
+                new HashMap<>(),
+                new ArrayList<>()
+        );
+
+
+        eventController.addEvent(mockAttendEvent, id -> {
+            mockAttendEvent.setID(id);
+            eventController.setEvent(mockAttendEvent, null, null);
+            ArrayList<String> events = new ArrayList<>();
+            events.add(id);
+            user.setEvent(events);
+            userController.setUser(user, null, null);
+
+        }, null);
+
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+
+        user.setGeoLocationEnabled(true);
+        mockAttendEvent.checkIn(user.getID(), new Location(51.0447, -114.0719));
+        user.checkIn(mockAttendEvent.getID());
+
+        eventController.setEvent(mockAttendEvent, null, null);
+        userController.setUser(user, null, null);
+        Espresso.onView(ViewMatchers.withId(R.id.profile_geolocation_sw))
+                .perform(ViewActions.click());
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+
+        Espresso.onView(ViewMatchers.withId(R.id.profile_geolocation_attendee_checkins_btn))
+                .perform(ViewActions.click());
+
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+        Espresso.onView(withId(R.id.map)).check(matches(isDisplayed()))
+                .check((view, noViewFoundException) -> {
+                    if(view instanceof MapView) {
+                        MapView mapView = (MapView) view;
+                        int markerCount = countMarkers(mapView);
+                        assert(markerCount == 1);
+                    }
+                });
+        Intents.release();
+    }
+
+
+    @Test
+    public void testOrganizedEventsMap() {
+        Intents.init();
+        Event mockAttendEvent = new Event(
+                null, "Test Map Event",
+                new Date(11, 4, 2024),
+                "Event to test attending",
+                new HashMap<>(),
+                new ArrayList<>(),
+                1,
+                "default_poster.png",
+                null,
+                null,
+                user.getID(),
+                true,
+                new Location( 53.5269,-113.5267),
+                new HashMap<>(),
+                new ArrayList<>()
+        );
+
+
+        eventController.addEvent(mockAttendEvent, id -> {
+            mockAttendEvent.setID(id);
+            eventController.setEvent(mockAttendEvent, null, null);
+            ArrayList<String> events = new ArrayList<>();
+            events.add(id);
+            user.setEvent(events);
+            userController.setUser(user, null, null);
+
+        }, null);
+
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+
+        user.setGeoLocationEnabled(true);
+        mockAttendEvent.checkIn(user.getID(), new Location(51.0447, -114.0719));
+        user.checkIn(mockAttendEvent.getID());
+
+        eventController.setEvent(mockAttendEvent, null, null);
+        userController.setUser(user, null, null);
+        Espresso.onView(ViewMatchers.withId(R.id.profile_geolocation_sw))
+                .perform(ViewActions.click());
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+
+        Espresso.onView(ViewMatchers.withId(R.id.profile_geolocation_organized_events_btn))
+                .perform(ViewActions.click());
+
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+        Espresso.onView(withId(R.id.map)).check(matches(isDisplayed()))
+                .check((view, noViewFoundException) -> {
+                    if(view instanceof MapView) {
+                        MapView mapView = (MapView) view;
+                        int markerCount = countMarkers(mapView);
+                        assert(markerCount == 1);
+                    }
+                });
+        Intents.release();
+    }
 }

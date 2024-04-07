@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:id="@+id/view_event_sv"
+    >
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
+        android:id="@+id/view_event_rl"
+
         >
 
         <TextView
@@ -37,18 +41,28 @@
             />
 
         <TextView
+            android:id="@+id/view_event_social_label_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Check Ins: "
+            android:layout_marginEnd="5dp"
+            android:layout_toEndOf="@id/view_event_signed_up_cb"
+            android:layout_below="@id/view_event_name_tv"
+            />
+
+        <TextView
             android:id="@+id/view_event_social_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TODO: implmenet following"
+            android:text=""
             android:layout_below="@id/view_event_name_tv"
-            android:layout_toEndOf="@id/view_event_signed_up_cb"
+            android:layout_toEndOf="@id/view_event_social_label_tv"
             />
 
         <ImageView
             android:id="@+id/view_event_poster_iv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
             android:layout_below="@id/view_event_signed_up_cb"
             tools:srcCompat="@tools:sample/avatars"
             android:layout_centerHorizontal="true"
@@ -85,7 +99,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:fontFamily="sans-serif-condensed"
-            android:text="Description"
+            android:text="@string/description"
             android:textSize="15sp"
             android:layout_marginEnd="10dp"
             android:layout_below="@id/view_event_date_tv"
@@ -202,7 +216,7 @@
             android:backgroundTint="@color/lightPink"
             android:textColor="@color/black"
             android:fontFamily="sans-serif-condensed-medium"
-            android:text="Event Analytics"
+            android:text="@string/event_analytics"
             android:layout_below="@id/share_promo_qr_code_btn"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="20dp"/>
@@ -214,7 +228,7 @@
             android:backgroundTint="@color/lightPink"
             android:textColor="@color/black"
             android:fontFamily="sans-serif-condensed-medium"
-            android:text="Delete Event"
+            android:text="@string/delete_event"
             android:layout_below="@id/share_promo_qr_code_btn"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="20dp"/>

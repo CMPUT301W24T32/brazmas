@@ -1,7 +1,5 @@
 package com.CMPUT301W24T32.brazmascheckin.helper;
 
-import static androidx.core.content.ContentProviderCompat.requireContext;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.provider.Settings;
@@ -12,7 +10,7 @@ import android.provider.Settings;
 public class DeviceID {
 
     /**
-     * This method returns the device ID
+     * Method returns the device ID
      * @param context information about the application environment
      * @return the device ID
      */

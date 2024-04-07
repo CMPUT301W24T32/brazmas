@@ -7,21 +7,21 @@
     android:padding="10dp">
 
     <ImageView
-        android:id="@+id/profile_picture_admin"
+        android:id="@+id/admin_user_view_card_picture_iv"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginEnd="10dp"
-        android:contentDescription="TODO"
+        android:contentDescription="@string/user_profile_picture"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
-        android:id="@+id/admin_view_profile_name_tv_admin"
+        android:id="@+id/admin_user_view_card_name_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/profile_picture_admin"
-        android:text="Name"
+        android:layout_toEndOf="@id/admin_user_view_card_picture_iv"
+        android:text="@string/attendee_name"
         android:textSize="18sp"
         android:textStyle="bold"
         android:layout_marginTop="5dp"/>

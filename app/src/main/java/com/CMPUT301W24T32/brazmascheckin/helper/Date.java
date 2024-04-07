@@ -39,7 +39,7 @@ public class Date implements Serializable {
     }
 
     /**
-     * This method returns a formatted version of the date in "Month Day, Year"
+     * Method returns a formatted version of the date in "Month Day, Year"
      * @return
      */
     public String getPrettyDate() {

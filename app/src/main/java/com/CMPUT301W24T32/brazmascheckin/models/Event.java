@@ -427,21 +427,33 @@ public class Event implements Serializable {
         this.userLocationPairs = userLocationPairs;
     }
 
+    /**
+     * Retrieves the milestone index for the next milestone in the event.
+     * @return the milestone index for the next milestone
+     */
     public int getNextMilestone() {
         return nextMilestone;
     }
 
+    /**
+     * Sets the milestone index for the next milestone in the event.
+     * @param nextMilestone the milestone index for the next milestone
+     */
     public void setNextMilestone(int nextMilestone) {
         this.nextMilestone = nextMilestone;
     }
 
+    /**
+     * Retrieves the list of announcements associated with the event.
+     * @return the list of announcements associated with the event
+     */
     public ArrayList<Announcement> getAnnouncements() {
         return announcements;
     }
 
     /**
-     * setter for the announcements
-     * @param announcements
+     * Sets the list of announcements associated with the event.
+     * @param announcements the list of announcements to set
      */
     public void setAnnouncements(ArrayList<Announcement> announcements) {
         this.announcements = announcements;

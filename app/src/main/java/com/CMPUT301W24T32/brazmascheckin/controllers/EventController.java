@@ -1,7 +1,5 @@
 package com.CMPUT301W24T32.brazmascheckin.controllers;
 
-import android.content.Context;
-
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.google.firebase.firestore.CollectionReference;
@@ -173,6 +171,11 @@ public class EventController {
         });
     }
 
+    /**
+     * Retrieves the IDs of all events having associated QR codes from the Firestore Database.
+     *
+     * @param listener A listener to handle success callbacks for the operation.
+     */
     public void getAllEventQRCodeIDs(GetSuccessListener<List<String>> listener) {
 
         eventsRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
@@ -194,6 +197,12 @@ public class EventController {
         });
     }
 
+    /**
+     * Retrieves all events with geolocation enabled from the Firestore Database.
+     *
+     * @param successListener A listener to handle success callbacks for the operation.
+     * @param failureListener A listener to handle failure callbacks for the operation.
+     */
     public void getAllEvents(GetSuccessListener<List<Event>> successListener, GetFailureListener
                              failureListener) {
         eventsRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
@@ -216,9 +225,10 @@ public class EventController {
     }
 
     /**
-     * Gets all events from the database
-     * @param successListener
-     * @param failureListener
+     * Retrieves all events with geolocation enabled from the Firestore Database.
+     *
+     * @param successListener A listener to handle success callbacks for the operation.
+     * @param failureListener A listener to handle failure callbacks for the operation.
      */
     public void getAllEventsReg(GetSuccessListener<List<Event>> successListener, GetFailureListener
             failureListener) {

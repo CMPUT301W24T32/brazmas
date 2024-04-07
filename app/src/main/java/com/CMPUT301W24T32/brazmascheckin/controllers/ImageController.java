@@ -1,6 +1,5 @@
 package com.CMPUT301W24T32.brazmascheckin.controllers;
 
-import android.content.Context;
 import android.net.Uri;
 
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
@@ -32,6 +31,7 @@ public class ImageController {
     public static final String QR_CODE ="QR_CODE";
     public static final String SHARE_QR_CODE = "SHARE_QR_CODE";
     public static final String DEFAULT_PROFILE_PICTURE_PATH = "default_profile_pictures";
+    public static final String DEFAULT_EVENT_POSTER_FILE = "defaultPoster.png";
 
     /**
      * Constructs a new instance of the Image Controller.
@@ -47,6 +47,16 @@ public class ImageController {
         defaultPosterReference = FirestoreDB.getStorageReference(storage, DEFAULT_EVENT_POSTER_PATH);
     }
 
+    /**
+     * Method to upload an image to Firebase Storage.
+     *
+     * @param TYPE                  The type of image (e.g., EVENT_POSTER, PROFILE_PICTURE).
+     * @param fileID                The ID of the file.
+     * @param imageURI              The URI of the the image to upload.
+     * @param successListener       A listener to handle success callbacks for the operation.
+     * @param failureListener       A listener to handle failure callbacks for the operation.
+     *
+     */
     public void uploadImage(String TYPE, String fileID,
                             Uri imageURI, AddSuccessListener<Uri> successListener,
                             AddFailureListener failureListener) {
@@ -80,7 +90,7 @@ public class ImageController {
 
 
     /**
-     * Uploads a QR code image to Firebase Storage.
+     * Method to upload a QR code image to Firebase Storage.
      *
      * @param fileID         the ID of the file.
      * @param imageData      the byte array of image data.
@@ -116,7 +126,7 @@ public class ImageController {
     }
 
     /**
-     * Retrieves an image from Firebase Storage based on the specified type and file ID.
+     * Method to retrieves an image from Firebase Storage based on the specified type and file ID.
      *
      * @param TYPE            the type of image to retrieve (e.g., EVENT_POSTER, PROFILE_PICTURE, QR_CODE).
      * @param fileID          the ID of the file.
@@ -154,6 +164,14 @@ public class ImageController {
                     }
                 });
     }
+
+    /**
+     * Method to retrieve the URL of an image from Firebase Storage based on the specified type and file ID.
+     * @param TYPE
+     * @param fileID
+     * @param successListener
+     * @param failureListener
+     */
 
     public void getImageURL(String TYPE, String fileID, GetSuccessListener<String> successListener,
                             AddFailureListener failureListener) {

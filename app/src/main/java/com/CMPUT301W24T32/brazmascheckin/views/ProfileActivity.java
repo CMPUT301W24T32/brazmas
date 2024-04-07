@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -248,6 +247,14 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Callback method triggered when the user responds to a permission request.
+     * This method is called when the user grants or denies the requested permissions.
+     *
+     * @param requestCode  The code passed in requestPermissions(int, String[]) to identify the request.
+     * @param permissions  The requested permissions. Never null.
+     * @param grantResults The grant results for the corresponding permissions which is either PERMISSION_GRANTED or PERMISSION_DENIED. Never null.
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -262,6 +269,10 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Configures the event map buttons to navigate to different map views.
+     * This method sets click listeners for the buttons to open map views based on different modes.
+     */
     private void handleEventMaps() {
         checkInGeoLocationBtn.setOnClickListener(view -> {
             Intent i = new Intent(ProfileActivity.this, ViewMapActivity.class);

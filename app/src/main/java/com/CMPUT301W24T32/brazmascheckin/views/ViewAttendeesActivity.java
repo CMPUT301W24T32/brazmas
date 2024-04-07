@@ -1,16 +1,15 @@
 package com.CMPUT301W24T32.brazmascheckin.views;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
@@ -22,10 +21,13 @@ import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * This activity displays the attendees of an event and provides functionality to notify attendees
+ * or check-in attendees based on the mode set.
+ */
 public class ViewAttendeesActivity extends AppCompatActivity implements AddAnnouncementFragment.AddAnnouncementDialogListener{
     private RecyclerView recyclerView;
     private AttendeeRecyclerViewAdapter recyclerViewAdapter;
@@ -43,6 +45,12 @@ public class ViewAttendeesActivity extends AppCompatActivity implements AddAnnou
     public static final int SIGN_UP_MODE = 1;
     private int mode;
 
+
+    /**
+     * Initializes the activity when it is created.
+     *
+     * @param savedInstanceState the saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,6 +146,12 @@ public class ViewAttendeesActivity extends AppCompatActivity implements AddAnnou
             new AddAnnouncementFragment().show(getSupportFragmentManager(), "Add Announcement");
         });
     }
+
+    /**
+     * Callback method for adding an announcement.
+     *
+     * @param announcement the announcement to add
+     */
     public void addAnnouncement(Announcement announcement) {
         eventController = new EventController(FirestoreDB.getDatabaseInstance());
         announcement.setName(announcement.getName() + " for " +event.getName());
@@ -147,6 +161,12 @@ public class ViewAttendeesActivity extends AppCompatActivity implements AddAnnou
 
     }
 
+    /**
+     * Populates the RecyclerView with attendee data.
+     * This method is called after retrieving attendee information from the database.
+     *
+     * @param event the event for which attendees are being viewed
+     */
     private void populateRecyclerView(Event event) {
 
     }
