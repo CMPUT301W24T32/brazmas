@@ -2,6 +2,10 @@ package com.CMPUT301W24T32.brazmascheckin.helper;
 
 import java.io.Serializable;
 
+/**
+ * This class represents a location with coordinates.
+ * Instances of this class are used to store location information.
+ */
 public class Location implements Serializable {
     private double latitude;
     private double longitude;
