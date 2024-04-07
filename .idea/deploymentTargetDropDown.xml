@@ -2,16 +2,22 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="AdminDeleteEventTest">
-        <State />
-      </entry>
-      <entry key="EventControllerIntegrationTest">
-        <State />
-      </entry>
-      <entry key="UserControllerIntegrationTest">
-        <State />
-      </entry>
       <entry key="app">
+        <State />
+      </entry>
+      <entry key="attendeeCannotSeeQR()">
+        <State />
+      </entry>
+      <entry key="testAllEventsMap()">
+        <State />
+      </entry>
+      <entry key="testCheckInMap()">
+        <State />
+      </entry>
+      <entry key="testNameDisplayed()">
+        <State />
+      </entry>
+      <entry key="testOrganizedEventsMap()">
         <State />
       </entry>
     </value>
