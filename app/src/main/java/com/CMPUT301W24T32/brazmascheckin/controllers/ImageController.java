@@ -31,6 +31,7 @@ public class ImageController {
     public static final String QR_CODE ="QR_CODE";
     public static final String SHARE_QR_CODE = "SHARE_QR_CODE";
     public static final String DEFAULT_PROFILE_PICTURE_PATH = "default_profile_pictures";
+    public static final String DEFAULT_EVENT_POSTER_FILE = "defaultPoster.png";
 
     /**
      * Constructs a new instance of the Image Controller.

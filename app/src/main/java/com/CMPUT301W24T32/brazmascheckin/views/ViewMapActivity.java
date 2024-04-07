@@ -147,18 +147,27 @@ public class ViewMapActivity extends AppCompatActivity {
         GeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
         eventMarker.setPosition(point);
 
-        if(event.getPoster() != null && !event.getPoster().isEmpty()) {
-            imageController.getImage(ImageController.EVENT_POSTER, event.getPoster(), byteArray -> {
-                Bitmap rawBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-                Bitmap bitmap = Bitmap.createScaledBitmap(rawBitmap, 100, 100, false);
-                BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
-                        bitmap);
-                eventMarker.setIcon(bitmapDrawable);
-            }, e -> {
-                Toast.makeText(this, "Unable to retrieve event poster for " + event.getName(), Toast.LENGTH_SHORT).show();
-            });
+        // image: default and custom
+        String eventFolder = ImageController.DEFAULT_EVENT_POSTER;
+        String poster = ImageController.DEFAULT_EVENT_POSTER_FILE;
+        if(event.getPoster() != null && !event.getPoster().equals(poster)) {
+            eventFolder = ImageController.EVENT_POSTER;
+            poster = event.getPoster();
         }
+        imageController.getImage(eventFolder, poster, byteArray -> {
+            Bitmap rawBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+            Bitmap bitmap = Bitmap.createScaledBitmap(rawBitmap, 100, 100, false);
+            BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
+                    bitmap);
+            eventMarker.setIcon(bitmapDrawable);
+        }, e -> {
+            Toast.makeText(this, "Unable to retrieve event poster for " + event.getName(), Toast.LENGTH_SHORT).show();
+        });
+
+
         eventMarker.setTitle(event.getName());
+
+        // address
         try {
             List<Address> addresses = geocoder.getFromLocation(location.getLatitude(),
                     location.getLongitude(), 1);
@@ -168,6 +177,7 @@ public class ViewMapActivity extends AppCompatActivity {
         }
         mapView.getOverlays().add(eventMarker);
 
+        // checked in attendees
         for(String id : locations.keySet()) {
             Location attendeeLocation = locations.get(id);
             Marker attendeeMarker = new Marker(mapView);
@@ -177,21 +187,20 @@ public class ViewMapActivity extends AppCompatActivity {
                 String name = user.getFirstName() + " " + user.getLastName();
                 attendeeMarker.setTitle(name);
                 String profilePicture = null;
-                String folder;
+                String profileFolder;
 
-
+                // image: default and custom
                 if(user.getProfilePicture() != null && !user.getProfilePicture().isEmpty()) {
                     profilePicture = user.getProfilePicture();
-                    folder = ImageController.PROFILE_PICTURE;
+                    profileFolder = ImageController.PROFILE_PICTURE;
                 } else if (user.getDefaultProfilePicture() != null && !user.getDefaultProfilePicture().isEmpty()) {
                     profilePicture = user.getDefaultProfilePicture();
-                    folder = ImageController.DEFAULT_PROFILE_PICTURE_PATH;
+                    profileFolder = ImageController.DEFAULT_PROFILE_PICTURE_PATH;
                 } else {
-                    folder = ImageController.DEFAULT_PROFILE_PICTURE_PATH;
+                    profileFolder = ImageController.DEFAULT_PROFILE_PICTURE_PATH;
                 }
 
-
-                imageController.getImage(folder, profilePicture,
+                imageController.getImage(profileFolder, profilePicture,
                         byteArray -> {
                             Bitmap rawBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
                             Bitmap bitmap = Bitmap.createScaledBitmap(rawBitmap, 100, 100, false);
@@ -201,7 +210,7 @@ public class ViewMapActivity extends AppCompatActivity {
                         },
                         e -> Toast.makeText(this, "Unable to retrieve profile picture", Toast.LENGTH_SHORT).show());
 
-
+                // attendee marker
                 String snippet;
                 try {
                     List<Address> addresses = geocoder.getFromLocation(attendeeLocation.getLatitude(),
@@ -227,6 +236,8 @@ public class ViewMapActivity extends AppCompatActivity {
             marker.setPosition(p);
         }
         marker.setTitle("Event Location");
+
+        // interactive
         MapEventsReceiver mapEventsReceiver = new MapEventsReceiver() {
             @Override
             public boolean singleTapConfirmedHelper(GeoPoint p) {
@@ -254,6 +265,7 @@ public class ViewMapActivity extends AppCompatActivity {
         mapView.getOverlays().add(0, mapEventsOverlay);
         mapView.getOverlays().add(marker);
 
+        // selection button
         chooseLocationBtn.setOnClickListener(view -> {
             GeoPoint position = marker.getPosition();
             if(position != null) {
@@ -275,18 +287,23 @@ public class ViewMapActivity extends AppCompatActivity {
      */
     private void showAttendeeCheckIns() {
         userController.getUser(deviceID, user -> {
+            // for all events the user has checked-into
             ArrayList<String> checkIns = user.getCheckInEvents();
             for(String eventID : checkIns) {
                 eventController.getEvent(eventID, event -> {
+                    // if the user exists in the document
                     HashMap<String, Location> checkInLocationPairs = event.getUserLocationPairs();
+
                     if (checkInLocationPairs.containsKey(deviceID)){
+                        // retrieving location
                         Location checkInLocation = checkInLocationPairs.get(deviceID);
-                        Marker marker = new Marker(mapView);
+                        Marker eventMarker = new Marker(mapView);
                         GeoPoint point = new GeoPoint(checkInLocation.getLatitude(),
                                 checkInLocation.getLongitude());
-                        marker.setPosition(point);
-                        marker.setTitle(event.getName());
+                        eventMarker.setPosition(point);
+                        eventMarker.setTitle(event.getName());
 
+                        // event information
                         String snippet;
                         try {
                             List<Address> addresses = geocoder.getFromLocation(checkInLocation.getLatitude(),
@@ -297,24 +314,25 @@ public class ViewMapActivity extends AppCompatActivity {
                                 + "<br> Longitude: " + checkInLocation.getLongitude();
                         }
 
-                        marker.setSnippet(snippet);
+                        eventMarker.setSnippet(snippet);
 
-                        String folder = ImageController.DEFAULT_EVENT_POSTER;
-                        if(!event.getPoster().equals("defaultPoster.png")) {
-                            folder = ImageController.EVENT_POSTER;
+                        String eventFolder = ImageController.DEFAULT_EVENT_POSTER;
+                        String poster = ImageController.DEFAULT_EVENT_POSTER_FILE;
+                        if(event.getPoster() != null && !event.getPoster().equals(poster)) {
+                            eventFolder = ImageController.EVENT_POSTER;
+                            poster = event.getPoster();
                         }
+                        imageController.getImage(eventFolder, poster, byteArray -> {
+                            Bitmap rawBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                            Bitmap bitmap = Bitmap.createScaledBitmap(rawBitmap, 100, 100, false);
+                            BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
+                                    bitmap);
+                            eventMarker.setIcon(bitmapDrawable);
+                        }, e -> {
+                            Toast.makeText(this, "Unable to retrieve event poster for " + event.getName(), Toast.LENGTH_SHORT).show();
+                        });
 
-                        imageController.getImage(folder, event.getPoster(),
-                                byteArray -> {
-                                    Bitmap rawBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-                                    Bitmap bitmap = Bitmap.createScaledBitmap(rawBitmap, 100, 100, false);
-                                    BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
-                                            bitmap);
-                                    marker.setIcon(bitmapDrawable);
-                                }, e -> Toast.makeText(ViewMapActivity.this,
-                                        "Unable to retrieve image for " + event.getName(), Toast.LENGTH_SHORT).show());
-
-                    mapView.getOverlays().add(marker);
+                    mapView.getOverlays().add(eventMarker);
                 }
                 }, e -> Toast.makeText(ViewMapActivity.this,
                         "Unable to retrieve check-in location for event " + eventID,
@@ -330,13 +348,15 @@ public class ViewMapActivity extends AppCompatActivity {
     private void showAllEvents() {
         eventController.getAllEvents(events -> {
             for(Event event : events) {
+                // location
                 Location eventLocation = event.getEventLocation();
-                Marker marker = new Marker(mapView);
+                Marker eventMarker = new Marker(mapView);
                 GeoPoint point = new GeoPoint(eventLocation.getLatitude(),
                         eventLocation.getLongitude());
-                marker.setPosition(point);
-                marker.setTitle(event.getName());
+                eventMarker.setPosition(point);
+                eventMarker.setTitle(event.getName());
                 String snippet;
+                // addresss
                 try {
                     List<Address> addresses = geocoder.getFromLocation(eventLocation.getLatitude(),
                             eventLocation.getLongitude(), 1);
@@ -346,24 +366,25 @@ public class ViewMapActivity extends AppCompatActivity {
                             + "<br> Longitude: " + eventLocation.getLongitude();
                 }
 
-                marker.setSnippet(snippet);
-                String folder = ImageController.DEFAULT_EVENT_POSTER;
-                if(!event.getPoster().equals("defaultPoster.png")) {
-                    folder = ImageController.EVENT_POSTER;
+                eventMarker.setSnippet(snippet);
+                String eventFolder = ImageController.DEFAULT_EVENT_POSTER;
+                String poster = ImageController.DEFAULT_EVENT_POSTER_FILE;
+                if(event.getPoster() != null && !event.getPoster().equals(poster)) {
+                    eventFolder = ImageController.EVENT_POSTER;
+                    poster = event.getPoster();
                 }
+                imageController.getImage(eventFolder, poster, byteArray -> {
+                    Bitmap rawBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                    Bitmap bitmap = Bitmap.createScaledBitmap(rawBitmap, 100, 100, false);
+                    BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
+                            bitmap);
+                    eventMarker.setIcon(bitmapDrawable);
+                }, e -> {
+                    Toast.makeText(this, "Unable to retrieve event poster for " + event.getName(), Toast.LENGTH_SHORT).show();
+                });
 
-                imageController.getImage(folder, event.getPoster(),
-                        byteArray -> {
-                            Bitmap rawBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-                            Bitmap bitmap = Bitmap.createScaledBitmap(rawBitmap, 100, 100, false);
-                            BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
-                                    bitmap);
-                            marker.setIcon(bitmapDrawable);
-                        }, e -> Toast.makeText(ViewMapActivity.this,
-                                "Unable to retrieve image for " + event.getName(), Toast.LENGTH_SHORT).show());
-
-                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
-                mapView.getOverlays().add(marker);
+                eventMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
+                mapView.getOverlays().add(eventMarker);
             }
         }, e -> Toast.makeText(ViewMapActivity.this, "Unable to retrieve all events", Toast.LENGTH_SHORT).show());
     }
@@ -374,15 +395,17 @@ public class ViewMapActivity extends AppCompatActivity {
      */
     private void showOrganizedEvents() {
         userController.getUser(deviceID, user -> {
+            // for all the users organized vents
             ArrayList<String> organizedEvents = user.getOrganizedEvents();
             for(String eventID : organizedEvents) {
                 eventController.getEvent(eventID, event -> {
+                    // only show location if there is a location
                     if(event.getGeoLocationEnabled()) {
                         Location eventLocation = event.getEventLocation();
-                        Marker marker = new Marker(mapView);
+                        Marker eventMarker = new Marker(mapView);
                         GeoPoint point = new GeoPoint(eventLocation.getLatitude(), eventLocation.getLongitude());
-                        marker.setPosition(point);
-                        marker.setTitle(event.getName());
+                        eventMarker.setPosition(point);
+                        eventMarker.setTitle(event.getName());
 
                         String snippet;
                         try {
@@ -393,24 +416,25 @@ public class ViewMapActivity extends AppCompatActivity {
                             snippet = event.getDescription() + " <br> Latitude: " + eventLocation.getLatitude()
                                     + "<br> Longitude: " + eventLocation.getLongitude();
                         }
-                        marker.setSnippet(snippet);
+                        eventMarker.setSnippet(snippet);
 
-                        String folder = ImageController.DEFAULT_EVENT_POSTER;
-                        if(!event.getPoster().equals("defaultPoster.png")) {
-                            folder = ImageController.EVENT_POSTER;
+                        String eventFolder = ImageController.DEFAULT_EVENT_POSTER;
+                        String poster = ImageController.DEFAULT_EVENT_POSTER_FILE;
+                        if(event.getPoster() != null && !event.getPoster().equals(poster)) {
+                            eventFolder = ImageController.EVENT_POSTER;
+                            poster = event.getPoster();
                         }
+                        imageController.getImage(eventFolder, poster, byteArray -> {
+                            Bitmap rawBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                            Bitmap bitmap = Bitmap.createScaledBitmap(rawBitmap, 100, 100, false);
+                            BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
+                                    bitmap);
+                            eventMarker.setIcon(bitmapDrawable);
+                        }, e -> {
+                            Toast.makeText(this, "Unable to retrieve event poster for " + event.getName(), Toast.LENGTH_SHORT).show();
+                        });
 
-                        imageController.getImage(folder, event.getPoster(),
-                                byteArray -> {
-                                    Bitmap rawBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-                                    Bitmap bitmap = Bitmap.createScaledBitmap(rawBitmap, 100, 100, false);
-                                    BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
-                                            bitmap);
-                                    marker.setIcon(bitmapDrawable);
-                                }, e -> Toast.makeText(ViewMapActivity.this,
-                                        "Unable to retrieve image for " + event.getName(), Toast.LENGTH_SHORT).show());
-
-                        mapView.getOverlays().add(marker);
+                        mapView.getOverlays().add(eventMarker);
                     }
                 }, e -> Toast.makeText(ViewMapActivity.this,
                         "Unable to retrieve check-in location for event " + eventID,
