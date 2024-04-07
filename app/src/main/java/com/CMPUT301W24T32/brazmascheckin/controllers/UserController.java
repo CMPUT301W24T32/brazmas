@@ -3,11 +3,13 @@ package com.CMPUT301W24T32.brazmascheckin.controllers;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Controller responsible for managing CRUD interactions between the View and the database.
@@ -149,4 +151,29 @@ public class UserController {
         });
     }
 
+    /**
+     * Gets all users.
+     * @param successListener a listener to handle success callbacks for the operation.
+     * @param failureListener a listener to handle failure callbacks for the operation.
+     */
+    public void getAllUsers(GetSuccessListener<List<User>> successListener, GetFailureListener
+                            failureListener) {
+        usersRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            ArrayList<User> users = new ArrayList<>();
+            for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                User user = documentSnapshot.toObject(User.class);
+                if (user != null) {
+                    users.add(user);
+                }
+            }
+            if (successListener != null) {
+                successListener.onSuccess(users);
+            }
+        })
+                .addOnFailureListener(e -> {
+                    if (failureListener != null) {
+                        failureListener.onFailure(e);
+                    }
+                });
+    }
 }
