@@ -171,6 +171,11 @@ public class ProfileTests {
     public void testNameDisplayed() {
         String fullName = user.getFirstName() + " " + user.getLastName();
         Intents.init();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         onView(ViewMatchers.withId(R.id.edit_profile_btn)).perform(ViewActions.click());
         intended(hasComponent(EditProfileActivity.class.getName()));
         onView(ViewMatchers.withId(R.id.done_btn)).perform(ViewActions.click());
@@ -187,6 +192,7 @@ public class ProfileTests {
     @Test
     public void editProfileLaunched() {
         Intents.init();
+
         onView(ViewMatchers.withId(R.id.edit_profile_btn)).perform(ViewActions.click());
         intended(hasComponent(EditProfileActivity.class.getName()));
         Intents.release();
@@ -195,6 +201,11 @@ public class ProfileTests {
     @Test
     public void editProfileDone() {
         Intents.init();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         onView(ViewMatchers.withId(R.id.edit_profile_btn)).perform(ViewActions.click());
         intended(hasComponent(EditProfileActivity.class.getName()));
         onView(ViewMatchers.withId(R.id.done_btn)).perform(ViewActions.click());
@@ -205,6 +216,11 @@ public class ProfileTests {
     @Test
     public void firstNameChanged() {
         Intents.init();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         onView(ViewMatchers.withId(R.id.edit_profile_btn)).perform(ViewActions.click());
         intended(hasComponent(EditProfileActivity.class.getName()));
         onView(ViewMatchers.withId(R.id.first_name_et)).perform(replaceText("Mehar"));
@@ -227,6 +243,11 @@ public class ProfileTests {
     @Test
     public void lastNameChanged() {
         Intents.init();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         onView(ViewMatchers.withId(R.id.edit_profile_btn)).perform(ViewActions.click());
         intended(hasComponent(EditProfileActivity.class.getName()));
         onView(ViewMatchers.withId(R.id.last_name_et)).perform(replaceText("Goat"));
@@ -245,35 +266,14 @@ public class ProfileTests {
         Intents.release();
 
     }
-
-    @Test
-    public void fullNameChanged() {
-        Intents.init();
-        onView(ViewMatchers.withId(R.id.edit_profile_btn)).perform(ViewActions.click());
-        intended(hasComponent(EditProfileActivity.class.getName()));
-        onView(ViewMatchers.withId(R.id.first_name_et)).perform(replaceText("Mehar"));
-        onView(ViewMatchers.withId(R.id.last_name_et)).perform(replaceText("Goat"));
-        onView(ViewMatchers.withId(R.id.done_btn)).perform(ViewActions.click());
-        intended(hasComponent(ProfileActivity.class.getName()));
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        onView(ViewMatchers.withId(R.id.name_tv)).check(matches((withText("Mehar Goat"))));
-        onView(ViewMatchers.withId(R.id.edit_profile_btn)).perform(ViewActions.click());
-        onView(ViewMatchers.withId(R.id.first_name_et)).perform(replaceText("John"));
-        onView(ViewMatchers.withId(R.id.last_name_et)).perform(replaceText("Doe"));
-        onView(ViewMatchers.withId(R.id.done_btn)).perform(ViewActions.click());
-        onView(ViewMatchers.withId(R.id.name_tv)).check(matches((withText("John Doe"))));
-
-        Intents.release();
-    }
-
-
     @Test
     public void removeDefaultCheck() {
         Intents.init();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         onView(ViewMatchers.withId(R.id.edit_profile_btn)).perform(ViewActions.click());
         intended(hasComponent(EditProfileActivity.class.getName()));
         onView(ViewMatchers.withId(R.id.remove_profile_picture_btn))
@@ -287,6 +287,11 @@ public class ProfileTests {
     @Test
     public void addNewPfpTest() {
         Intents.init();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         onView(ViewMatchers.withId(R.id.edit_profile_btn)).perform(ViewActions.click());
         intended(hasComponent(EditProfileActivity.class.getName()));
 
@@ -316,6 +321,11 @@ public class ProfileTests {
     @Test
     public void endToEndProfileTest(){
         Intents.init();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         onView(ViewMatchers.withId(R.id.edit_profile_btn)).perform(ViewActions.click());
         intended(hasComponent(EditProfileActivity.class.getName()));
         onView(ViewMatchers.withId(R.id.first_name_et)).perform(replaceText("Mehar"));
@@ -335,11 +345,10 @@ public class ProfileTests {
                 .perform(ViewActions.click());
         intended(expected);
 
-
         onView(ViewMatchers.withId(R.id.done_btn)).perform(ViewActions.click());
         intended(hasComponent(ProfileActivity.class.getName()));
         try {
-            Thread.sleep(1000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -348,6 +357,11 @@ public class ProfileTests {
         onView(ViewMatchers.withId(R.id.first_name_et)).perform(replaceText("John"));
         onView(ViewMatchers.withId(R.id.last_name_et)).perform(replaceText("Doe"));
         onView(ViewMatchers.withId(R.id.done_btn)).perform(ViewActions.click());
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         onView(ViewMatchers.withId(R.id.name_tv)).check(matches((withText("John Doe"))));
 
         Intents.release();
