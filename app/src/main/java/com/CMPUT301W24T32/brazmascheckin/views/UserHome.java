@@ -47,8 +47,9 @@ public class UserHome extends AppCompatActivity {
     private ImageController imageController;
     private String deviceID;
     private int count;
+    private boolean resumed = false;
     private final String lightGrey = "#B2B4B6";
-    private final String lightPink = "#FDB0C0";
+    private final String lightPink = "#F7CFE5";
 
     private int mode = ViewEventFragment.ATTENDEE_VIEW;
     public static final int[] ATTENDANCE_MILESTONES = {1, 5, 10, 20, 50, 100, 500, 1000, 5000, 10000};
@@ -63,6 +64,7 @@ public class UserHome extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendee_organizer_home);
+
         configureViews();
         configureControllers();
 
@@ -131,8 +133,16 @@ public class UserHome extends AppCompatActivity {
         userController = new UserController(FirestoreDB.getDatabaseInstance());
         imageController = new ImageController(FirestoreDB.getStorageInstance());
 
-        showAllEvents();
-        // filters for all events
+        Intent intent = getIntent();
+        resumed = intent.getBooleanExtra("resumed",false);
+        if (!resumed) {
+            showAllEvents();
+        }
+        else{
+            Bundle bundle = intent.getExtras();
+            Event e = (Event) bundle.getSerializable("value");
+            handleAfterAdd(e);
+        }
 
         checkNotifications();
 
@@ -154,6 +164,41 @@ public class UserHome extends AppCompatActivity {
         addButton.setOnClickListener(v -> {
             startActivity(new Intent(UserHome.this, AddEventActivity.class));
         });
+    }
+
+    private void handleAfterAdd(Event ev) {
+        attendingEventsButton.setBackgroundColor(Color.parseColor(lightGrey));
+        organizingEventsButton.setBackgroundColor(Color.parseColor(lightPink));
+        allEventsButton.setBackgroundColor(Color.parseColor(lightGrey));
+
+        addButton.setVisibility(View.VISIBLE);
+
+        mode = ViewEventFragment.ORGANIZER_VIEW;
+        userController.getUser(deviceID, user -> {
+            ArrayList<String> organizedEvents = user.getOrganizedEvents();
+            eventController.addSnapshotListener(new SnapshotListener<Event>() {
+                @Override
+                public void snapshotListenerCallback(ArrayList<Event> events) {
+                    eventDataList.clear();
+                    for(Event event : events) {
+                        if(organizedEvents.contains(event.getID())) {
+                            eventDataList.add(event);
+
+                        }
+                    }
+                    eventDataList.add(ev);
+                    eventRecyclerViewAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Toast.makeText(UserHome.this, "Unable to connect to the " +
+                            "database", Toast.LENGTH_LONG).show();
+                }
+            });
+        }, e -> Toast.makeText(UserHome.this, "Unable to connect to the " +
+                "database", Toast.LENGTH_LONG).show());
+
     }
 
     /**

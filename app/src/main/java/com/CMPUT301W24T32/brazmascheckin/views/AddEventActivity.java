@@ -40,6 +40,7 @@ import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.helper.Location;
 import com.CMPUT301W24T32.brazmascheckin.helper.OrphanedQRCodeFinder;
 import com.CMPUT301W24T32.brazmascheckin.helper.QRCodeSpinnerAdapter;
+import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 
 import java.util.ArrayList;
@@ -304,8 +305,13 @@ public class AddEventActivity extends AppCompatActivity {
                     geoLocationEnabled, qrCode,
                     imageUri, shareQRCodeClicked, deviceID,
                     location, this);
-            addEventCommand.execute();
-            finish();
+            Event e = addEventCommand.execute();
+            Intent intent = new Intent(AddEventActivity.this, UserHome.class);
+            intent.putExtra("resumed",true);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("value", e);
+            intent.putExtras(bundle);
+            startActivity(intent);
         }
     }
 }
