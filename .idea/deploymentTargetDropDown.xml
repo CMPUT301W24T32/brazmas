@@ -2,12 +2,6 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="EventControllerIntegrationTest">
-        <State />
-      </entry>
-      <entry key="UserControllerIntegrationTest">
-        <State />
-      </entry>
       <entry key="app">
         <State />
       </entry>
@@ -15,6 +9,12 @@
         <State />
       </entry>
       <entry key="testAddEventEmptyReuse()">
+        <State />
+      </entry>
+      <entry key="testCheckInMap()">
+        <State />
+      </entry>
+      <entry key="testNameDisplayed()">
         <State />
       </entry>
       <entry key="testNoPromoView()">
