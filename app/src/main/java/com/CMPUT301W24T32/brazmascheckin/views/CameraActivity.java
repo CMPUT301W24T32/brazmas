@@ -160,6 +160,8 @@ public class CameraActivity extends AppCompatActivity {
      */
     @SuppressLint("MissingPermission")
     private void handleCheckIn(String qrID) {
+        qrID = qrID.replace("-QRCODE", "");
+
         AlertDialog.Builder builder = new AlertDialog.Builder(CameraActivity.this);
         eventController.getEvent(qrID, event -> userController.getUser(deviceID, user -> {
             if (user.isGeoLocationEnabled() && event.getGeoLocationEnabled()) {
@@ -194,12 +196,7 @@ public class CameraActivity extends AppCompatActivity {
             builder.setMessage(event.getName());
             builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss()).show();
             user.checkIn(event.getID());
-            userController.setUser(user, null, new SetFailureListener() {
-                @Override
-                public void onSetFailure(Exception e) {
-                    Toast.makeText(CameraActivity.this, "Unable to register location", Toast.LENGTH_SHORT).show();
-                }
-            });
+            userController.setUser(user, null, e -> Toast.makeText(CameraActivity.this, "Unable to register location", Toast.LENGTH_SHORT).show());
         }, e -> Toast.makeText(CameraActivity.this, "Unable to check into event", Toast.LENGTH_SHORT).show());
     }
 

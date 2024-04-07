@@ -106,9 +106,9 @@ public class AddEventCommand implements Command{
                 generateShareQRCode(event);
             }
             if(event.getQRCode() == null) {
-                Bitmap bitmap = QRCodeGenerator.generateQRCode(ID);
-                byte[] imageData = QRCodeGenerator.getQRCodeByteArray(bitmap);
                 String fileID = event.getID() + "-QRCODE";
+                Bitmap bitmap = QRCodeGenerator.generateQRCode(fileID);
+                byte[] imageData = QRCodeGenerator.getQRCodeByteArray(bitmap);
                 imageController.uploadQRCode("CHECK-IN", fileID, imageData, uri -> {
                     event.setQRCode(fileID);
                     eventController.setEvent(event, null,
@@ -182,7 +182,7 @@ public class AddEventCommand implements Command{
 
                     });
         } else {
-            fileID = "defaultPoster.png";
+            fileID = ImageController.DEFAULT_EVENT_POSTER_FILE;
         }
         return fileID;
     }
@@ -193,12 +193,12 @@ public class AddEventCommand implements Command{
      */
 
     private void generateShareQRCode(Event event) {
-        Bitmap qrCodeBitmap = QRCodeGenerator.generateQRCode(event.getID()+"-SHARE-QRCODE");
+        String fileID = event.getID()+"-SHARE-QRCODE"; 
+        Bitmap qrCodeBitmap = QRCodeGenerator.generateQRCode(fileID);
         byte[] imageData = QRCodeGenerator.getQRCodeByteArray(qrCodeBitmap);
-        String fileID = event.getID()+"-SHARE-QRCODE"; // TODO: constant
         event.setShareQRCode(fileID);
-        imageController.uploadQRCode("SHARE",fileID, imageData, uri -> { // TODO: constant
-            String QRCodeURI = uri.toString();
+        imageController.uploadQRCode("SHARE", fileID, imageData, uri -> {
+            Toast.makeText(context, "Share QR Code uploaded!", Toast.LENGTH_SHORT).show();
         }, e -> {
             Toast.makeText(context, "Unable to store share QR code", Toast.LENGTH_SHORT).show();
         });
