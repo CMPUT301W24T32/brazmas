@@ -2,6 +2,7 @@ package com.CMPUT301W24T32.brazmascheckin;
 
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.core.app.ActivityScenario;
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.assertion.ViewAssertions;
@@ -9,6 +10,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
+import com.CMPUT301W24T32.brazmascheckin.helper.Date;
+import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
 import com.CMPUT301W24T32.brazmascheckin.models.Announcement;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.views.AdministratorHome;
@@ -83,8 +86,22 @@ public class AdminDeleteEventTest {
         ArrayList<String> signUps = new ArrayList<>();
         ArrayList<Announcement> announcements = new ArrayList<>();
 
-        Event event = new Event("1", "Test Event", "Test Description", new HashMap<>(), new ArrayList<>(),
-                "organizer", true, new HashMap<>());
+        Event event = new Event(
+                null, "Test Check In Event",
+                new Date(11, 11, 2024),
+                "Event to test attending",
+                new HashMap<>(),
+                new ArrayList<>(),
+                1,
+                "default_poster.png",
+                null,
+                null,
+                DeviceID.getDeviceID(ApplicationProvider.getApplicationContext()),
+                false,
+                null,
+                new HashMap<>(),
+                new ArrayList<>()
+        );
 
         // Add the mock event to Firestore using the EventController
         eventController.addEvent(event, eventId -> {

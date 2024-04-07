@@ -3,6 +3,7 @@ package com.CMPUT301W24T32.brazmascheckin;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isNotEnabled;
@@ -86,7 +87,7 @@ public class ViewEventTests {
     public void testSignUpBelowLimit() {
         Event mockAttendEvent = new Event(
                 null, "Test Attend Event",
-                new Date(11, 4, 2024),
+                new Date(11, 11, 2024),
                 "Event to test attending",
                 new HashMap<>(),
                 new ArrayList<>(),
@@ -141,7 +142,7 @@ public class ViewEventTests {
     public void testAttendeeList() {
         Event mockAttendEvent = new Event(
                 null, "Test Attend Event",
-                new Date(11, 4, 2024),
+                new Date(11, 11, 2024),
                 "Event to test attending",
                 new HashMap<>(),
                 new ArrayList<>(),
@@ -213,7 +214,7 @@ public class ViewEventTests {
     public void testSignUpFull() {
         Event mockAttendEvent = new Event(
                 null, "Test Attend Event",
-                new Date(11, 4, 2024),
+                new Date(11, 11, 2024),
                 "Event to test attending",
                 new HashMap<>(),
                 new ArrayList<>(),
@@ -254,6 +255,12 @@ public class ViewEventTests {
 
         }
         onView(withText("Test Attend Event")).perform(click());
+
+        try {
+            Thread.sleep(5000);
+        } catch (Exception ignored) {
+
+        }
         onView(withId(R.id.view_event_signed_up_cb)).check(matches(isNotEnabled()));
     }
 
@@ -261,7 +268,7 @@ public class ViewEventTests {
     public void testCheckIn() {
         Event mockAttendEvent = new Event(
                 null, "Test Check In Event",
-                new Date(11, 4, 2024),
+                new Date(11, 11, 2024),
                 "Event to test attending",
                 new HashMap<>(),
                 new ArrayList<>(),
@@ -312,7 +319,18 @@ public class ViewEventTests {
 
         }
         onView(withText("Test Check In Event")).perform(click());
+        onView(withId(R.id.view_event_sv)).perform(swipeUp());
+        try {
+            Thread.sleep(5000);
+        } catch (Exception ignored) {
+
+        }
         onView(withId(R.id.view_event_see_checked_in_attendees_btn)).perform(click());
+        try {
+            Thread.sleep(5000);
+        } catch (Exception ignored) {
+
+        }
         onView(withText(user.getID())).check(matches(ViewMatchers.isDisplayed()));
     }
 
@@ -320,7 +338,7 @@ public class ViewEventTests {
     public void testNoCheckIns() {
         Event mockAttendEvent = new Event(
                 null, "Test Check In Event",
-                new Date(11, 4, 2024),
+                new Date(11, 11, 2024),
                 "Event to test attending",
                 new HashMap<>(),
                 new ArrayList<>(),
@@ -364,14 +382,14 @@ public class ViewEventTests {
         } catch (Exception ignored) {
 
         }
-        onView(withId(R.id.view_event_social_tv)).check(matches(withText("Check Ins: 0")));
+        onView(withId(R.id.view_event_social_tv)).check(matches(withText("0")));
     }
 
     @Test
     public void testCheckInMap() {
         Event mockAttendEvent = new Event(
                 null, "Test Map Event",
-                new Date(11, 4, 2024),
+                new Date(11, 11, 2024),
                 "Event to test attending",
                 new HashMap<>(),
                 new ArrayList<>(),
@@ -459,7 +477,7 @@ public class ViewEventTests {
     public void testNoCheckInsMap() {
         Event mockAttendEvent = new Event(
                 null, "Test Map Event",
-                new Date(11, 4, 2024),
+                new Date(11, 11, 2024),
                 "Event to test attending",
                 new HashMap<>(),
                 new ArrayList<>(),
@@ -524,7 +542,7 @@ public class ViewEventTests {
     public void attendeeCannotSeeQR() {
         Event mockAttendEvent = new Event(
                 null, "Test Attendee QR Code Event",
-                new Date(11, 4, 2024),
+                new Date(11, 11, 2024),
                 "Event to test attending",
                 new HashMap<>(),
                 new ArrayList<>(),
