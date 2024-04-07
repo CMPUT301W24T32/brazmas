@@ -2,6 +2,15 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+<<<<<<< HEAD
+=======
+      <entry key="AdminDeleteEventTest">
+        <State />
+      </entry>
+      <entry key="AdminDeleteProfileTest">
+        <State />
+      </entry>
+>>>>>>> c297aa0cd638c5a3582ab88ff1201bfd0247ad8d
       <entry key="app">
         <State />
       </entry>

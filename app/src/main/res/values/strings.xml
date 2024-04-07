@@ -42,4 +42,6 @@
     <string name="check_ins">Check Ins</string>
     <string name="attendee_name">Attendee Name</string>
     <string name="user_profile_picture">User Profile Picture</string>
+    <string name="delete_event">Delete Event</string>
+    <string name="event_analytics">Event Analytics</string>
 </resources>

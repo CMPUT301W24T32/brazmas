@@ -197,6 +197,7 @@ public class ViewMapActivity extends AppCompatActivity {
                     profilePicture = user.getDefaultProfilePicture();
                     profileFolder = ImageController.DEFAULT_PROFILE_PICTURE_PATH;
                 } else {
+
                     profileFolder = ImageController.DEFAULT_PROFILE_PICTURE_PATH;
                 }
 
