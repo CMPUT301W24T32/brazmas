@@ -21,6 +21,7 @@ public class Date implements Serializable {
      * empty constructor for Date
      */
     public Date() {}
+
     /**
      * Constructs a new instance of the Date class as required by Firebase
      */
@@ -28,9 +29,9 @@ public class Date implements Serializable {
 
     /**
      * Constructs a new instance of the Date class with full information
-     * @param day day
-     * @param month month
-     * @param year year
+     * @param day day the day
+     * @param month month the month
+     * @param year year the year
      */
     public Date(int day, int month, int year) {
         this.day = day;
@@ -40,7 +41,7 @@ public class Date implements Serializable {
 
     /**
      * This method returns a formatted version of the date in "Month Day, Year"
-     * @return
+     * @return month, day, and year
      */
     public String getPrettyDate() {
         return MONTH_CONVERSION[getMonth()] + " " + getDay() + ", " + getYear();
@@ -48,7 +49,7 @@ public class Date implements Serializable {
 
     /**
      * Getter for the day
-     * @return day
+     * @return the day
      */
     public int getDay() {
         return day;
@@ -56,7 +57,7 @@ public class Date implements Serializable {
 
     /**
      * Setter for the day
-     * @param day day
+     * @param day the day to be set
      */
     public void setDay(int day) {
         this.day = day;
@@ -64,7 +65,7 @@ public class Date implements Serializable {
 
     /**
      * Getter for the month
-     * @return month
+     * @return the month
      */
     public int getMonth() {
         return month;
@@ -72,7 +73,7 @@ public class Date implements Serializable {
 
     /**
      * Setter for the month
-     * @param month month
+     * @param month the month to be set
      */
     public void setMonth(int month) {
         this.month = month;
@@ -80,7 +81,7 @@ public class Date implements Serializable {
 
     /**
      * Getter for the year
-     * @return year
+     * @return the year
      */
     public int getYear() {
         return year;
@@ -88,7 +89,7 @@ public class Date implements Serializable {
 
     /**
      * Setter for the year
-     * @param year year
+     * @param year the year to be set
      */
     public void setYear(int year) {
         this.year = year;
