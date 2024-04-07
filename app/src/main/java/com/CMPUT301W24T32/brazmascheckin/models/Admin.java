@@ -1,5 +1,8 @@
 package com.CMPUT301W24T32.brazmascheckin.models;
 
+/**
+ * This class represents an administrator.
+ */
 public class Admin {
     private String ID;
 
