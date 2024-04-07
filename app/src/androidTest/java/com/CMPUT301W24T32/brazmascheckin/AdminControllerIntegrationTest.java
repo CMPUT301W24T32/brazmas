@@ -19,17 +19,19 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * This class contains integration tests for {@link AdminController} class.
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class AdminControllerIntegrationTest {
 
     private FirebaseFirestore mockDatabase;
     private CollectionReference mockCollectionRef;
     private DocumentReference mockDocumentRef;
-
     private AdminController adminController;
 
     /**
-     * To set up for integration tests.
+     * Sets up the necessary mocks and initializes the AdminController instance for testing.
      */
     @Before
     public void setUp() {
@@ -45,6 +47,7 @@ public class AdminControllerIntegrationTest {
 
     /**
      * Test for adding an admin successfully.
+     * Verifies that the admin is added successfully to the Firestore database.
      */
     @Test
     public void testAddAdmin_Success() {
@@ -62,6 +65,7 @@ public class AdminControllerIntegrationTest {
 
     /**
      * Test for adding an admin failure.
+     * Verifies that the failure callback is invoked when adding an admin fails.
      */
     @Test
     public void testAddAdmin_Failure() {
@@ -85,6 +89,7 @@ public class AdminControllerIntegrationTest {
 
     /**
      * Test for getting an admin successfully.
+     * Verifies that an admin is retrieved successfully from the Firestore database.
      */
     @Test
     public void testGetAdmin_Success() {
@@ -106,7 +111,8 @@ public class AdminControllerIntegrationTest {
     }
 
     /**
-     * Test for getting a user failure.
+     * Test for getting an admin failure.
+     * Verifies that the failure callback is invoked when getting an admin fails.
      */
     @Test
     public void testGetAdmin_Failure() {
@@ -133,6 +139,7 @@ public class AdminControllerIntegrationTest {
 
     /**
      * Test for setting an admin successfully.
+     * Verifies that an admin is set successfully in the Firestore database.
      */
     @Test
     public void testSetAdmin_Success() {
@@ -148,6 +155,7 @@ public class AdminControllerIntegrationTest {
 
     /**
      * Test for setting an admin failure.
+     * Verifies that the failure callback is invoked when setting an admin fails.
      */
     @Test
     public void testSetAdmin_Failure() {
@@ -165,7 +173,6 @@ public class AdminControllerIntegrationTest {
         });
 
         adminController.setAdmin(admin, () -> fail(), e -> assertTrue(true));
-
         verify(mockDocumentRef).set(admin);
     }
 }
