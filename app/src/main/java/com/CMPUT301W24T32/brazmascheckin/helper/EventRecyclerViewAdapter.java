@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,7 +24,7 @@ public class EventRecyclerViewAdapter extends RecyclerView.Adapter<EventRecycler
     private OnItemClickListener onItemClickListener;
 
     /**
-     * This method is a constructor for the adapter.
+     * Constructor for the adapter.
      * @param context The context in which the adapter is created.
      * @param events The lists of events that will be displayed in the RecyclerView.
      */
@@ -35,7 +34,7 @@ public class EventRecyclerViewAdapter extends RecyclerView.Adapter<EventRecycler
     }
 
     /**
-     * This method is called to represent an item.
+     * Method is called to represent an item.
      * @param parent The ViewGroup into which the new View will be added after it is bound to
      * an adapter position.
      * @param viewType The view type of the new View.
@@ -49,7 +48,7 @@ public class EventRecyclerViewAdapter extends RecyclerView.Adapter<EventRecycler
     }
 
     /**
-     * This method is called by RecyclerView to display the data at the specified position.
+     * Method is called by RecyclerView to display the data at the specified position.
      * @param holder The ViewHolder which should be updated to represent the contents of the
      * item at the given position in the data set.
      * @param position The position of the item within the adapter's data set.
@@ -61,7 +60,7 @@ public class EventRecyclerViewAdapter extends RecyclerView.Adapter<EventRecycler
     }
 
     /**
-     * This method returns the total number of events.
+     * Method returns the total number of events.
      * @return The total number of events.
      */
     @Override
@@ -70,7 +69,7 @@ public class EventRecyclerViewAdapter extends RecyclerView.Adapter<EventRecycler
     }
 
     /**
-     * This method sets an itemClickListener for handling click events on the RecyclerView items.
+     * Method sets an itemClickListener for handling click events on the RecyclerView items.
      * @param onItemClickListener is the click listener.
      */
     // Set the click listener
@@ -79,7 +78,7 @@ public class EventRecyclerViewAdapter extends RecyclerView.Adapter<EventRecycler
     }
 
     /**
-     * This method is the interface for the item click listener
+     * Method is the interface for the item click listener
      */
     // Interface for item click listener
     public interface OnItemClickListener {
@@ -95,7 +94,7 @@ public class EventRecyclerViewAdapter extends RecyclerView.Adapter<EventRecycler
         private TextView eventDate;
 
         /**
-         * This method is a constructor.
+         * Method is a constructor.
          * @param itemView the View representing an individual event in the RecyclerView.
          */
         public EventViewHolder(@NonNull View itemView) {
@@ -119,7 +118,7 @@ public class EventRecyclerViewAdapter extends RecyclerView.Adapter<EventRecycler
         }
 
         /**
-         * Binds data from the provided Event to the views within the ViewHolder.
+         * Method binds data from the provided Event to the views within the ViewHolder.
          * @param event the event object and its data the will be displayed.
          */
         public void bind(Event event) {

@@ -1,8 +1,6 @@
 package com.CMPUT301W24T32.brazmascheckin.models;
 
 
-import com.CMPUT301W24T32.brazmascheckin.helper.Date;
-
 import java.io.Serializable;
 
 /**
@@ -112,7 +110,15 @@ public class Announcement implements Serializable {
         this.eventID = eventID;
     }
 
+    /**
+     * Retrieves the time when the announcement was created.
+     * @return the time when the announcement was created
+     */
     public long getTimeCreated() {return timeCreated;}
 
+    /**
+     * Sets the time when the announcement was created.
+     * @param timeCreated the time when the announcement was created
+     */
     public void setTimeCreated(long timeCreated) {this.timeCreated = timeCreated;}
 }
