@@ -180,7 +180,6 @@ public class EventControllerIntegrationTest {
 
         assertTrue(targetListenerInvoked.get());
     }
- AtomicBoolean targetListenerInvoked = new AtomicBoolean(false);
 
         @Test
         public void testDeleteEvent_Success() {

@@ -61,10 +61,8 @@
 
         <ImageView
             android:id="@+id/view_event_poster_iv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxWidth="300dp"
-            android:maxHeight="400dp"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
             android:layout_below="@id/view_event_signed_up_cb"
             tools:srcCompat="@tools:sample/avatars"
             android:layout_centerHorizontal="true"

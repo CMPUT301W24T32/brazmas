@@ -28,7 +28,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * This class will be the home page for attendee/organizer
@@ -330,6 +329,12 @@ public class UserHome extends AppCompatActivity {
         }
     }
 
+    /**
+     * Checks for new announcements and displays a notification if there are any.
+     * This method retrieves the user's signed-up events and compares the last announcement check time
+     * with the announcement creation time for each event. If a new announcement is found,
+     * it increments the count and displays a toast notification indicating the number of new announcements.
+     */
     private void checkNotifications(){
         count = 0;
        userController.getUser(deviceID, user ->{

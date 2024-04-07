@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,11 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.CMPUT301W24T32.brazmascheckin.R;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
+import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
 
 import java.util.ArrayList;
-import com.bumptech.glide.Glide;  // just like browse images for admin
-import com.google.firebase.storage.FirebaseStorage;
 
 /**
  * This class is the adapter for the RecyclerView of user profiles.
@@ -31,7 +29,7 @@ public class AdminProfileRecyclerViewAdapter extends RecyclerView.Adapter<AdminP
     private ArrayList<User> users;
     private Context context;
     private OnItemClickListener onItemClickListener;
-    private ImageController imageController = new ImageController(FirebaseStorage.getInstance());
+    private ImageController imageController = new ImageController(FirestoreDB.getStorageInstance());
 
     /**
      * This method constructs a new AdminProfileRecyclerViewAdapter.
@@ -95,8 +93,8 @@ public class AdminProfileRecyclerViewAdapter extends RecyclerView.Adapter<AdminP
      * This ViewHolder class holds data about an user and their profile.
      */
     public class AdminProfileViewHolder extends RecyclerView.ViewHolder {
-        private TextView name;
-        private ImageView profilePicture;
+        private TextView nameTextView;
+        private ImageView profileImageView;
 
         /**
          * This method constructs a AdminProfileViewHolder.
@@ -106,8 +104,8 @@ public class AdminProfileRecyclerViewAdapter extends RecyclerView.Adapter<AdminP
             super(itemView);
 
             // initializes the views
-            name = itemView.findViewById(R.id.admin_view_profile_name_tv_admin);
-            profilePicture = itemView.findViewById(R.id.profile_picture_admin);
+            nameTextView = itemView.findViewById(R.id.admin_user_view_card_name_tv);
+            profileImageView = itemView.findViewById(R.id.admin_user_view_card_picture_iv);
 
             // set the click listener for the itemView
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -136,7 +134,7 @@ public class AdminProfileRecyclerViewAdapter extends RecyclerView.Adapter<AdminP
             String lastName = user.getLastName() != null ? user.getLastName() : "Doe";
             String fullName = firstName + " " + lastName;
 
-            name.setText(fullName);
+            nameTextView.setText(fullName);
 
             // Load image using Glide
             if (user.getProfilePicture() != null) {
@@ -145,6 +143,28 @@ public class AdminProfileRecyclerViewAdapter extends RecyclerView.Adapter<AdminP
             else {
                 displayDefaultImage(user.getDefaultProfilePicture());
             }
+
+            // TODO: template
+//            String pictureFile = null;
+//            String profileFolder;
+//
+//            // image: default and custom
+//            if(user.getProfilePicture() != null && !user.getProfilePicture().isEmpty()) {
+//                pictureFile = user.getProfilePicture();
+//                profileFolder = ImageController.PROFILE_PICTURE;
+//            } else if (user.getDefaultProfilePicture() != null && !user.getDefaultProfilePicture().isEmpty()) {
+//                pictureFile = user.getDefaultProfilePicture();
+//                profileFolder = ImageController.DEFAULT_PROFILE_PICTURE_PATH;
+//            } else {
+//                profileFolder = ImageController.DEFAULT_PROFILE_PICTURE_PATH;
+//            }
+//
+//            imageController.getImage(profileFolder, pictureFile,
+//                    byteArray -> {
+//                        Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+//                        profilePicture.setImageBitmap(bitmap);
+//                    }, null);
+
         }
 
         /**
@@ -153,12 +173,13 @@ public class AdminProfileRecyclerViewAdapter extends RecyclerView.Adapter<AdminP
          */
         private void displayImage(String profilePicID) {
             // while image is loading
-            profilePicture.setImageResource(R.drawable.admin_profile_24);
+            profileImageView.setImageResource(R.drawable.admin_profile_24);
 
+            //TODO: does this handle profile picture vs default profile picture?
             if (profilePicID != null) {
                 imageController.getImage(ImageController.PROFILE_PICTURE, profilePicID, bytes -> {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    profilePicture.setImageBitmap(bitmap);
+                    profileImageView.setImageBitmap(bitmap);
                 }, null);
             }
         }
@@ -169,12 +190,12 @@ public class AdminProfileRecyclerViewAdapter extends RecyclerView.Adapter<AdminP
          */
         private void displayDefaultImage(String profilePicID){
             // while image is loading
-            profilePicture.setImageResource(R.drawable.admin_profile_24);
+            profileImageView.setImageResource(R.drawable.admin_profile_24);
 
             if (profilePicID != null) {
                 imageController.getImage(ImageController.DEFAULT_PROFILE_PICTURE_PATH, profilePicID, bytes -> {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    profilePicture.setImageBitmap(bitmap);
+                    profileImageView.setImageBitmap(bitmap);
                 }, null);
             }
         }

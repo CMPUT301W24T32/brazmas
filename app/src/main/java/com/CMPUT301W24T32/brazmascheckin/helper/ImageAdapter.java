@@ -5,18 +5,18 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.CMPUT301W24T32.brazmascheckin.R;
+import com.bumptech.glide.Glide;
+
 import java.util.List;
-import java.util.Map;
 
 /**
  * This class is an adapter for displaying images in a grid view with captions.
+ * Adapter for displaying images in a GridView.
  */
 public class ImageAdapter extends BaseAdapter {
 
@@ -24,6 +24,11 @@ public class ImageAdapter extends BaseAdapter {
      * Interface definition for a callback to be invoked when an item in this AdapterView has been clicked.
      */
     public interface OnItemClickListener {
+        /**
+         * Callback method to be invoked when an item in the AdapterView has been clicked.
+         *
+         * @param position The position of the item clicked.
+         */
         void onItemClick(int position);
     }
 

@@ -1,8 +1,6 @@
 package com.CMPUT301W24T32.brazmascheckin.models;
 
 
-import com.CMPUT301W24T32.brazmascheckin.helper.Date;
-
 import java.io.Serializable;
 
 /**

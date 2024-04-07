@@ -273,7 +273,6 @@ public class User {
         return lastAnnouncementCheck;
     }
 
-
     /**
      * Sets the timestamp of the user's last announcement check.
      * @param lastAnnouncementCheck The timestamp of the user's last announcement check.
@@ -300,7 +299,7 @@ public class User {
 
     /**
      * Sets the list of events the user has organized.
-     * @param organizedEvents The list of events the user has organized.
+     * @param organizedEvents The list of events the user has organized.n
      */
     public void setOrganizedEvents(ArrayList<String> organizedEvents) {
         this.organizedEvents = organizedEvents;

@@ -1,7 +1,5 @@
 package com.CMPUT301W24T32.brazmascheckin.controllers;
 
-import android.content.Context;
-
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
 import com.google.firebase.firestore.CollectionReference;

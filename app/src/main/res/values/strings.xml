@@ -40,6 +40,8 @@
     <string name="share_qr_code_button_text">Share</string>
     <string name="promotional_qr_code">Promotional QR code</string>
     <string name="check_ins">Check Ins</string>
+    <string name="attendee_name">Attendee Name</string>
+    <string name="user_profile_picture">User Profile Picture</string>
     <string name="delete_event">Delete Event</string>
     <string name="event_analytics">Event Analytics</string>
 </resources>

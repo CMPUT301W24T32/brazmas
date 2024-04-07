@@ -1,6 +1,5 @@
 package com.CMPUT301W24T32.brazmascheckin.controllers;
 
-import android.content.Context;
 import android.net.Uri;
 
 import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
@@ -32,6 +31,7 @@ public class ImageController {
     public static final String QR_CODE ="QR_CODE";
     public static final String SHARE_QR_CODE = "SHARE_QR_CODE";
     public static final String DEFAULT_PROFILE_PICTURE_PATH = "default_profile_pictures";
+    public static final String DEFAULT_EVENT_POSTER_FILE = "defaultPoster.png";
 
     /**
      * Constructs a new instance of the Image Controller.
@@ -87,7 +87,6 @@ public class ImageController {
 
 
     /**
-     * Uploads a QR code image to Firebase Storage.
      * @param fileID         the ID of the file.
      * @param imageData      the byte array of image data.
      * @param successListener a listener to handle success callbacks for the operation.
@@ -122,7 +121,6 @@ public class ImageController {
     }
 
     /**
-     * Retrieves an image from Firebase Storage based on the specified type and file ID.
      * @param TYPE            the type of image to retrieve (e.g., EVENT_POSTER, PROFILE_PICTURE, QR_CODE).
      * @param fileID          the ID of the file.
      * @param successListener a listener to handle success callbacks for the operation.
