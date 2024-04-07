@@ -2,19 +2,22 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="AddEventTests">
+      <entry key="EventControllerIntegrationTest">
         <State />
       </entry>
-      <entry key="ProfileTests">
-        <State />
-      </entry>
-      <entry key="ViewEventTests">
+      <entry key="UserControllerIntegrationTest">
         <State />
       </entry>
       <entry key="app">
         <State />
       </entry>
-      <entry key="testCheckInMap() (1)">
+      <entry key="testDeleteImage_Failure()">
+        <State />
+      </entry>
+      <entry key="testDeleteImage_Success()">
+        <State />
+      </entry>
+      <entry key="testGetImage_Failure()">
         <State />
       </entry>
     </value>

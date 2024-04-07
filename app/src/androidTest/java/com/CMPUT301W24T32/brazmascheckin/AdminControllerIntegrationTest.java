@@ -1,4 +1,7 @@
+package com.CMPUT301W24T32.brazmascheckin;
+
 import static org.junit.Assert.*;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
