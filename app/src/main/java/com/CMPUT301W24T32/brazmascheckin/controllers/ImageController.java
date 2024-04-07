@@ -35,7 +35,6 @@ public class ImageController {
 
     /**
      * Constructs a new instance of the Image Controller.
-     *
      * @param storage Dependency Injection of FirebaseStorage
      */
     public ImageController(FirebaseStorage storage) {
@@ -47,6 +46,14 @@ public class ImageController {
         defaultPosterReference = FirestoreDB.getStorageReference(storage, DEFAULT_EVENT_POSTER_PATH);
     }
 
+    /**
+     * Uploads an image to Firebase Storage based on the specified type and file ID.
+     * @param TYPE the type of image to be upload.
+     * @param fileID the ID of the file.
+     * @param imageURI the URI of the image to upload.
+     * @param successListener a listener to handle success callbacks for the operation.
+     * @param failureListener a listener to handle failure callbacks for the operation.
+     */
     public void uploadImage(String TYPE, String fileID,
                             Uri imageURI, AddSuccessListener<Uri> successListener,
                             AddFailureListener failureListener) {
@@ -81,7 +88,6 @@ public class ImageController {
 
     /**
      * Uploads a QR code image to Firebase Storage.
-     *
      * @param fileID         the ID of the file.
      * @param imageData      the byte array of image data.
      * @param successListener a listener to handle success callbacks for the operation.
@@ -117,7 +123,6 @@ public class ImageController {
 
     /**
      * Retrieves an image from Firebase Storage based on the specified type and file ID.
-     *
      * @param TYPE            the type of image to retrieve (e.g., EVENT_POSTER, PROFILE_PICTURE, QR_CODE).
      * @param fileID          the ID of the file.
      * @param successListener a listener to handle success callbacks for the operation.
@@ -155,6 +160,13 @@ public class ImageController {
                 });
     }
 
+    /**
+     * Retrieves the URL of an image from Firebase Storage based on the specified type and file ID.
+     * @param TYPE the type of image to retrieve.
+     * @param fileID the ID of the file.
+     * @param successListener a listener to handle success callbacks for the operation.
+     * @param failureListener a listener to handle failure callbacks for the operation.
+     */
     public void getImageURL(String TYPE, String fileID, GetSuccessListener<String> successListener,
                             AddFailureListener failureListener) {
         StorageReference imageReference;
@@ -185,7 +197,6 @@ public class ImageController {
     }
     /**
      * Deletes an image from Firebase Storage based on the specified type and file ID.
-     *
      * @param TYPE            the type of image to delete (e.g., EVENT_POSTER, PROFILE_PICTURE, QR_CODE).
      * @param fileID          the ID of the file.
      * @param successListener a listener to handle success callbacks for the operation.
@@ -276,5 +287,4 @@ public class ImageController {
         }).addOnFailureListener(e -> {
         });
     }
-
 }
