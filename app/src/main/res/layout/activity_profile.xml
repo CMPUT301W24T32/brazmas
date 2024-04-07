@@ -7,6 +7,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".views.ProfileActivity">
+    <TextView
+        android:id="@+id/attendee_view_card_name_tv"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:textColor="@color/black"
+        android:text="Profile"
+        android:background="@color/lightPink"
+        android:gravity="center"
+        android:textSize="40sp"
+        android:ems="10"
+
+        android:layout_marginBottom="8dp"/>
+
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
 

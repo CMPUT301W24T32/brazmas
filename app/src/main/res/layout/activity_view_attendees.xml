@@ -8,9 +8,10 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="600dp"
         android:id="@+id/view_attendees_attendee_rv"
         />
+
 
     <Button
         android:id="@+id/view_attendees_notify_btn"
@@ -24,4 +25,10 @@
         android:fontFamily="sans-serif-condensed-medium"
         android:text="Send Announcement"
         android:textColor="@color/black" />
+
+
+
+
+
+
 </RelativeLayout>

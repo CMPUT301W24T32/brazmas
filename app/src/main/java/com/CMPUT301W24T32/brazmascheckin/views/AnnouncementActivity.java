@@ -3,6 +3,7 @@ package com.CMPUT301W24T32.brazmascheckin.views;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,9 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-/**
- * Announcement activity is made for testing navigation
- */
+
 
 public class AnnouncementActivity extends AppCompatActivity {
 
@@ -127,6 +126,7 @@ public class AnnouncementActivity extends AppCompatActivity {
                             ArrayList<Announcement> announcements = event.getAnnouncements();
                             if (announcements != null) {
                                 announcementDataList.addAll(announcements);
+
                             }
                         }
                     }
@@ -146,7 +146,7 @@ public class AnnouncementActivity extends AppCompatActivity {
 
                 @Override
                 public void onError(Exception e) {
-                    //do soon**********8
+                    //do soon -> need to see if -> announcement added is placed into firebase -> else error out
                 }
             });
 
