@@ -34,6 +34,7 @@ import java.util.List;
 public class GraphAnalyticsActivity extends AppCompatActivity {
 
     private List<String> xValues = Arrays.asList("Checked In", "Signed Up");
+    private EventController eventController;
 
     /**
      * Initializes the activity and sets up the event analytics bar chart

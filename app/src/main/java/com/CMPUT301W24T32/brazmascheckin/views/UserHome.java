@@ -165,6 +165,10 @@ public class UserHome extends AppCompatActivity {
         });
     }
 
+    /**
+     * This method returns the user to their original screen after adding an event
+     * @param ev
+     */
     private void handleAfterAdd(Event ev) {
         attendingEventsButton.setBackgroundColor(Color.parseColor(lightGrey));
         organizingEventsButton.setBackgroundColor(Color.parseColor(lightPink));
