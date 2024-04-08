@@ -26,7 +26,22 @@ tools:context=".views.CameraActivity">
 
     app:itemIconTint="@drawable/item_selector"
     app:itemRippleColor="@android:color/transparent"
-    app:labelVisibilityMode="unlabeled"/>
+    app:labelVisibilityMode="unlabeled"
+    app:itemActiveIndicatorStyle="@style/App.Custom.Indicator"
+
+    />
+
+    <TextView
+        android:id="@+id/event_text_view_admin"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:backgroundTint="@color/lightPink"
+        android:ems="10"
+        android:text="QR Scanner"
+        android:textSize="45sp"
+        android:gravity="center"
+        android:background="@color/lightPink"
+        android:textColor="@color/black"/>
 
     <Button
         android:id="@+id/qr_code_scan_btn"

@@ -47,7 +47,7 @@ public class UserHome extends AppCompatActivity {
     private String deviceID;
     private int count;
     private boolean resumed = false;
-    private final String lightGrey = "#B2B4B6";
+    private final String lightGrey = "#cacbcc";
     private final String lightPink = "#F7CFE5";
 
     private int mode = ViewEventFragment.ATTENDEE_VIEW;

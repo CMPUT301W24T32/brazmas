@@ -9,5 +9,8 @@
     <color name="teal">#036C5F</color>
     <color name="purple">#C8A4D4</color>
     <color name="jade_green">#2BAF6A</color>
+    <color name="textGrey">#737272</color>
+    <color name="navBarGrey">#cacbcc</color>
+    <color name="primaryColor">#933268</color>
 
 </resources>

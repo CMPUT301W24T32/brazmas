@@ -47,6 +47,8 @@ tools:context=".views.AnnouncementActivity">
 
     app:itemIconTint="@drawable/item_selector"
     app:itemRippleColor="@android:color/transparent"
-    app:labelVisibilityMode="unlabeled"/>
+    app:labelVisibilityMode="unlabeled"
+        app:itemActiveIndicatorStyle="@style/App.Custom.Indicator"
+        />
 
 </RelativeLayout>
