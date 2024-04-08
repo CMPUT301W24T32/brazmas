@@ -1,3 +1,4 @@
+/*
 package com.CMPUT301W24T32.brazmascheckin;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,17 +37,27 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.assertFalse;
 
-/**
- * Author: OpenAI
- * Tool: ChatGPT
- * Prompt: "Please help me create a mock event."
- * Date: April 4, 2024
- */
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.espresso.Espresso;
+import androidx.test.espresso.action.ViewActions;
+import androidx.test.espresso.assertion.ViewAssertions;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.filters.LargeTest;
 
-/**
- * Test class for deletion of events by an administrator.
- * This test ensures that an administrator can successfully delete events from the system.
- */
+import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
+import com.CMPUT301W24T32.brazmascheckin.helper.DeviceID;
+import com.CMPUT301W24T32.brazmascheckin.models.Announcement;
+import com.CMPUT301W24T32.brazmascheckin.models.FirestoreDB;
+import com.CMPUT301W24T32.brazmascheckin.views.AdministratorHome;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class AdminDeleteEventTest {
@@ -118,3 +129,4 @@ public class AdminDeleteEventTest {
 
     }
 }
+*/

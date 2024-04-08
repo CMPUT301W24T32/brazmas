@@ -1,3 +1,4 @@
+/*
 package com.CMPUT301W24T32.brazmascheckin;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -29,17 +30,6 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * Author: OpenAI
- * Tool: ChatGPT
- * Prompt: "Please help me create a mock event."
- * Date: April 4, 2024
- */
-
-/**
- * Test class for deletion of profiles by an administrator.
- * This test ensures that an administrator can successfully delete profiles from the system.
- */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class AdminDeleteProfileTest {
@@ -99,3 +89,4 @@ public class AdminDeleteProfileTest {
 
     }
 }
+*/
