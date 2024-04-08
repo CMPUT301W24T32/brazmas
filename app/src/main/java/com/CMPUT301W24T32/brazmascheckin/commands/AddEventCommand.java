@@ -92,9 +92,11 @@ public class AddEventCommand implements Command{
         } else {
             addEvent(event);
         }
+        try { Thread.sleep(2000);} catch (Exception ignored) {}
         return event;
 
     }
+
 
     /**
      *  Method to add a new event.

@@ -115,7 +115,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     user.setProfilePicture(null);
                     userController.setUser(user,null,null);
                     displayDefaultImage(user.getDefaultProfilePicture());
-                    profilePicture.setContentDescription("user pfp");
+                    profilePicture.setContentDescription("default pfp");
                 }
                 },null);
             }
