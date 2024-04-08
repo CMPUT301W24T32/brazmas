@@ -79,3 +79,63 @@ Title: Android Studio Tutorial - Upload Image using Camera - Get Image from Gall
 Link: https://www.youtube.com/watch?v=kWeeWOlzEKM
 
 Date: Feb 27, 2024
+
+Author: OpenAI
+Tool: ChatGPT
+Prompt: "Can you please help me use the GridView in Android Studio properly."
+Date: March 19, 2024
+Use: gridview recycler view adapter
+
+Author: OpenAI
+Tool: ChatGPT
+Prompt: "Please help me fix my GridView errors."
+Date: March 19, 2024
+Use: gridview recycler view adapter
+
+Author: OpenAI
+Tool: ChatGPT
+Prompt: "Please help me solve the error pertaining deleting default profile pictures."
+Date: March 15, 2024
+Use: fix error pertaining issues with deleting images
+
+Author: OpenAI
+Tool: ChatGPT
+Prompt: "Please add the Javadocs."
+Date: March 5, 2024
+Use: comments
+
+Author: Easy One Coders
+Title: Android Charts | Bar Chart | MP Android Chart | Android Studio 2023
+Link: https://www.youtube.com/watch?v=WdsmQ3Zyn84
+Date: April 1, 2024
+Use: to use bar charts
+
+Author: OpenAI
+Tool: ChatGPT
+Prompt: "Use mockito to create integration tests using FirestoreDB.java and EventController.java"
+Date: March 30, 2024
+Use: integration tests
+
+Author: PhilJay
+Title: MPAndroidChart
+Link: https://github.com/PhilJay/MPAndroidChart
+Date: April 1, 2024
+Use: to use bar charts
+
+Author: OpenAI
+Tool: ChatGPT
+Prompt: "Use mockito to create integration tests using FirestoreDB.java and AdminController.java"
+Date: March 30, 2024
+Use: integration tests
+
+Author: OpenAI
+Tool: ChatGPT
+Prompt: "Please help me create a mock event."
+Date: April 4, 2024
+Use: to create mock event
+
+Author: OpenAI
+Tool: ChatGPT
+Prompt: "Please help me create a mock event."
+Date: April 4, 2024
+Use: to create mock profile
