@@ -26,8 +26,8 @@
             android:textColor="@color/black"
             android:fontFamily="sans-serif-condensed-medium"
             android:text="All"
-            android:layout_marginRight="2dp"
-            android:layout_marginLeft="2dp"/>
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="15dp"/>
 
         <Button
             android:id="@+id/user_home_attending_btn"
@@ -37,7 +37,7 @@
             android:textColor="@color/black"
             android:fontFamily="sans-serif-condensed-medium"
             android:text="Attendee"
-            android:layout_marginRight="2dp"/>
+            android:layout_marginRight="10dp"/>
 
         <Button
             android:id="@+id/user_home_organizing_btn"
@@ -82,6 +82,7 @@
         app:itemTextColor="@drawable/item_selector"
         app:itemIconTint="@drawable/item_selector"
         app:itemRippleColor="@android:color/transparent"
+        app:itemActiveIndicatorStyle="@style/App.Custom.Indicator"
         app:labelVisibilityMode="unlabeled"/>
 
     <!-- Add button -->
@@ -95,6 +96,7 @@
         android:layout_marginBottom="8dp"
         android:backgroundTint="@color/lightPink"
         android:clickable="true"
+
         app:srcCompat="@android:drawable/ic_input_add" />
 
 </RelativeLayout>
