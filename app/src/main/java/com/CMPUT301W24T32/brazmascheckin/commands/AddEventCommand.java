@@ -92,6 +92,7 @@ public class AddEventCommand implements Command{
         } else {
             addEvent(event);
         }
+        Toast.makeText(context.getApplicationContext(),"Making your event...",Toast.LENGTH_LONG).show();
         try { Thread.sleep(2000);} catch (Exception ignored) {}
         return event;
 
