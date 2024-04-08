@@ -464,7 +464,7 @@ public class ProfileTests {
                 return Uri.parse(path);
             }
         }
-       return Uri.EMPTY;
+       return null;
     }
 
     /**
