@@ -9,6 +9,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import androidx.test.annotation.UiThreadTest;
+
 import com.CMPUT301W24T32.brazmascheckin.controllers.UserController;
 import com.CMPUT301W24T32.brazmascheckin.models.User;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -47,6 +49,7 @@ public class UserControllerIntegrationTest {
      * Test for adding a user successfully.
      */
     @Test
+    @UiThreadTest
     public void testAddUser_Success() {
         User mockUser = mock(User.class);
         when(mockDocumentRef.getId()).thenReturn("mock_event_id");
@@ -64,6 +67,7 @@ public class UserControllerIntegrationTest {
      * Test for adding user unsuccesfully
      */
     @Test
+    @UiThreadTest
     public void testAddUser_Failure() {
         User mockUser = mock(User.class);
         Task mockTask = mock(Task.class);
@@ -88,6 +92,7 @@ public class UserControllerIntegrationTest {
      * Test for setting a user successfully.
      */
     @Test
+    @UiThreadTest
     public void testSetUser_Success() {
         User user = new User("mock_user_Id");
         Task mockTask = mock(Task.class);
@@ -103,6 +108,7 @@ public class UserControllerIntegrationTest {
      * Test for setting a user failure.
      */
     @Test
+    @UiThreadTest
     public void testSetUser_Failure() {
         User user = new User("mock_user_Id");
         Task<Void> mockTask = mock(Task.class);
@@ -126,6 +132,7 @@ public class UserControllerIntegrationTest {
      * Test for getting a user successfully.
      */
     @Test
+    @UiThreadTest
     public void testGetEvent_Success() {
         User mockUser = mock(User.class);
         String userId = "mock_user_id";
@@ -147,6 +154,7 @@ public class UserControllerIntegrationTest {
      * Test for getting a user failure.
      */
     @Test
+    @UiThreadTest
     public void testGetUser_Failure() {
         String userId = "mock_user_id";
         Task mockTask = mock(Task.class);
@@ -173,6 +181,7 @@ public class UserControllerIntegrationTest {
      * Test for deleting a user successfully.
      */
     @Test
+    @UiThreadTest
     public void testDeleteUser_Success() {
         String userId = "mock_event_id";
         User user = new User(userId);
@@ -199,6 +208,7 @@ public class UserControllerIntegrationTest {
      * Test for deleting a user failure.
      */
     @Test
+    @UiThreadTest
     public void testDeleteUser_Failure() {
         String userId = "mock_user_id";
         User user = new User(userId);

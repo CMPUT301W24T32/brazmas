@@ -138,7 +138,7 @@ public class UserHome extends AppCompatActivity {
             showAllEvents();
         }
         else{
-            try { Thread.sleep(2000);} catch (Exception ignored) {}
+            try { Thread.sleep(3000);} catch (Exception ignored) {}
             Bundle bundle = intent.getExtras();
             Event e = (Event) bundle.getSerializable("value");
             handleAfterAdd(e);
