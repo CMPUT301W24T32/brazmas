@@ -29,6 +29,12 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Author: OpenAI
+ * Tool: ChatGPT
+ * Prompt: "Please help me create a mock event."
+ * Date: April 4, 2024
+ */
 
 /**
  * Test class for deletion of profiles by an administrator.

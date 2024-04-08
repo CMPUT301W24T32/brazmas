@@ -37,6 +37,13 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.assertFalse;
 
 /**
+ * Author: OpenAI
+ * Tool: ChatGPT
+ * Prompt: "Please help me create a mock event."
+ * Date: April 4, 2024
+ */
+
+/**
  * Test class for deletion of events by an administrator.
  * This test ensures that an administrator can successfully delete events from the system.
  */

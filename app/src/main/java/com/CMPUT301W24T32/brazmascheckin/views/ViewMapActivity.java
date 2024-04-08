@@ -42,6 +42,13 @@ import java.util.List;
  * This activity is responsible for displaying a map and handling various map-related functionalities,
  * such as displaying check-in locations, selecting event locations, and displaying events.
  */
+
+/**
+ * Author: osmdroid
+ * Title: Osmdroid Wiki
+ * Link: https://github.com/osmdroid/osmdroid/wiki
+ * Date: March 21, 2024
+ */
 public class ViewMapActivity extends AppCompatActivity {
     private MapView mapView;
     private Button chooseLocationBtn;

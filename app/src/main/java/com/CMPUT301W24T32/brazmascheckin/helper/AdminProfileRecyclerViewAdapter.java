@@ -21,6 +21,13 @@ import com.CMPUT301W24T32.brazmascheckin.models.User;
 import java.util.ArrayList;
 
 /**
+ * Author: OpenAI
+ * Tool: ChatGPT
+ * Prompt: "Can you please help me use the GridView in Android Studio properly."
+ * Date: March 19, 2024
+ */
+
+/**
  * This class is the adapter for the RecyclerView of user profiles.
  * This class is responsible for populating the recycler view with user profile information.
  */
