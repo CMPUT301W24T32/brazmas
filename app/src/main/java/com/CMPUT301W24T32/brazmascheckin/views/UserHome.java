@@ -202,6 +202,7 @@ public class UserHome extends AppCompatActivity {
         }, e -> Toast.makeText(UserHome.this, "Unable to connect to the " +
                 "database", Toast.LENGTH_LONG).show());
 
+        Toast.makeText(UserHome.this, "Please press the organizer button again", Toast.LENGTH_LONG).show();
     }
 
     /**
