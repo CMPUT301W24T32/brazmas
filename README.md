@@ -42,8 +42,40 @@ User: Ajay
 Use: utilized code from user for converting Bitmap to image
 
 
+Author: osmdroid
+
+Title: Osmdroid Wiki
+
+Link: https://github.com/osmdroid/osmdroid/wiki
+
+Date: March 21, 2024
+
+Use: maps wiki
+
+
 Link: https://chat.mistral.ai/
 
 Date: 2024-04-05
 
 Use: Creating unit testing again
+
+
+Author: OpenAI
+
+Tool: ChatGPT
+
+Prompt: "Use mockito to create integration tests using FirestoreDB.java and
+EventController.java"
+
+Date: March 30, 2024
+
+Use: integration tests
+
+
+Author: Neat Roots
+
+Title: Android Studio Tutorial - Upload Image using Camera - Get Image from Gallery
+
+Link: https://www.youtube.com/watch?v=kWeeWOlzEKM
+
+Date: Feb 27, 2024
