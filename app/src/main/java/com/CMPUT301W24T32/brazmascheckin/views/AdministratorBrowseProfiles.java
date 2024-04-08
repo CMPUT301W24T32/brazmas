@@ -28,6 +28,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.ArrayList;
 
 /**
+ * Author: OpenAI
+ * Tool: ChatGPT
+ * Prompt: "Please help me solve the error pertaining deleting default profile pictures."
+ * Date: March 15, 2024
+ */
+
+/**
  * This class will be the page to browse profiles for admin.
  * Can view profiles, and delete profiles.
  */

@@ -28,7 +28,12 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.assertFalse;
 
-//TODO: check that mock event is on screen before deleting
+/**
+ * Author: OpenAI
+ * Tool: ChatGPT
+ * Prompt: "Please help me create a mock event."
+ * Date: April 4, 2024
+ */
 
 /**
  * Test class for deletion of events by an administrator.

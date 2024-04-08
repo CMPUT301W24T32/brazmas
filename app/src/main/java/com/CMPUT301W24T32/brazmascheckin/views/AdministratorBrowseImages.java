@@ -25,6 +25,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Author: OpenAI
+ * Tool: ChatGPT
+ * Prompt: "Please help me fix my GridView errors."
+ * Date: March 19, 2024
+ */
+
+/**
  * This class will be the activity where admin can browse images (posters, profile pic).
  */
 public class AdministratorBrowseImages extends AppCompatActivity {

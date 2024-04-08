@@ -28,9 +28,30 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * Author: Easy One Coders
+ * Title: Android Charts | Bar Chart | MP Android Chart | Android Studio 2023
+ * Link: https://www.youtube.com/watch?v=WdsmQ3Zyn84
+ * Date: April 1, 2024
+ */
+
+/**
+ * Author: OpenAI
+ * Tool: ChatGPT
+ * Prompt: "Use mockito to create integration tests using FirestoreDB.java and
+ * EventController.java"
+ * Date: March 30, 2024
+ */
+
+/**
+ * Author: PhilJay
+ * Title: MPAndroidChart
+ * Link: https://github.com/PhilJay/MPAndroidChart
+ * Date: April 1, 2024
+ */
+
+/**
  * This class displays the event analytics for the organizer's events through bar chart.
  */
-//TODO: need to cite the library and https://www.youtube.com/watch?v=WdsmQ3Zyn84
 public class GraphAnalyticsActivity extends AppCompatActivity {
 
     private List<String> xValues = Arrays.asList("Checked In", "Signed Up");

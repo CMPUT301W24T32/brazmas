@@ -23,8 +23,13 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Author: OpenAI
+ * Tool: ChatGPT
+ * Prompt: "Please help me create a mock event."
+ * Date: April 4, 2024
+ */
 
-//TODO: check mock user is on screen before deleting
 /**
  * Test class for deletion of profiles by an administrator.
  * This test ensures that an administrator can successfully delete profiles from the system.

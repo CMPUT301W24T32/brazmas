@@ -24,6 +24,13 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
+ * Author: OpenAI
+ * Tool: ChatGPT
+ * Prompt: "Please add the Javadocs."
+ * Date: March 5, 2024
+ */
+
+/**
  * This class will be the home page for organizer.
  * This is where the admin will browse events.
  */
