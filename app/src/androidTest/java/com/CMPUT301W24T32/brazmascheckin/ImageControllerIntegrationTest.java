@@ -11,6 +11,8 @@ import static org.mockito.Mockito.when;
 
 import android.net.Uri;
 
+import androidx.test.annotation.UiThreadTest;
+
 import com.CMPUT301W24T32.brazmascheckin.controllers.AddFailureListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.AddSuccessListener;
 import com.CMPUT301W24T32.brazmascheckin.controllers.ImageController;
@@ -49,6 +51,7 @@ public class ImageControllerIntegrationTest {
     }
 
     @Test
+    @UiThreadTest
     public void testUploadImage_Success() {
         UploadTask mockTask = mock(UploadTask.class);
         when(mockImageRef.putFile(any(Uri.class))).thenReturn(mockTask);
@@ -65,6 +68,7 @@ public class ImageControllerIntegrationTest {
     }
 
     @Test
+    @UiThreadTest
     public void testUploadImage_Failure() {
         UploadTask mockTask = mock(UploadTask.class);
         when(mockImageRef.putFile(any(Uri.class))).thenReturn(mockTask);
@@ -85,6 +89,7 @@ public class ImageControllerIntegrationTest {
     }
 
     @Test
+    @UiThreadTest
     public void testGetImage_Success() {
         Task mockTask = mock(Task.class);
         when(mockImageRef.getBytes(any(Long.class))).thenReturn(mockTask);
@@ -96,6 +101,7 @@ public class ImageControllerIntegrationTest {
     }
 
     @Test
+    @UiThreadTest
     public void testGetImage_Failure() {
         Task mockTask = mock(Task.class);
         when(mockImageRef.getBytes(any(Long.class))).thenReturn(mockTask);
@@ -111,6 +117,7 @@ public class ImageControllerIntegrationTest {
     }
 
     @Test
+    @UiThreadTest
     public void testDeleteImage_Success() {
         Task mockTask = mock(Task.class);
         when(mockImageRef.delete()).thenReturn(mockTask);
@@ -122,6 +129,7 @@ public class ImageControllerIntegrationTest {
     }
 
     @Test
+    @UiThreadTest
     public void testDeleteImage_Failure() {
         Task mockTask = mock(Task.class);
         when(mockImageRef.delete()).thenReturn(mockTask);

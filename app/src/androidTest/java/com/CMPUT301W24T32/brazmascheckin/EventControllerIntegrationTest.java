@@ -9,6 +9,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import androidx.test.annotation.UiThreadTest;
+
 import com.CMPUT301W24T32.brazmascheckin.controllers.EventController;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -43,6 +45,7 @@ public class EventControllerIntegrationTest {
         mockCollectionRef = mock(CollectionReference.class);
         mockDocumentRef = mock(DocumentReference.class);
 
+
         when(mockDatabase.collection(anyString())).thenReturn(mockCollectionRef);
         when(mockCollectionRef.document(anyString())).thenReturn(mockDocumentRef);
 
@@ -50,6 +53,7 @@ public class EventControllerIntegrationTest {
     }
 
     @Test
+    @UiThreadTest
     public void testAddEvent_Success() {
         Event mockEvent = mock(Event.class);
         when(mockDocumentRef.getId()).thenReturn("mock_event_id");
@@ -64,6 +68,7 @@ public class EventControllerIntegrationTest {
     }
 
     @Test
+    @UiThreadTest
     public void testAddEvent_Failure() {
         Event mockEvent = mock(Event.class);
         Task mockTask = mock(Task.class);
@@ -84,6 +89,7 @@ public class EventControllerIntegrationTest {
     }
 
     @Test
+    @UiThreadTest
     public void testAddEvent_SuccessListener() {
         Event mockEvent = mock(Event.class);
         Task<DocumentReference> mockTask = mock(Task.class);
@@ -109,6 +115,7 @@ public class EventControllerIntegrationTest {
     }
 
     @Test
+    @UiThreadTest
     public void testSetEvent_Success() {
         Event event = new Event("mock_event_Id");
         Task mockTask = mock(Task.class);
@@ -121,6 +128,7 @@ public class EventControllerIntegrationTest {
     }
 
     @Test
+    @UiThreadTest
     public void testSetEvent_Failure() {
         Event event = new Event("mock_event_Id");
         Task<Void> mockTask = mock(Task.class);
@@ -141,6 +149,7 @@ public class EventControllerIntegrationTest {
     }
 
     @Test
+    @UiThreadTest
     public void testGetEvent_Success() {
         Event mockEvent = mock(Event.class);
         String eventId = "mock_event_id";
@@ -159,6 +168,7 @@ public class EventControllerIntegrationTest {
     }
 
     @Test
+    @UiThreadTest
     public void testGetEvent_Failure() {
         String eventId = "mock_event_id";
         Task mockTask = mock(Task.class);
@@ -182,6 +192,7 @@ public class EventControllerIntegrationTest {
     }
 
         @Test
+        @UiThreadTest
         public void testDeleteEvent_Success() {
             String eventId = "mock_event_id";
             Task<Void> mockTask = mock(Task.class);
@@ -204,6 +215,7 @@ public class EventControllerIntegrationTest {
         }
 
         @Test
+        @UiThreadTest
         public void testDeleteEvent_Failure() {
             String eventId = "mock_event_id";
             Task<Void> mockTask = mock(Task.class);

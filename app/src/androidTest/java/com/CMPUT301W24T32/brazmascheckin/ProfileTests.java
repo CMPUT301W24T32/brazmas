@@ -287,6 +287,13 @@ public class ProfileTests {
         onView(ViewMatchers.withId(R.id.profile_picture_edit))
                 .check(matches(isDisplayed()))
                 .check(matches(withContentDescription("default pfp")));
+
+        onView(ViewMatchers.withId(R.id.done_btn)).perform(ViewActions.click());
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         Intents.release();
     }
 
@@ -315,6 +322,7 @@ public class ProfileTests {
         onView(ViewMatchers.withId(R.id.profile_picture_edit))
                 .check(matches(isDisplayed()))
                 .check(matches(withContentDescription("default pfp")));
+        onView(ViewMatchers.withId(R.id.done_btn)).perform(ViewActions.click());
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {

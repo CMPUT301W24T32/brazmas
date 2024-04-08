@@ -8,6 +8,8 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 import static org.mockito.ArgumentMatchers.anyString;
 
+import androidx.test.annotation.UiThreadTest;
+
 import com.CMPUT301W24T32.brazmascheckin.controllers.AdminController;
 import com.CMPUT301W24T32.brazmascheckin.models.Admin;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -53,6 +55,7 @@ public class AdminControllerIntegrationTest {
      * Verifies that the admin is added successfully to the Firestore database.
      */
     @Test
+    @UiThreadTest
     public void testAddAdmin_Success() {
         Admin mockAdmin = mock(Admin.class);
         when(mockDocumentRef.getId()).thenReturn("mock_admin_id");
@@ -71,6 +74,7 @@ public class AdminControllerIntegrationTest {
      * Verifies that the failure callback is invoked when adding an admin fails.
      */
     @Test
+    @UiThreadTest
     public void testAddAdmin_Failure() {
         Admin mockAdmin = mock(Admin.class);
         Task mockTask = mock(Task.class);
@@ -95,6 +99,7 @@ public class AdminControllerIntegrationTest {
      * Verifies that an admin is retrieved successfully from the Firestore database.
      */
     @Test
+    @UiThreadTest
     public void testGetAdmin_Success() {
         Admin mockAdmin = mock(Admin.class);
         String adminId = "mock_admin_id";
@@ -118,6 +123,7 @@ public class AdminControllerIntegrationTest {
      * Verifies that the failure callback is invoked when getting an admin fails.
      */
     @Test
+    @UiThreadTest
     public void testGetAdmin_Failure() {
         String adminId = "mock_admin_id";
         Task mockTask = mock(Task.class);
@@ -145,6 +151,7 @@ public class AdminControllerIntegrationTest {
      * Verifies that an admin is set successfully in the Firestore database.
      */
     @Test
+    @UiThreadTest
     public void testSetAdmin_Success() {
         Admin admin = new Admin("mock_admin_Id");
         Task mockTask = mock(Task.class);
@@ -161,6 +168,7 @@ public class AdminControllerIntegrationTest {
      * Verifies that the failure callback is invoked when setting an admin fails.
      */
     @Test
+    @UiThreadTest
     public void testSetAdmin_Failure() {
         Admin admin = new Admin("mock_admin_Id");
         Task<Void> mockTask = mock(Task.class);
