@@ -2,25 +2,13 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="ProfileTests">
+      <entry key="AdminDeleteEventTest">
         <State />
       </entry>
-      <entry key="ViewEventTests">
+      <entry key="AdminDeleteProfileTest">
         <State />
       </entry>
-      <entry key="app">
-        <State />
-      </entry>
-      <entry key="attendeeCannotSeeQR()">
-        <State />
-      </entry>
-      <entry key="testCheckInMap()">
-        <State />
-      </entry>
-      <entry key="testFirstNameChanged()">
-        <State />
-      </entry>
-      <entry key="UserControllerIntegrationTest">
+      <entry key="Tests in 'com.CMPUT301W24T32.brazmascheckin'">
         <State />
       </entry>
       <entry key="app">

@@ -7,6 +7,7 @@ import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.assertion.ViewAssertions;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
@@ -45,7 +46,7 @@ public class AdminDeleteProfileTest {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         UserController userController = new UserController(database);
 
-        // retrieve all profiles
+        /*// retrieve all profiles
         userController.getAllUsers(users -> {
             // iterate through all users and delete each
             AtomicInteger counter = new AtomicInteger(users.size());
@@ -67,7 +68,10 @@ public class AdminDeleteProfileTest {
         }, e -> {
             // failure for getting all users
             createMockUser(userController); // launch anyway, perseverance
-        });
+        });*/
+
+        // create mock user
+        createMockUser(userController);
     }
 
     /**
@@ -84,14 +88,14 @@ public class AdminDeleteProfileTest {
         ArrayList<String> checkedInEvents = new ArrayList<>();  // can be empty
 
         // create mock user
-        User mockUser = new User("123456", "John", "Doe", signedUpEvents, true, checkedInEvents);
+        User mockUser = new User("000000000", "John", "Doe", signedUpEvents, true, checkedInEvents);
 
-        // add mock user to Firestore using UserController
-        userController.addUser(mockUser, userID -> {
-            // success listener
+        // Add the mock event to Firestore using the EventController
+        userController.setUser(mockUser, () -> {
+            // Success listener
             launchAdministratorBrowseProfiles();
         }, failure -> {
-            // failure listener
+            // Failure listener
         });
     }
 
@@ -106,6 +110,14 @@ public class AdminDeleteProfileTest {
             // wait for recyclerView
             try {
                 Thread.sleep(8000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            // check if mock profile exists on the screen
+            Espresso.onView(withText("John Doe")).check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
+            try {
+                Thread.sleep(5000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

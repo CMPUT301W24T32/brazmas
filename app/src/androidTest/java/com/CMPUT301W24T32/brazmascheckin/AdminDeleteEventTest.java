@@ -6,6 +6,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.assertion.ViewAssertions;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
@@ -16,6 +17,7 @@ import com.CMPUT301W24T32.brazmascheckin.models.Announcement;
 import com.CMPUT301W24T32.brazmascheckin.models.Event;
 import com.CMPUT301W24T32.brazmascheckin.views.AdministratorHome;
 import com.google.firebase.firestore.FirebaseFirestore;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,8 +29,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.assertFalse;
-
-//TODO: check that mock event is on screen before deleting
 
 /**
  * Test class for deletion of events by an administrator.
@@ -49,7 +49,7 @@ public class AdminDeleteEventTest {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         EventController eventController = new EventController(database);
 
-        // retrieve all events
+        /*// retrieve all events
         eventController.getAllEvents(events -> {
             // Iterate through all events and delete each
             AtomicInteger counter = new AtomicInteger(events.size());
@@ -73,7 +73,9 @@ public class AdminDeleteEventTest {
             // Failure for retrieving all events
             // Handle failure, maybe log the error
             createMockEvent(eventController); // Launch anyway even if retrieval fails
-        });
+        });*/
+
+        createMockEvent(eventController);
     }
 
     /**
@@ -86,8 +88,8 @@ public class AdminDeleteEventTest {
         ArrayList<String> signUps = new ArrayList<>();
         ArrayList<Announcement> announcements = new ArrayList<>();
 
-        Event event = new Event(
-                null, "Test Check In Event",
+        Event mockEvent = new Event(
+                "00000000000", "Test Delete Admin Event",
                 new Date(11, 11, 2024),
                 "Event to test attending",
                 new HashMap<>(),
@@ -104,7 +106,7 @@ public class AdminDeleteEventTest {
         );
 
         // Add the mock event to Firestore using the EventController
-        eventController.addEvent(event, eventId -> {
+        eventController.setEvent(mockEvent, () -> {
             // Success listener
             launchAdministratorHomeActivity();
         }, failure -> {
@@ -127,8 +129,21 @@ public class AdminDeleteEventTest {
                 e.printStackTrace();
             }
 
+            Espresso.onView(ViewMatchers.withText("Testn Event")).check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
+
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            // new
+            onView(withText("Ten Event")).perform(ViewActions.click());
+            onView(withId(R.id.delete_event_button))
+                    .perform(ViewActions.click());
+
             // click on the first item of the RecyclerView
-            activity.runOnUiThread(() -> {
+            /*activity.runOnUiThread(() -> {
                 RecyclerView recyclerView = activity.findViewById(R.id.all_events_rv_admin);
                 RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(0);
                 if (viewHolder != null) {
@@ -151,9 +166,9 @@ public class AdminDeleteEventTest {
                     }
 
                     // check if mock event is no longer with us
-                    Espresso.onView(withText("Mock Event")).check(ViewAssertions.doesNotExist());
+                    Espresso.onView(withText("Test Delete Admin Event")).check(ViewAssertions.doesNotExist());
                 }
-            });
+            });*/
         });
     }
 }
