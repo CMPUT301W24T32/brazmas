@@ -11,13 +11,12 @@ tools:context=".views.AnnouncementActivity">
     <TextView
         android:id="@+id/attendee_view_card_name_tv"
         android:layout_width="match_parent"
-        android:layout_height="75dp"
+        android:layout_height="65dp"
         android:textColor="@color/black"
         android:text="Announcements"
         android:background="@color/lightPink"
         android:gravity="center"
-        android:textSize="45sp"
-
+        android:textSize="40sp"
         android:layout_marginBottom="8dp"/>
 
     <androidx.recyclerview.widget.RecyclerView

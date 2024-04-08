@@ -34,11 +34,11 @@ tools:context=".views.CameraActivity">
     <TextView
         android:id="@+id/event_text_view_admin"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="65dp"
         android:backgroundTint="@color/lightPink"
         android:ems="10"
         android:text="QR Scanner"
-        android:textSize="45sp"
+        android:textSize="40sp"
         android:gravity="center"
         android:background="@color/lightPink"
         android:textColor="@color/black"/>
