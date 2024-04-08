@@ -8,10 +8,10 @@
     <TextView
         android:id="@+id/profile_text_view_admin"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="65dp"
         android:ems="10"
         android:text="Profiles"
-        android:textSize="45sp"
+        android:textSize="40dp"
         android:gravity="center"
         android:background="@color/lightPink"
         android:textColor="@color/black" />
