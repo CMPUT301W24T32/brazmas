@@ -139,14 +139,6 @@ public class ProfileTests {
         imageController = new ImageController(FirestoreDB.getStorageInstance());
 
 
-        String firstLetter = "J";
-        int color = ContextCompat.getColor(ApplicationProvider.getApplicationContext(), R.color.black);
-        bitmap = textAsBitmap(firstLetter, 70, color);
-        imageUri = getImageUri(ApplicationProvider.getApplicationContext(), bitmap);
-        if (user.getDefaultProfilePicture() == null) {
-            user.setDefaultProfilePicture(uploadFile());
-        }
-
         userController.setUser(user, null, null);
     }
 
@@ -323,8 +315,11 @@ public class ProfileTests {
         onView(ViewMatchers.withId(R.id.profile_picture_edit))
                 .check(matches(isDisplayed()))
                 .check(matches(withContentDescription("default pfp")));
-
-
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         Intents.release();
     }
 
