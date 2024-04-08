@@ -68,38 +68,40 @@ public class MainActivity extends AppCompatActivity {
         colors.add(jade_green);
 
         // control flow of different types of users
+        // control flow of different types of users
         adminController.getAdmin(deviceID, object -> {
             Intent intent = new Intent(MainActivity.this, AdministratorHome.class);
             startActivity(intent);
             finish();
-        }, null);
-        userController.getUser(deviceID, object -> {
-            Intent intent = new Intent(MainActivity.this, UserHome.class);
-            startActivity(intent);
-            finish();
         }, e -> {
-
-            // manually create one
-            User user = new User(
-                    "John", "Doe", new ArrayList<>(), null, new ArrayList<>(),
-                    false, 0, null,
-                    null, new ArrayList<>()
-            );
-            user.setID(deviceID);
-
-            // creating random pfp
-            String firstLetter = "J";
-            int color = ContextCompat.getColor(getBaseContext(),R.color.black);
-            Bitmap bitmap = textAsBitmap(firstLetter,70,color);
-            imageUri = getImageUri(getBaseContext(),bitmap);
-            user.setDefaultProfilePicture(uploadFile());
-
-            userController.setUser(user, () -> {
+            userController.getUser(deviceID, object -> {
                 Intent intent = new Intent(MainActivity.this, UserHome.class);
                 startActivity(intent);
                 finish();
-            }, e1 -> {
-                Toast.makeText(getApplicationContext(), "Unable to create profile", Toast.LENGTH_SHORT).show();
+            }, e2 -> {
+
+                // manually create one
+                User user = new User(
+                        "John", "Doe", new ArrayList<>(), null, new ArrayList<>(),
+                        false, 0, null,
+                        null, new ArrayList<>()
+                );
+                user.setID(deviceID);
+
+                // creating random pfp
+                String firstLetter = "J";
+                int color = ContextCompat.getColor(getBaseContext(),R.color.black);
+                Bitmap bitmap = textAsBitmap(firstLetter,70,color);
+                imageUri = getImageUri(getBaseContext(),bitmap);
+                user.setDefaultProfilePicture(uploadFile());
+
+                userController.setUser(user, () -> {
+                    Intent intent = new Intent(MainActivity.this, UserHome.class);
+                    startActivity(intent);
+                    finish();
+                }, e1 -> {
+                    Toast.makeText(getApplicationContext(), "Unable to create profile", Toast.LENGTH_SHORT).show();
+                });
             });
         });
     }
