@@ -41,21 +41,21 @@ public class AddEventCommand implements Command{
     /**
      * Constructor for add event fragment
      *
-     * @param eventController
-     * @param imageController
-     * @param userController
-     * @param ID
-     * @param title
-     * @param desc
-     * @param limit
-     * @param date
-     * @param geoLocationEnabled
-     * @param qrCode
-     * @param imageURI
-     * @param generateShareQRCode
-     * @param organizer
-     * @param location
-     * @param context
+     * @param eventController event controller
+     * @param imageController image controller
+     * @param userController user controller
+     * @param ID id of event
+     * @param title name of event
+     * @param desc description of event
+     * @param limit attendee limit
+     * @param date date of event
+     * @param geoLocationEnabled if geolocation is enabled
+     * @param qrCode qr code reference
+     * @param imageURI image URI
+     * @param generateShareQRCode if event has a share qr code
+     * @param organizer organizer reference
+     * @param location location of the event
+     * @param context context of the activity creating an event
      */
     public AddEventCommand(EventController eventController, ImageController imageController,
                            UserController userController,
