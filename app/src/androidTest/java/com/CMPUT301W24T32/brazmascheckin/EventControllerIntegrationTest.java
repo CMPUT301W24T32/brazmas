@@ -27,6 +27,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * Author: OpenAI
+ * Tool: ChatGPT
+ * Prompt: "Use mockito to create integration tests using FirestoreDB.java and
+ * EventController.java"
+ * Date: March 30, 2024
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class EventControllerIntegrationTest {
 

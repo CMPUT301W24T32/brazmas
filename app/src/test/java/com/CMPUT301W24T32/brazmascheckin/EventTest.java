@@ -11,6 +11,13 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Link: https://chat.mistral.ai/
+ *
+ * Date: 2024-03-07
+ *
+ * Use: Creating unit testing
+ */
 public class EventTest {
     private Event event;
     private Location eventLocation;

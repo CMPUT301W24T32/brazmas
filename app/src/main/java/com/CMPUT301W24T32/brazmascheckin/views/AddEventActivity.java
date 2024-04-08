@@ -235,6 +235,13 @@ public class AddEventActivity extends AppCompatActivity {
     );
 
     /**
+     * Author: Neat Roots
+     * Title: Android Studio Tutorial - Upload Image using Camera - Get Image from Gallery
+     * Link: https://www.youtube.com/watch?v=kWeeWOlzEKM
+     * Date: Feb 27, 2024
+     */
+
+    /**
      * Method to open file chooser for image selection
      */
     private void openFileChooser() {
