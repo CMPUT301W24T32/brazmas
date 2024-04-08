@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.CMPUT301W24T32.brazmascheckin"},{"l":"com.CMPUT301W24T32.brazmascheckin.helper"},{"l":"com.CMPUT301W24T32.brazmascheckin.models"},{"l":"com.CMPUT301W24T32.brazmascheckin.views"}];updateSearchResults();
