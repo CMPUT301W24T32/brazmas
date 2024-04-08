@@ -2,6 +2,9 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="AdminDeleteEventTest">
+        <State />
+      </entry>
       <entry key="Tests in 'com.CMPUT301W24T32.brazmascheckin'">
         <State />
       </entry>
