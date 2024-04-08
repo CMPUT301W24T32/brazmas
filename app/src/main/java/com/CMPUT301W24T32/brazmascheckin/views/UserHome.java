@@ -138,6 +138,7 @@ public class UserHome extends AppCompatActivity {
             showAllEvents();
         }
         else{
+            try { Thread.sleep(2000);} catch (Exception ignored) {}
             Bundle bundle = intent.getExtras();
             Event e = (Event) bundle.getSerializable("value");
             handleAfterAdd(e);
@@ -189,7 +190,6 @@ public class UserHome extends AppCompatActivity {
 
                         }
                     }
-                    eventDataList.add(ev);
                     eventRecyclerViewAdapter.notifyDataSetChanged();
                 }
 

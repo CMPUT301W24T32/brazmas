@@ -126,7 +126,10 @@ public class ProfileTests {
     private Uri imageUri;
     private Bitmap bitmap;
     private String fileID;
-    private User user;
+    private User  user = new User("John", "Doe", new ArrayList<>(), DeviceID.getDeviceID(ApplicationProvider.getApplicationContext()), new ArrayList<>(),
+            false, 0, null,
+            null, new ArrayList<>());
+
 
 
     @Before
@@ -136,17 +139,13 @@ public class ProfileTests {
         imageController = new ImageController(FirestoreDB.getStorageInstance());
 
 
-        String deviceID = DeviceID.getDeviceID(ApplicationProvider.getApplicationContext());
-        user = new User("John", "Doe", new ArrayList<>(), deviceID, new ArrayList<>(),
-                false, 0, null,
-                null, new ArrayList<>());
-
         String firstLetter = "J";
         int color = ContextCompat.getColor(ApplicationProvider.getApplicationContext(), R.color.black);
         bitmap = textAsBitmap(firstLetter, 70, color);
         imageUri = getImageUri(ApplicationProvider.getApplicationContext(), bitmap);
-        user.setDefaultProfilePicture(uploadFile());
-
+        if (user.getDefaultProfilePicture() == null) {
+            user.setDefaultProfilePicture(uploadFile());
+        }
 
         userController.setUser(user, null, null);
     }
@@ -224,10 +223,15 @@ public class ProfileTests {
         onView(ViewMatchers.withId(R.id.edit_profile_btn)).perform(ViewActions.click());
         intended(hasComponent(EditProfileActivity.class.getName()));
         onView(ViewMatchers.withId(R.id.first_name_et)).perform(replaceText("Mehar"));
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         onView(ViewMatchers.withId(R.id.done_btn)).perform(ViewActions.click());
         intended(hasComponent(ProfileActivity.class.getName()));
         try {
-            Thread.sleep(1000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -235,6 +239,11 @@ public class ProfileTests {
         onView(ViewMatchers.withId(R.id.edit_profile_btn)).perform(ViewActions.click());
         onView(ViewMatchers.withId(R.id.first_name_et)).perform(replaceText("John"));
         onView(ViewMatchers.withId(R.id.done_btn)).perform(ViewActions.click());
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         onView(ViewMatchers.withId(R.id.name_tv)).check(matches((withText("John Doe"))));
         Intents.release();
 
@@ -254,7 +263,7 @@ public class ProfileTests {
         onView(ViewMatchers.withId(R.id.done_btn)).perform(ViewActions.click());
         intended(hasComponent(ProfileActivity.class.getName()));
         try {
-            Thread.sleep(1000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -262,6 +271,11 @@ public class ProfileTests {
         onView(ViewMatchers.withId(R.id.edit_profile_btn)).perform(ViewActions.click());
         onView(ViewMatchers.withId(R.id.last_name_et)).perform(replaceText("Doe"));
         onView(ViewMatchers.withId(R.id.done_btn)).perform(ViewActions.click());
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         onView(ViewMatchers.withId(R.id.name_tv)).check(matches((withText("John Doe"))));
         Intents.release();
 
@@ -302,6 +316,15 @@ public class ProfileTests {
         onView(ViewMatchers.withId(R.id.change_profile_picture_btn))
                 .perform(ViewActions.click());
         intended(expected);
+
+        onView(ViewMatchers.withId(R.id.remove_profile_picture_btn))
+                .perform(ViewActions.click());
+
+        onView(ViewMatchers.withId(R.id.profile_picture_edit))
+                .check(matches(isDisplayed()))
+                .check(matches(withContentDescription("default pfp")));
+
+
         Intents.release();
     }
 
@@ -327,6 +350,11 @@ public class ProfileTests {
             e.printStackTrace();
         }
         onView(ViewMatchers.withId(R.id.edit_profile_btn)).perform(ViewActions.click());
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         intended(hasComponent(EditProfileActivity.class.getName()));
         onView(ViewMatchers.withId(R.id.first_name_et)).perform(replaceText("Mehar"));
         onView(ViewMatchers.withId(R.id.last_name_et)).perform(replaceText("Goat"));
@@ -337,6 +365,12 @@ public class ProfileTests {
                 .check(matches(isDisplayed()))
                 .check(matches(withContentDescription("default pfp")));
 
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         Matcher<Intent> expected = allOf(hasAction(Intent.ACTION_GET_CONTENT));
         Instrumentation.ActivityResult activityResult = createGalleyPickerResult();
         intending(expected).respondWith(activityResult);
@@ -345,6 +379,24 @@ public class ProfileTests {
                 .perform(ViewActions.click());
         intended(expected);
 
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        onView(ViewMatchers.withId(R.id.remove_profile_picture_btn))
+                .perform(ViewActions.click());
+
+        onView(ViewMatchers.withId(R.id.profile_picture_edit))
+                .check(matches(isDisplayed()))
+                .check(matches(withContentDescription("default pfp")));
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         onView(ViewMatchers.withId(R.id.done_btn)).perform(ViewActions.click());
         intended(hasComponent(ProfileActivity.class.getName()));
         try {
@@ -401,13 +453,15 @@ public class ProfileTests {
      * @return the image uri
      */
     public Uri getImageUri(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        if (path != null) {
-            return Uri.parse(path);
+        if (inImage != null){
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+            String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+            if (path != null) {
+                return Uri.parse(path);
+            }
         }
-        return null;
+       return Uri.EMPTY;
     }
 
     /**
@@ -421,7 +475,8 @@ public class ProfileTests {
             imageController.uploadImage(DEFAULT_PROFILE_PICTURE_PATH, fileID, imageUri,
                     null, e -> {
                     });
-        } else {
+        }
+        else {
             fileID = null;
         }
         return fileID;
